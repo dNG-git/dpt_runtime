@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<pas_settings_file_v1 xmlns="urn:de.direct-netware.xmlns:pas.settings.v1">
+<pas>
+ <chmod>
+  <dirs><change value="0755" /></dirs>
+  <files><change value="0644" /></files>
+ </chmod>
+
+ <memcache value="">
+  <files value="0" />
+  <merged><xml><files value="0" /></xml></merged>
+  <source><code value="0" /></source>
+ </memcache>
+
+ <umask><change value="0000" /></umask>
+</pas>
+</pas_settings_file_v1>
