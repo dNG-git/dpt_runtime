@@ -56,7 +56,7 @@ Extend the class
 ----------------------------------------------------------------------------
 	"""
 
-	def __init__ (self,f_value,fException = None):
+	def __init__ (self,f_value,f_exception = None):
 	#
 		"""
 Constructor __init__ (dNGException)
@@ -66,7 +66,7 @@ Constructor __init__ (dNGException)
 
 		super (dNGException,self).__init__ (f_value)
 		(self.exc_type,self.exc_value,self.exc_traceback) = sys.exc_info ()
-		self.exc_cause = fException
+		self.exc_cause = f_exception
 	#
 
 	def getCause (self):

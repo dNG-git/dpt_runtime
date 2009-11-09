@@ -167,6 +167,7 @@ Callback function for OS signals.
 
 	global _direct_core_cls
 	if (_direct_core_cls != None): _direct_core_cls.signal (f_signal,f_stack_frame)
+	sys.exit (0)
 #
 
 signal.signal (signal.SIGABRT,direct_cls_signal)

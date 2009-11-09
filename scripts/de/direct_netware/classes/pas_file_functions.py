@@ -77,25 +77,10 @@ Constructor __init__ (direct_file_functions)
 	#
 
 	@staticmethod
-	def get ():
+	def file_get (f_type,f_file_path):
 	#
 		"""
-Get the direct_file_functions singleton.
-
-@return (direct_file_functions) Object on success
-@since  v1.0.0
-		"""
-
-		global _direct_core_file_functions
-		if (_direct_core_file_functions == None): _direct_core_file_functions = direct_file_functions ()
-		return _direct_core_file_functions
-	#
-
-	@staticmethod
-	def get_file (f_type,f_file_path):
-	#
-		"""
-Let's work with files - use "get_file ()" to get content from a local file.
+Let's work with files - use "file_get ()" to get content from a local file.
 A time check will stop the reading process before a script timeout occurs.
 
 @param  f_type Read mode to use. Options: "r", "s", "s0" and "s1" for ASCII
@@ -145,26 +130,13 @@ A time check will stop the reading process before a script timeout occurs.
 				#
 			#
 		#
-		elif (f_file_object != None): f_file_object.trigger_error ("pas/#echo(__FILEPATH__)# -direct_file->get_file ()- (#echo(__LINE__)#) reporting: Failed opening %s - file does not exist" % f_file_path,self.E_WARNING)
+		elif (f_file_object != None): f_file_object.trigger_error ("pas/#echo(__FILEPATH__)# -direct_file->file_get ()- (#echo(__LINE__)#) reporting: Failed opening %s - file does not exist" % f_file_path,f_file_object.E_WARNING)
 
 		return f_return
 	#
 
 	@staticmethod
-	def get_file_functions ():
-	#
-		"""
-Get the direct_file_functions singleton.
-
-@return (direct_file_functions) Object on success
-@since  v1.0.0
-		"""
-
-		return direct_file_functions.get ()
-	#
-
-	@staticmethod
-	def write_file (f_data,f_file_path,f_type = ""):
+	def file_write (f_data,f_file_path,f_type = ""):
 	#
 		"""
 The following function will save given data (as f_data) to a file.
@@ -198,6 +170,34 @@ The following function will save given data (as f_data) to a file.
 
 			return f_file_object.close ()
 		#
+	#
+
+	@staticmethod
+	def get ():
+	#
+		"""
+Get the direct_file_functions singleton.
+
+@return (direct_file_functions) Object on success
+@since  v1.0.0
+		"""
+
+		global _direct_core_file_functions
+		if (_direct_core_file_functions == None): _direct_core_file_functions = direct_file_functions ()
+		return _direct_core_file_functions
+	#
+
+	@staticmethod
+	def get_file_functions ():
+	#
+		"""
+Get the direct_file_functions singleton.
+
+@return (direct_file_functions) Object on success
+@since  v1.0.0
+		"""
+
+		return direct_file_functions.get ()
 	#
 #
 

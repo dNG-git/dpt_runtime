@@ -90,7 +90,6 @@ Constructor __init__ (direct_basic_functions)
 		if (not self.settings.has_key ("timeout")): self.settings['timeout'] = 3600
 
 		self.settings_get ("%s/settings/pas_core.xml" % self.settings['path_data'])
-		print self.settings
 	#
 
 	def md5 (self,f_data):
@@ -128,7 +127,7 @@ read in on each page call. These small files are stored in the memcache
 			if (path.exists (f_cache_file)):
 			#
 				f_continue_check = False
-				f_return = direct_file_functions.get_file ("s",f_cache_file)
+				f_return = direct_file_functions.file_get ("s",f_cache_file)
 			#
 
 			if (f_continue_check):
@@ -137,15 +136,15 @@ read in on each page call. These small files are stored in the memcache
 				#
 					shutil.copyfile (f_file,f_cache_file)
 					os.chmod (f_cache_file,(stat.S_IRUSR | stat.S_IWUSR))
-					f_return = direct_file_functions.get_file ("s",f_cache_file)
+					f_return = direct_file_functions.file_get ("s",f_cache_file)
 				#
 				except Exception,f_handled_exception:
 				#
-					if (path.exists (f_file)): f_return = direct_file_functions.get_file ("s",f_file)
+					if (path.exists (f_file)): f_return = direct_file_functions.file_get ("s",f_file)
 				#
 			#
 		#
-		elif (path.exists (f_file)): f_return = direct_file_functions.get_file ("s",f_file)
+		elif (path.exists (f_file)): f_return = direct_file_functions.file_get ("s",f_file)
 
 		return f_return
 	#
@@ -171,7 +170,7 @@ that these files are only readable as Python Pickle files.
 			if (path.exists (f_cache_file)):
 			#
 				f_continue_check = False
-				f_file_data = direct_file_functions.get_file ("b",f_cache_file)
+				f_file_data = direct_file_functions.file_get ("b",f_cache_file)
 
 				try:
 				#
@@ -185,7 +184,7 @@ that these files are only readable as Python Pickle files.
 		#
 			if (path.exists (f_file)):
 			#
-				f_file_data = direct_file_functions.get_file ("s",f_file)
+				f_file_data = direct_file_functions.file_get ("s",f_file)
 				f_xml_object = direct_xml_bridge.get ()
 
 				if ((type (f_file_data) != bool) and (f_xml_object != None)):
@@ -197,7 +196,7 @@ that these files are only readable as Python Pickle files.
 						try:
 						#
 							f_file_data = pyPickle.dumps (f_return)
-							if (direct_file_functions.write_file (f_file_data,f_cache_file,"b")): os.chmod (f_cache_file,(stat.S_IRUSR | stat.S_IWUSR))
+							if (direct_file_functions.file_write (f_file_data,f_cache_file,"b")): os.chmod (f_cache_file,(stat.S_IRUSR | stat.S_IWUSR))
 						#
 						except Exception,f_unhandled_exception: pass
 					#
@@ -232,7 +231,7 @@ Writes data to a file (and deletes the old memcache copy).
 			if (path.exists (f_cache_file)): os.unlink (f_cache_file)
 		#
 
-		return direct_file_functions.write_file (f_data,f_file,f_type)
+		return direct_file_functions.file_write (f_data,f_file,f_type)
 	#
 
 	def settings_get (self,f_file,f_required = False,f_use_cache = True):
