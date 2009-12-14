@@ -15,25 +15,28 @@ for a particular purpose.
 ----------------------------------------------------------------------------
 http://www.direct-netware.de/redirect.php?licenses;w3c
 ----------------------------------------------------------------------------
+#echo(pasCoreVersion)#
+pas/#echo(__FILEPATH__)#
+----------------------------------------------------------------------------
 NOTE_END //n*/"""
-"""/**
-* de.direct_netware.classes.pas_settings
-*
-* @internal  We are using JavaDoc to automate the documentation process for
-*            creating the Developer's Manual. All sections including these
-*            special comments will be removed from the release source code.
-*            Use the following line to ensure 76 character sizes:
-* ----------------------------------------------------------------------------
-* @author    direct Netware Group
-* @copyright (C) direct Netware Group - All rights reserved
-* @package   pas_core
-* @since     v0.1.00
-* @license   http://www.direct-netware.de/redirect.php?licenses;w3c
-*            W3C (R) Software License
-*/"""
+"""
+de.direct_netware.classes.pas_basic_functions
+
+@internal  We are using epydoc (JavaDoc style) to automate the documentation
+           process for creating the Developer's Manual.
+           Use the following line to ensure 76 character sizes:
+----------------------------------------------------------------------------
+@author    direct Netware Group
+@copyright (C) direct Netware Group - All rights reserved
+@package   pas_core
+@since     v0.1.00
+@license   http://www.direct-netware.de/redirect.php?licenses;w3c
+           W3C (R) Software License
+"""
 
 from exceptions import OSError
 from os import path
+from pas_debug import direct_debug
 from pas_file_functions import direct_file_functions
 from pas_settings import direct_settings
 from pas_xml import direct_xml
@@ -47,6 +50,7 @@ try: import hashlib as pyHashlib
 except Exception,g_handled_exception: import md5 as pyHashlib
 
 _direct_core_basic_functions = None
+_direct_core_basic_functions_counter = 0
 
 class direct_basic_functions (object):
 #
@@ -56,11 +60,16 @@ everywhere.
 
 @author    direct Netware Group
 @copyright (C) direct Netware Group - All rights reserved
+@package   pas_core
 @since     v1.0.0
 @license   http://www.direct-netware.de/redirect.php?licenses;w3c
            W3C (R) Software License
 	"""
 
+	debug = None
+	"""
+Debug message container
+	"""
 	settings = None
 	"""
 Settings singleton
@@ -84,12 +93,43 @@ Constructor __init__ (direct_basic_functions)
 @since v0.1.00
 		"""
 
-		self.settings = direct_settings.get ()
-		if (not self.settings.has_key ("debug_reporting")): self.settings['debug_reporting'] = False
-		if (not self.settings.has_key ("pas_memcache")): self.settings['pas_memcache'] = ""
-		if (not self.settings.has_key ("timeout")): self.settings['timeout'] = 3600
+		self.settings = direct_settings.get (True)
+		if (not "debug_reporting" in self.settings): self.settings['debug_reporting'] = False
+		if (not "pas_lang" in self.settings): self.settings['pas_lang'] = "en"
+		if (not "pas_memcache" in self.settings): self.settings['pas_memcache'] = ""
+		if (not "timeout" in self.settings): self.settings['timeout'] = 3600
 
 		self.settings_get ("%s/settings/pas_core.xml" % self.settings['path_data'])
+
+		if (self.settings['debug_reporting']):
+		#
+			self.debug = direct_debug.get (True)
+			self.debug.append ("#echo(__FILEPATH__)# -basic_functions_class->__construct (direct_basic_functions)- (#echo(__LINE__)#)")
+		#
+		else: self.debug = None
+	#
+
+	def __del__ (self):
+	#
+		"""
+Destructor __del__ (direct_basic_functions)
+
+@since v0.1.00
+		"""
+
+		self.del_direct_basic_functions ()
+	#
+
+	def del_direct_basic_functions (self):
+	#
+		"""
+Destructor del_direct_basic_functions (direct_basic_functions)
+
+@since v0.1.00
+		"""
+
+		direct_debug.py_del ()
+		direct_settings.py_del ()
 	#
 
 	def md5 (self,f_data):
@@ -102,6 +142,7 @@ Computes the MD5 for the given data
 @since  v0.1.00
 		"""
 
+		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -basic_functions_class->md5 (+f_data)- (#echo(__LINE__)#)")
 		return pyHashlib.md5(f_data).hexdigest ()
 	#
 
@@ -116,6 +157,8 @@ read in on each page call. These small files are stored in the memcache
 @return (mixed) Data on success; false on error
 @since  v0.1.00
 		"""
+
+		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -basic_functions_class->memcache_get_file (%s)- (#echo(__LINE__)#)" % f_file)
 
 		f_continue_check = True
 		f_return = False
@@ -160,6 +203,8 @@ that these files are only readable as Python Pickle files.
 @since  v0.1.00
 		"""
 
+		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -basic_functions_class->memcache_get_file_merged_xml (%s)- (#echo(__LINE__)#)" % f_file)
+
 		f_continue_check = True
 		f_return = { }
 
@@ -185,7 +230,7 @@ that these files are only readable as Python Pickle files.
 			if (path.exists (f_file)):
 			#
 				f_file_data = direct_file_functions.file_get ("s",f_file)
-				f_xml_object = direct_xml_bridge.get ()
+				f_xml_object = direct_xml_bridge.get_xml_bridge ()
 
 				if ((type (f_file_data) != bool) and (f_xml_object != None)):
 				#
@@ -223,7 +268,7 @@ Writes data to a file (and deletes the old memcache copy).
 @since  v0.1.00
 		"""
 
-		f_return = False
+		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -basic_functions_class->memcache_write_file (+f_data,%s,%s)- (#echo(__LINE__)#)" % ( f_file,f_type ))
 
 		if ((len (self.settings['pas_memcache']) > 0) and ((self.settings['pas_memcache_files']) or (self.settings['pas_memcache_merged_xml_files']))):
 		#
@@ -248,6 +293,8 @@ Reads settings from file (XML-encoded) and adds them to direct_settings.
 @since  v0.1.00
 		"""
 
+		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -basic_functions_class->settings_get (%s,+f_required,+f_use_cache)- (#echo(__LINE__)#)" % f_file)
+
 		f_continue_check = True
 		f_file_object = direct_file_functions.get ()
 		f_return = False
@@ -269,19 +316,19 @@ Reads settings from file (XML-encoded) and adds them to direct_settings.
 
 				if (f_xml_array != None):
 				#
-					f_re_key_replace = re.compile ("pas_settings_file_v(\d+)_",re.I)
+					f_re_key_replace = re.compile ("pas_settings_file_v(\\d+)_",re.I)
 					self.settings_cache.append (self.md5 (f_file))
 
 					for f_key in f_xml_array:
 					#
 						f_xml_node_array = f_xml_array[f_key]
 
-						if (f_xml_node_array.has_key ("tag")):
+						if ("tag" in f_xml_node_array):
 						#
 							f_key = f_re_key_replace.sub ("",f_key)
 							self.settings[f_key] = f_xml_node_array['value']
 						#
-						elif ((type (f_xml_node_array) == list) and (len (f_xml_node_array) > 0) and (f_xml_node_array[0].has_key ("tag"))):
+						elif ((type (f_xml_node_array) == list) and (len (f_xml_node_array) > 0) and ("tag" in f_xml_node_array[0])):
 						#
 							f_key = f_re_key_replace.sub ("",f_key)
 							self.settings[f_key] = [ ]
@@ -310,8 +357,10 @@ Writes the setting array to a file (XML-encoded).
 @since  v0.1.00
 		"""
 
+		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -basic_functions_class->settings_write (+f_settings,%s)- (#echo(__LINE__)#)" % f_file)
+
 		f_return = False
-		f_xml_object = direct_xml.get ()
+		f_xml_object = direct_xml.get_xml ()
 
 		if ((type (f_settings) == dict) and (f_xml_object != None)):
 		#
@@ -330,31 +379,51 @@ Writes the setting array to a file (XML-encoded).
 	#
 
 	@staticmethod
-	def get ():
+	def get (f_count = False):
 	#
 		"""
 Get the direct_basic_functions singleton.
 
+@param  bool Count "get ()" request
 @return (direct_basic_functions) Object on success
 @since  v1.0.0
 		"""
 
-		global _direct_core_basic_functions
+		global _direct_core_basic_functions,_direct_core_basic_functions_counter
+
 		if (_direct_core_basic_functions == None): _direct_core_basic_functions = direct_basic_functions ()
+		if (f_count): _direct_core_basic_functions_counter += 1
+
 		return _direct_core_basic_functions
 	#
 
 	@staticmethod
-	def get_basic_functions ():
+	def get_basic_functions (f_count = False):
 	#
 		"""
 Get the direct_basic_functions singleton.
 
+@param  bool Count "get ()" request
 @return (direct_basic_functions) Object on success
 @since  v1.0.0
 		"""
 
-		return direct_basic_functions.get ()
+		return direct_basic_functions.get (f_count)
+	#
+
+	@staticmethod
+	def py_del ():
+	#
+		"""
+The last "py_del ()" call will activate the Python singleton destructor.
+
+@since  v1.0.0
+		"""
+
+		global _direct_core_basic_functions,_direct_core_basic_functions_counter
+
+		_direct_core_basic_functions_counter -= 1
+		if (_direct_core_basic_functions_counter == 0): _direct_core_basic_functions = None
 	#
 #
 

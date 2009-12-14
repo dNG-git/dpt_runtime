@@ -15,29 +15,33 @@ for a particular purpose.
 ----------------------------------------------------------------------------
 http://www.direct-netware.de/redirect.php?licenses;w3c
 ----------------------------------------------------------------------------
+#echo(pasCoreVersion)#
+pas/#echo(__FILEPATH__)#
+----------------------------------------------------------------------------
 NOTE_END //n*/"""
-"""/**
-* de.direct_netware.classes.pas_file_functions
-*
-* @internal  We are using JavaDoc to automate the documentation process for
-*            creating the Developer's Manual. All sections including these
-*            special comments will be removed from the release source code.
-*            Use the following line to ensure 76 character sizes:
-* ----------------------------------------------------------------------------
-* @author    direct Netware Group
-* @copyright (C) direct Netware Group - All rights reserved
-* @package   pas_core
-* @since     v0.1.00
-* @license   http://www.direct-netware.de/redirect.php?licenses;w3c
-*            W3C (R) Software License
-*/"""
+"""
+de.direct_netware.classes.pas_file_functions
+
+@internal  We are using epydoc (JavaDoc style) to automate the documentation
+           process for creating the Developer's Manual.
+           Use the following line to ensure 76 character sizes:
+----------------------------------------------------------------------------
+@author    direct Netware Group
+@copyright (C) direct Netware Group - All rights reserved
+@package   pas_core
+@since     v0.1.00
+@license   http://www.direct-netware.de/redirect.php?licenses;w3c
+           W3C (R) Software License
+"""
 
 from ext_core.file import direct_file
 from os import path
+from pas_debug import direct_debug
 from pas_settings import direct_settings
 import re,time
 
 _direct_core_file_functions = None
+_direct_core_file_functions_counter = 0
 
 class direct_file_functions (direct_file):
 #
@@ -47,6 +51,7 @@ parameters.
 
 @author    direct Netware Group
 @copyright (C) direct Netware Group - All rights reserved
+@package   pas_core
 @since     v1.0.0
 @license   http://www.direct-netware.de/redirect.php?licenses;w3c
            W3C (R) Software License
@@ -73,7 +78,32 @@ Constructor __init__ (direct_file_functions)
 		"""
 
 		f_settings = direct_settings.get ()
-		super(direct_file_functions,self).__init__ (f_settings['swg_umask_change'],f_settings['swg_chmod_files_change'],(time.time ()),f_settings['timeout'],f_settings['debug_reporting'])
+		super(direct_file_functions,self).__init__ (f_settings['swg_umask_change'],f_settings['swg_chmod_files_change'],(time.time ()),f_settings['timeout'])
+
+		self.debug = direct_debug.get ()
+		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -file_functions->__construct (direct_file_functions)- (#echo(__LINE__)#)")
+	#
+
+	def __del__ (self):
+	#
+		"""
+Destructor __del__ (direct_file_functions)
+
+@since v0.1.00
+		"""
+
+		self.del_direct_file_functions ()
+	#
+
+	def del_direct_file_functions (self):
+	#
+		"""
+Destructor del_direct_file_functions (direct_file_functions)
+
+@since v0.1.00
+		"""
+
+		direct_debug.py_del ()
 	#
 
 	@staticmethod
@@ -94,6 +124,8 @@ A time check will stop the reading process before a script timeout occurs.
 		"""
 
 		f_file_object = direct_file_functions.get ()
+		if (f_file_object.debug != None): f_file_object.debug.append ("#echo(__FILEPATH__)# -file_functions->file_get (%s,%s)- (#echo(__LINE__)#)" % ( f_type,f_file_path ))
+
 		f_file_path = path.normpath (f_file_path)
 		f_return = False
 
@@ -116,7 +148,7 @@ A time check will stop the reading process before a script timeout occurs.
 
 						if ((f_type != "a0") and (f_type != "s0")):
 						#
-							f_file_content = re.compile("^<\?php exit(.*?); \?>\n",re.I).sub ("",f_file_content)
+							f_file_content = re.compile("^<\\?php exit(.*?); \\?>\n",re.I).sub ("",f_file_content)
 							if ((f_type != "a1") and (f_type != "s1")): f_file_content = f_file_content.strip ()
 						#
 					#
@@ -130,7 +162,7 @@ A time check will stop the reading process before a script timeout occurs.
 				#
 			#
 		#
-		elif (f_file_object != None): f_file_object.trigger_error ("pas/#echo(__FILEPATH__)# -direct_file->file_get ()- (#echo(__LINE__)#) reporting: Failed opening %s - file does not exist" % f_file_path,f_file_object.E_WARNING)
+		elif (f_file_object != None): f_file_object.trigger_error ("#echo(__FILEPATH__)# -direct_file->file_get ()- (#echo(__LINE__)#) reporting: Failed opening %s - file does not exist" % f_file_path,f_file_object.E_WARNING)
 
 		return f_return
 	#
@@ -157,6 +189,8 @@ The following function will save given data (as f_data) to a file.
 		if (f_file_object == None): return False
 		else:
 		#
+			if (f_file_object.debug != None): f_file_object.debug.append ("#echo(__FILEPATH__)# -file_functions->file_write (+f_data,%s,%s)- (#echo(__LINE__)#)" % ( f_file_path,f_type ))
+
 			if (type (f_data) == list): f_file_content = "\n".join (f_data)
 			else: f_file_content = f_data
 
@@ -173,31 +207,51 @@ The following function will save given data (as f_data) to a file.
 	#
 
 	@staticmethod
-	def get ():
+	def get (f_count = False):
 	#
 		"""
 Get the direct_file_functions singleton.
 
+@param  bool Count "get ()" request
 @return (direct_file_functions) Object on success
 @since  v1.0.0
 		"""
 
-		global _direct_core_file_functions
+		global _direct_core_file_functions,_direct_core_file_functions_counter
+
 		if (_direct_core_file_functions == None): _direct_core_file_functions = direct_file_functions ()
+		if (f_count): _direct_core_file_functions_counter += 1
+
 		return _direct_core_file_functions
 	#
 
 	@staticmethod
-	def get_file_functions ():
+	def get_file_functions (f_count = False):
 	#
 		"""
 Get the direct_file_functions singleton.
 
+@param  bool Count "get ()" request
 @return (direct_file_functions) Object on success
 @since  v1.0.0
 		"""
 
-		return direct_file_functions.get ()
+		return direct_file_functions.get (f_count)
+	#
+
+	@staticmethod
+	def py_del ():
+	#
+		"""
+The last "py_del ()" call will activate the Python singleton destructor.
+
+@since  v1.0.0
+		"""
+
+		global _direct_core_file_functions,_direct_core_file_functions_counter
+
+		_direct_core_file_functions_counter -= 1
+		if (_direct_core_file_functions_counter == 0): _direct_core_file_functions = None
 	#
 #
 

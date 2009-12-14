@@ -17,20 +17,19 @@ http://www.direct-netware.de/redirect.php?licenses;w3c
 ----------------------------------------------------------------------------
 NOTE_END //n*/"""
 """/**
-* de.direct_netware.classes.exception.dNGException
-*
-* @internal  We are using JavaDoc to automate the documentation process for
-*            creating the Developer's Manual. All sections including these
-*            special comments will be removed from the release source code.
-*            Use the following line to ensure 76 character sizes:
-* ----------------------------------------------------------------------------
-* @author    direct Netware Group
-* @copyright (C) direct Netware Group - All rights reserved
-* @package   pas_core
-* @since     v0.1.00
-* @license   http://www.direct-netware.de/redirect.php?licenses;w3c
-*            W3C (R) Software License
-*/"""
+de.direct_netware.classes.exception.dNGException
+
+@internal  We are using epydoc (JavaDoc style) to automate the documentation
+           process for creating the Developer's Manual.
+           Use the following line to ensure 76 character sizes:
+----------------------------------------------------------------------------
+@author    direct Netware Group
+@copyright (C) direct Netware Group - All rights reserved
+@package   pas_core
+@since     v0.1.00
+@license   http://www.direct-netware.de/redirect.php?licenses;w3c
+           W3C (R) Software License
+"""
 
 from exceptions import Exception
 import traceback,sys
@@ -42,7 +41,10 @@ The extended dNGException is used to redirect exceptions to output streams.
 
 @author    direct Netware Group
 @copyright (C) direct Netware Group - All rights reserved
+@package   pas_core
 @since     v1.0.0
+@license   http://www.direct-netware.de/redirect.php?licenses;w3c
+           W3C (R) Software License
 	"""
 
 	exc_cause = None
@@ -65,11 +67,11 @@ Constructor __init__ (dNGException)
 		"""
 
 		super (dNGException,self).__init__ (f_value)
-		(self.exc_type,self.exc_value,self.exc_traceback) = sys.exc_info ()
+		( self.exc_type,self.exc_value,self.exc_traceback ) = sys.exc_info ()
 		self.exc_cause = f_exception
 	#
 
-	def getCause (self):
+	def get_cause (self):
 	#
 		"""
 Return the cause.
@@ -81,7 +83,7 @@ Return the cause.
 		return self.exc_cause
 	#
 
-	def printStackTrace (self,f_out):
+	def print_stack_trace (self,f_out):
 	#
 		"""
 Prints the stack trace to the given output stream.
@@ -94,7 +96,7 @@ Prints the stack trace to the given output stream.
 	#
 
 	@staticmethod
-	def excPrintStackTrace (f_out):
+	def print_current_stack_trace (f_out):
 	#
 		"""
 Prints the stack trace to the given output stream.
@@ -105,8 +107,8 @@ Prints the stack trace to the given output stream.
 
 		if (f_out != None):
 		#
-			(fexc_type,fexc_value,fexc_traceback) = sys.exc_info ()
-			traceback.print_exception (fexc_type,fexc_value,fexc_traceback,file = f_out)
+			( f_exc_type,f_exc_value,f_exc_traceback ) = sys.exc_info ()
+			traceback.print_exception (f_exc_type,f_exc_value,f_exc_traceback,file = f_out)
 		#
 	#
 #

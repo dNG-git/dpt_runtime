@@ -15,24 +15,25 @@ for a particular purpose.
 ----------------------------------------------------------------------------
 http://www.direct-netware.de/redirect.php?licenses;w3c
 ----------------------------------------------------------------------------
+#echo(pasCoreVersion)#
+pas/#echo(__FILEPATH__)#
+----------------------------------------------------------------------------
 NOTE_END //n*/"""
-"""/**
-* de.direct_netware.classes.pas_local
-*
-* @internal  We are using JavaDoc to automate the documentation process for
-*            creating the Developer's Manual. All sections including these
-*            special comments will be removed from the release source code.
-*            Use the following line to ensure 76 character sizes:
-* ----------------------------------------------------------------------------
-* @author    direct Netware Group
-* @copyright (C) direct Netware Group - All rights reserved
-* @package   pas_core
-* @since     v0.1.00
-* @license   http://www.direct-netware.de/redirect.php?licenses;w3c
-*            W3C (R) Software License
-*/"""
+"""
+de.direct_netware.classes.pas_local
 
-from os import path
+@internal  We are using epydoc (JavaDoc style) to automate the documentation
+           process for creating the Developer's Manual.
+           Use the following line to ensure 76 character sizes:
+----------------------------------------------------------------------------
+@author    direct Netware Group
+@copyright (C) direct Netware Group - All rights reserved
+@package   pas_core
+@since     v0.1.00
+@license   http://www.direct-netware.de/redirect.php?licenses;w3c
+           W3C (R) Software License
+"""
+
 import os
 
 _direct_core_local = None
@@ -44,6 +45,7 @@ Provides the direct_local dict.
 
 @author    direct Netware Group
 @copyright (C) direct Netware Group - All rights reserved
+@package   pas_core
 @since     v1.0.0
 @license   http://www.direct-netware.de/redirect.php?licenses;w3c
            W3C (R) Software License
@@ -92,11 +94,12 @@ Constructor __init__ (direct_local)
 	#
 
 	@staticmethod
-	def get ():
+	def get (f_count = False):
 	#
 		"""
 Get the direct_local singleton.
 
+@param  bool Count "get ()" request
 @return (direct_local) Object on success
 @since  v1.0.0
 		"""
@@ -107,16 +110,29 @@ Get the direct_local singleton.
 	#
 
 	@staticmethod
-	def get_local ():
+	def get_local (f_count = False):
 	#
 		"""
 Get the direct_local singleton.
 
+@param  bool Count "get ()" request
 @return (direct_local) Object on success
 @since  v1.0.0
 		"""
 
-		return direct_local.get ()
+		return direct_local.get (f_count)
+	#
+
+	@staticmethod
+	def py_del ():
+	#
+		"""
+The last "py_del ()" call will activate the Python singleton destructor.
+
+@since  v1.0.0
+		"""
+
+		pass
 	#
 #
 

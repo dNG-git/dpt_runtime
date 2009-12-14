@@ -15,22 +15,24 @@ for a particular purpose.
 ----------------------------------------------------------------------------
 http://www.direct-netware.de/redirect.php?licenses;w3c
 ----------------------------------------------------------------------------
+#echo(pasCoreVersion)#
+pas/#echo(__FILEPATH__)#
+----------------------------------------------------------------------------
 NOTE_END //n*/"""
-"""/**
-* de.direct_netware.classes.pas_settings
-*
-* @internal  We are using JavaDoc to automate the documentation process for
-*            creating the Developer's Manual. All sections including these
-*            special comments will be removed from the release source code.
-*            Use the following line to ensure 76 character sizes:
-* ----------------------------------------------------------------------------
-* @author    direct Netware Group
-* @copyright (C) direct Netware Group - All rights reserved
-* @package   pas_core
-* @since     v0.1.00
-* @license   http://www.direct-netware.de/redirect.php?licenses;w3c
-*            W3C (R) Software License
-*/"""
+"""
+de.direct_netware.classes.pas_settings
+
+@internal  We are using epydoc (JavaDoc style) to automate the documentation
+           process for creating the Developer's Manual.
+           Use the following line to ensure 76 character sizes:
+----------------------------------------------------------------------------
+@author    direct Netware Group
+@copyright (C) direct Netware Group - All rights reserved
+@package   pas_core
+@since     v0.1.00
+@license   http://www.direct-netware.de/redirect.php?licenses;w3c
+           W3C (R) Software License
+"""
 
 from os import path
 import os
@@ -44,6 +46,7 @@ Provides the direct_settings dict with correct path values predefined.
 
 @author    direct Netware Group
 @copyright (C) direct Netware Group - All rights reserved
+@package   pas_core
 @since     v1.0.0
 @license   http://www.direct-netware.de/redirect.php?licenses;w3c
            W3C (R) Software License
@@ -78,13 +81,13 @@ Constructor __init__ (direct_settings)
 		#
 		else: self.instance = _direct_core_settings
 
-		if (os.environ.has_key ("dNGpath")): self.instance['path_base'] = os.environ['dNGpath']
+		if ("dNGpath" in os.environ): self.instance['path_base'] = os.environ['dNGpath']
 		else: self.instance['path_base'] = path.normpath ("../")
 
-		if (os.environ.has_key ("dNGpathData")): self.instance['path_data'] = os.environ['dNGpathData']
+		if ("dNGpathData" in os.environ): self.instance['path_data'] = os.environ['dNGpathData']
 		else: self.instance['path_data'] = path.normpath ("%s/data" % self.instance['path_base'] )
 
-		if (os.environ.has_key ("dNGpathLang")): self.instance['path_lang'] = os.environ['dNGpathLang']
+		if ("dNGpathLang" in os.environ): self.instance['path_lang'] = os.environ['dNGpathLang']
 		else: self.instance['path_lang'] = path.normpath ("%s/lang" % self.instance['path_base'] )
 	#
 
@@ -101,11 +104,12 @@ Constructor __init__ (direct_settings)
 	#
 
 	@staticmethod
-	def get ():
+	def get (f_count = False):
 	#
 		"""
 Get the direct_settings singleton.
 
+@param  bool Count "get ()" request
 @return (direct_settings) Object on success
 @since  v1.0.0
 		"""
@@ -116,16 +120,29 @@ Get the direct_settings singleton.
 	#
 
 	@staticmethod
-	def get_settings ():
+	def get_settings (f_count = False):
 	#
 		"""
 Get the direct_settings singleton.
 
+@param  bool Count "get ()" request
 @return (direct_settings) Object on success
 @since  v1.0.0
 		"""
 
-		return direct_settings.get ()
+		return direct_settings.get (f_count)
+	#
+
+	@staticmethod
+	def py_del ():
+	#
+		"""
+The last "py_del ()" call will activate the Python singleton destructor.
+
+@since  v1.0.0
+		"""
+
+		pass
 	#
 #
 
