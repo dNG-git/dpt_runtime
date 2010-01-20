@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##j## BOF
 
-"""/*n// NOTE
+"""n// NOTE
 ----------------------------------------------------------------------------
 direct PAS
 Python Application Services
@@ -18,7 +18,7 @@ http://www.direct-netware.de/redirect.php?licenses;w3c
 #echo(pasCoreVersion)#
 pas/#echo(__FILEPATH__)#
 ----------------------------------------------------------------------------
-NOTE_END //n*/"""
+NOTE_END //n"""
 """
 de.direct_netware.classes.pas_xml
 
@@ -68,8 +68,8 @@ Constructor __init__ (direct_xml)
 		f_local = direct_local.get ()
 		f_settings = direct_settings.get ()
 
-		if ("lang_charset" in f_local): super(direct_xml,self).__init__ (f_local['lang_charset'],(time.time ()),f_settings['timeout'])
-		else: super(direct_xml,self).__init__ ("UTF-8",(time.time ()),f_settings['timeout'])
+		if ("lang_charset" in f_local): direct_xml_writer.__init__ (self,f_local['lang_charset'],(time.time ()),f_settings['timeout'])
+		else: direct_xml_writer.__init__ (self,"UTF-8",(time.time ()),f_settings['timeout'])
 
 		self.debug = direct_debug.get ()
 		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -xml->__construct (direct_xml)- (#echo(__LINE__)#)")
@@ -98,7 +98,6 @@ Destructor del_direct_xml (direct_xml)
 		self.del_direct_xml_writer ()
 	#
 
-	@staticmethod
 	def get_parser (f_count = False):
 	#
 		"""
@@ -116,8 +115,8 @@ Get the direct_xml singleton.
 
 		return _direct_core_xml
 	#
+	get_parser = staticmethod (get_parser)
 
-	@staticmethod
 	def get_xml (f_count = False):
 	#
 		"""
@@ -130,8 +129,8 @@ Get the direct_xml singleton.
 
 		return direct_xml.get_parser (f_count)
 	#
+	get_xml = staticmethod (get_xml)
 
-	@staticmethod
 	def py_del ():
 	#
 		"""
@@ -145,6 +144,7 @@ The last "py_del ()" call will activate the Python singleton destructor.
 		_direct_core_xml_counter -= 1
 		if (_direct_core_xml_counter == 0): _direct_core_xml = None
 	#
+	py_del = staticmethod (py_del)
 #
 
 ##j## EOF

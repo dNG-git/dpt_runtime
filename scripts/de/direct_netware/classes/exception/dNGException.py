@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##j## BOF
 
-"""/*n// NOTE
+"""n// NOTE
 ----------------------------------------------------------------------------
 direct PAS
 Python Application Services
@@ -15,8 +15,8 @@ for a particular purpose.
 ----------------------------------------------------------------------------
 http://www.direct-netware.de/redirect.php?licenses;w3c
 ----------------------------------------------------------------------------
-NOTE_END //n*/"""
-"""/**
+NOTE_END //n"""
+"""*
 de.direct_netware.classes.exception.dNGException
 
 @internal  We are using epydoc (JavaDoc style) to automate the documentation
@@ -66,7 +66,7 @@ Constructor __init__ (dNGException)
 @since v0.1.00
 		"""
 
-		super (dNGException,self).__init__ (f_value)
+		Exception.__init__ (self,f_value)
 		( self.exc_type,self.exc_value,self.exc_traceback ) = sys.exc_info ()
 		self.exc_cause = f_exception
 	#
@@ -95,7 +95,6 @@ Prints the stack trace to the given output stream.
 		if (f_out != None): traceback.print_exception (self.exc_type,self.exc_value,self.exc_traceback,file = f_out)
 	#
 
-	@staticmethod
 	def print_current_stack_trace (f_out):
 	#
 		"""
@@ -111,6 +110,7 @@ Prints the stack trace to the given output stream.
 			traceback.print_exception (f_exc_type,f_exc_value,f_exc_traceback,file = f_out)
 		#
 	#
+	print_current_stack_trace = staticmethod (print_current_stack_trace)
 #
 
 ##j## EOF

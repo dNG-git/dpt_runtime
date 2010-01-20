@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##j## BOF
 
-"""/*n// NOTE
+"""n// NOTE
 ----------------------------------------------------------------------------
 direct PAS
 Python Application Services
@@ -18,7 +18,7 @@ http://www.direct-netware.de/redirect.php?licenses;w3c
 #echo(pasCoreVersion)#
 pas/#echo(__FILEPATH__)#
 ----------------------------------------------------------------------------
-NOTE_END //n*/"""
+NOTE_END //n"""
 """
 de.direct_netware.classes.pas_basic_functions
 
@@ -326,7 +326,7 @@ Reads settings from file (XML-encoded) and adds them to direct_settings.
 						if ("tag" in f_xml_node_array):
 						#
 							f_key = f_re_key_replace.sub ("",f_key)
-							self.settings[f_key] = f_xml_node_array['value']
+							if ((not f_key in self.settings) or (len (f_xml_node_array['value']) > 0)): self.settings[f_key] = f_xml_node_array['value']
 						#
 						elif ((type (f_xml_node_array) == list) and (len (f_xml_node_array) > 0) and ("tag" in f_xml_node_array[0])):
 						#
@@ -378,7 +378,6 @@ Writes the setting array to a file (XML-encoded).
 		return f_return
 	#
 
-	@staticmethod
 	def get (f_count = False):
 	#
 		"""
@@ -396,8 +395,8 @@ Get the direct_basic_functions singleton.
 
 		return _direct_core_basic_functions
 	#
+	get = staticmethod (get)
 
-	@staticmethod
 	def get_basic_functions (f_count = False):
 	#
 		"""
@@ -410,8 +409,8 @@ Get the direct_basic_functions singleton.
 
 		return direct_basic_functions.get (f_count)
 	#
+	get_basic_functions = staticmethod (get_basic_functions)
 
-	@staticmethod
 	def py_del ():
 	#
 		"""
@@ -425,6 +424,7 @@ The last "py_del ()" call will activate the Python singleton destructor.
 		_direct_core_basic_functions_counter -= 1
 		if (_direct_core_basic_functions_counter == 0): _direct_core_basic_functions = None
 	#
+	py_del = staticmethod (py_del)
 #
 
 ##j## EOF

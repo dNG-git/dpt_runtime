@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##j## BOF
 
-"""/*n// NOTE
+"""n// NOTE
 ----------------------------------------------------------------------------
 direct PAS
 Python Application Services
@@ -18,7 +18,7 @@ http://www.direct-netware.de/redirect.php?licenses;w3c
 #echo(pasCoreVersion)#
 pas/#echo(__FILEPATH__)#
 ----------------------------------------------------------------------------
-NOTE_END //n*/"""
+NOTE_END //n"""
 """
 de.direct_netware.loader.pas_cls
 
@@ -34,15 +34,31 @@ de.direct_netware.loader.pas_cls
            W3C (R) Software License
 """
 
-
 from de.direct_netware.classes.exception.dNGException import dNGException
 from de.direct_netware.classes.pas_debug import direct_debug
+from exceptions import RuntimeError
 from optparse import OptionParser
-import signal,sys
+import signal,sys,threading,time
+
+try:
+#
+	import java.lang.System
+	_direct_core_mode = "java"
+#
+except Exception,g_handled_exception: _direct_core_mode = None
+
+try:
+#
+	import clr
+	clr.AddReferenceByPartialName ("IronPython")
+	_direct_core_mode = "mono"
+#
+except Exception,g_unhandled_exception: pass
 
 _direct_core_cls = None
 _direct_core_cls_exit_callbacks = [ ]
 _direct_core_cls_run_callbacks = [ ]
+if (_direct_core_mode == None): _direct_core_mode = "py"
 
 class direct_cls (object):
 #
@@ -60,6 +76,10 @@ class direct_cls (object):
 	debug = None
 	"""
 Debug message container
+	"""
+	mainloop = None
+	"""
+Callable main loop without arguments
 	"""
 	option_parser = None
 	"""
@@ -84,6 +104,7 @@ Constructor __init__ (direct_cls)
 		_direct_core_cls = self
 
 		self.debug = direct_debug.get ()
+		self.mainloop = None
 		self.option_parser = OptionParser ()
 
 		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -cls_handler->__construct (direct_cls)- (#echo(__LINE__)#)")
@@ -153,6 +174,33 @@ Executes registered callbacks for the active application.
 		self.option_parser = None
 
 		for f_callback in _direct_core_cls_run_callbacks: f_callback (f_options,f_invalid_args)
+
+		try:
+		#
+			if (self.mainloop == None):
+			#
+				while (threading.active_count () > 1): time.sleep (10)
+			#
+			else: self.mainloop ()
+
+			self.exit ()
+		#
+		except KeyboardInterrupt,f_handled_exception: self.exit ()
+	#
+
+	def set_mainloop (self,f_function):
+	#
+		"""
+Register a callback for the application main loop.
+
+@param f_function Python callback
+@since v1.0.0
+		"""
+
+		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -cls_handler->set_mainloop (+f_function)- (#echo(__LINE__)#)")
+
+		if (self.mainloop == None): self.mainloop = f_function
+		else: raise RuntimeError ("Main loop already registered")
 	#
 
 	def signal (self,f_signal,f_stack_frame):
@@ -169,7 +217,6 @@ Handles an OS signal.
 		self.exit ()
 	#
 
-	@staticmethod
 	def register_exit_callback (f_function):
 	#
 		"""
@@ -182,8 +229,22 @@ Register a callback for the application exit event.
 		global _direct_core_cls_exit_callbacks
 		_direct_core_cls_exit_callbacks.append (f_function)
 	#
+	register_exit_callback = staticmethod (register_exit_callback)
 
-	@staticmethod
+	def register_mainloop (f_function):
+	#
+		"""
+Register a callback for the application main loop.
+
+@param f_function Python callback
+@since v1.0.0
+		"""
+
+		global _direct_core_cls
+		_direct_core_cls.set_mainloop (f_function)
+	#
+	register_mainloop = staticmethod (register_mainloop)
+
 	def register_run_callback (f_function):
 	#
 		"""
@@ -196,6 +257,7 @@ Register a callback for the application activation event.
 		global _direct_core_cls_run_callbacks
 		_direct_core_cls_run_callbacks.append (f_function)
 	#
+	register_run_callback = staticmethod (register_run_callback)
 #
 
 def direct_cls_signal (f_signal,f_stack_frame):
@@ -219,7 +281,10 @@ signal.signal (signal.SIGTERM,direct_cls_signal)
 try: signal.signal (signal.SIGCHLD,direct_cls_signal)
 except AttributeError,g_unhandled_exception: pass
 
-try: signal.signal (signal.SIGQUIT,direct_cls_signal)
-except AttributeError,g_unhandled_exception: pass
+if (_direct_core_mode == "py"):
+#
+	try: signal.signal (signal.SIGQUIT,direct_cls_signal)
+	except AttributeError,g_unhandled_exception: pass
+#
 
 ##j## EOF

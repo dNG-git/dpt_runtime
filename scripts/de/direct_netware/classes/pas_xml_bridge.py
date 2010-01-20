@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##j## BOF
 
-"""/*n// NOTE
+"""n// NOTE
 ----------------------------------------------------------------------------
 direct PAS
 Python Application Services
@@ -18,7 +18,7 @@ http://www.direct-netware.de/redirect.php?licenses;w3c
 #echo(pasCoreVersion)#
 pas/#echo(__FILEPATH__)#
 ----------------------------------------------------------------------------
-NOTE_END //n*/"""
+NOTE_END //n"""
 """
 de.direct_netware.classes.pas_xml_bridge
 
@@ -68,8 +68,8 @@ Constructor __init__ (direct_xml_bridge)
 		f_local = direct_local.get ()
 		f_settings = direct_settings.get ()
 
-		if ("lang_charset" in f_local): super(direct_xml_bridge,self).__init__ (f_local['lang_charset'],f_parse_only,(time.time ()),f_settings['timeout'])
-		else: super(direct_xml_bridge,self).__init__ ("UTF-8",f_parse_only,(time.time ()),f_settings['timeout'])
+		if ("lang_charset" in f_local): direct_xml_reader.__init__ (self,f_local['lang_charset'],f_parse_only,(time.time ()),f_settings['timeout'])
+		else: direct_xml_reader.__init__ (self,"UTF-8",f_parse_only,(time.time ()),f_settings['timeout'])
 
 		self.debug = direct_debug.get ()
 		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -xml_bridge->__construct (direct_xml_bridge)- (#echo(__LINE__)#)")
@@ -98,7 +98,6 @@ Destructor del_direct_xml_bridge (direct_xml_bridge)
 		self.del_direct_xml_reader ()
 	#
 
-	@staticmethod
 	def get_parser (f_count = False):
 	#
 		"""
@@ -116,8 +115,8 @@ Get the direct_xml_bridge singleton.
 
 		return _direct_core_xml_bridge
 	#
+	get_parser = staticmethod (get_parser)
 
-	@staticmethod
 	def get_xml_bridge (f_count = False):
 	#
 		"""
@@ -130,8 +129,8 @@ Get the direct_xml_bridge singleton.
 
 		return direct_xml_bridge.get_parser (f_count)
 	#
+	get_xml_bridge = staticmethod (get_xml_bridge)
 
-	@staticmethod
 	def py_del ():
 	#
 		"""
@@ -145,6 +144,7 @@ The last "py_del ()" call will activate the Python singleton destructor.
 		_direct_core_xml_bridge_counter -= 1
 		if (_direct_core_xml_bridge_counter == 0): _direct_core_xml_bridge = None
 	#
+	py_del = staticmethod (py_del)
 #
 
 ##j## EOF

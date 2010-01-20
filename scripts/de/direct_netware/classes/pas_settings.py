@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##j## BOF
 
-"""/*n// NOTE
+"""n// NOTE
 ----------------------------------------------------------------------------
 direct PAS
 Python Application Services
@@ -18,7 +18,7 @@ http://www.direct-netware.de/redirect.php?licenses;w3c
 #echo(pasCoreVersion)#
 pas/#echo(__FILEPATH__)#
 ----------------------------------------------------------------------------
-NOTE_END //n*/"""
+NOTE_END //n"""
 """
 de.direct_netware.classes.pas_settings
 
@@ -72,7 +72,7 @@ Constructor __init__ (direct_settings)
 		"""
 
 		global _direct_core_settings
-		super(direct_settings,self).__init__ ()
+		dict.__init__ (self)
 
 		if (_direct_core_settings == None):
 		#
@@ -103,7 +103,6 @@ Constructor __init__ (direct_settings)
 		return None
 	#
 
-	@staticmethod
 	def get (f_count = False):
 	#
 		"""
@@ -118,8 +117,8 @@ Get the direct_settings singleton.
 		if (_direct_core_settings == None): _direct_core_settings = direct_settings ()
 		return _direct_core_settings
 	#
+	get = staticmethod (get)
 
-	@staticmethod
 	def get_settings (f_count = False):
 	#
 		"""
@@ -132,8 +131,8 @@ Get the direct_settings singleton.
 
 		return direct_settings.get (f_count)
 	#
+	get_settings = staticmethod (get_settings)
 
-	@staticmethod
 	def py_del ():
 	#
 		"""
@@ -144,6 +143,7 @@ The last "py_del ()" call will activate the Python singleton destructor.
 
 		pass
 	#
+	py_del = staticmethod (py_del)
 #
 
 ##j## EOF

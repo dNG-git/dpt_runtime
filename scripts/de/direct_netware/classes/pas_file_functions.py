@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##j## BOF
 
-"""/*n// NOTE
+"""n// NOTE
 ----------------------------------------------------------------------------
 direct PAS
 Python Application Services
@@ -18,7 +18,7 @@ http://www.direct-netware.de/redirect.php?licenses;w3c
 #echo(pasCoreVersion)#
 pas/#echo(__FILEPATH__)#
 ----------------------------------------------------------------------------
-NOTE_END //n*/"""
+NOTE_END //n"""
 """
 de.direct_netware.classes.pas_file_functions
 
@@ -78,7 +78,7 @@ Constructor __init__ (direct_file_functions)
 		"""
 
 		f_settings = direct_settings.get ()
-		super(direct_file_functions,self).__init__ (f_settings['swg_umask_change'],f_settings['swg_chmod_files_change'],(time.time ()),f_settings['timeout'])
+		direct_file.__init__ (self,f_settings['swg_umask_change'],f_settings['swg_chmod_files_change'],(time.time ()),f_settings['timeout'])
 
 		self.debug = direct_debug.get ()
 		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -file_functions->__construct (direct_file_functions)- (#echo(__LINE__)#)")
@@ -106,7 +106,6 @@ Destructor del_direct_file_functions (direct_file_functions)
 		direct_debug.py_del ()
 	#
 
-	@staticmethod
 	def file_get (f_type,f_file_path):
 	#
 		"""
@@ -166,8 +165,8 @@ A time check will stop the reading process before a script timeout occurs.
 
 		return f_return
 	#
+	file_get = staticmethod (file_get)
 
-	@staticmethod
 	def file_write (f_data,f_file_path,f_type = ""):
 	#
 		"""
@@ -205,8 +204,8 @@ The following function will save given data (as f_data) to a file.
 			return f_file_object.close ()
 		#
 	#
+	file_write = staticmethod (file_write)
 
-	@staticmethod
 	def get (f_count = False):
 	#
 		"""
@@ -224,8 +223,8 @@ Get the direct_file_functions singleton.
 
 		return _direct_core_file_functions
 	#
+	get = staticmethod (get)
 
-	@staticmethod
 	def get_file_functions (f_count = False):
 	#
 		"""
@@ -238,8 +237,8 @@ Get the direct_file_functions singleton.
 
 		return direct_file_functions.get (f_count)
 	#
+	get_file_functions = staticmethod (get_file_functions)
 
-	@staticmethod
 	def py_del ():
 	#
 		"""
@@ -253,6 +252,7 @@ The last "py_del ()" call will activate the Python singleton destructor.
 		_direct_core_file_functions_counter -= 1
 		if (_direct_core_file_functions_counter == 0): _direct_core_file_functions = None
 	#
+	py_del = staticmethod (py_del)
 #
 
 ##j## EOF
