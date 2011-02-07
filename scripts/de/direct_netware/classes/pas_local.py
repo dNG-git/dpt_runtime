@@ -1,6 +1,20 @@
 # -*- coding: utf-8 -*-
 ##j## BOF
 
+"""
+de.direct_netware.classes.pas_local
+
+@internal  We are using epydoc (JavaDoc style) to automate the documentation
+           process for creating the Developer's Manual.
+           Use the following line to ensure 76 character sizes:
+----------------------------------------------------------------------------
+@author    direct Netware Group
+@copyright (C) direct Netware Group - All rights reserved
+@package   pas_core
+@since     v0.1.00
+@license   http://www.direct-netware.de/redirect.php?licenses;w3c
+           W3C (R) Software License
+"""
 """n// NOTE
 ----------------------------------------------------------------------------
 direct PAS
@@ -19,24 +33,12 @@ http://www.direct-netware.de/redirect.php?licenses;w3c
 pas/#echo(__FILEPATH__)#
 ----------------------------------------------------------------------------
 NOTE_END //n"""
-"""
-de.direct_netware.classes.pas_local
 
-@internal  We are using epydoc (JavaDoc style) to automate the documentation
-           process for creating the Developer's Manual.
-           Use the following line to ensure 76 character sizes:
-----------------------------------------------------------------------------
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;w3c
-           W3C (R) Software License
-"""
+from threading import local
 
-import os
+from .pas_pythonback import direct_str
 
-_direct_core_local = None
+_direct_core_local = local ()
 
 class direct_local (dict):
 #
@@ -46,14 +48,9 @@ Provides the direct_local dict.
 @author    direct Netware Group
 @copyright (C) direct Netware Group - All rights reserved
 @package   pas_core
-@since     v1.0.0
+@since     v0.1.00
 @license   http://www.direct-netware.de/redirect.php?licenses;w3c
            W3C (R) Software License
-	"""
-
-	instance = None
-	"""
-The direct_local instance
 	"""
 
 	"""
@@ -73,67 +70,73 @@ Constructor __init__ (direct_local)
 		global _direct_core_local
 		dict.__init__ (self)
 
-		if (_direct_core_local == None):
-		#
-			_direct_core_local = self
-			self.instance = self
-		#
-		else: self.instance = _direct_core_local
+		if (hasattr (_direct_core_local,"object")): self.instance = _direct_core_local.object
+		else: self.instance = self
 	#
 
 	def __missing__ (self,key):
 	#
 		"""
-"__missing__" is called for missing keys in this dict.
+Python.org: If a subclass of dict defines a method __missing__(), if the key
+is not present, the d[key] operation calls that method with the key as
+argument.
 
-@return (string) Defaults to " <key> "
-@since  v1.0.0
+@param  key Key we are looking for
+@return (str) Defaults to " <key> "
+@since  v0.1.00
 		"""
 
-		return " %s " % key
+		return " {0} ".format (direct_str (key))
 	#
 
-	def get (f_count = False):
-	#
-		"""
-Get the direct_local singleton.
-
-@param  bool Count "get ()" request
-@return (direct_local) Object on success
-@since  v1.0.0
-		"""
-
-		global _direct_core_local
-		if (_direct_core_local == None): _direct_core_local = direct_local ()
-		return _direct_core_local
-	#
-	get = staticmethod (get)
-
-	def get_local (f_count = False):
+	def get (self,*args):
 	#
 		"""
-Get the direct_local singleton.
+Python.org: Return the value for key if key is in the dictionary, else
+default.
 
-@param  bool Count "get ()" request
-@return (direct_local) Object on success
-@since  v1.0.0
+Implemented for IronPython which calls "__missing__ ()" in this case.
+
+@param  args Positional arguments
+@return (mixed) Defaults to none
+@since  v1.0.5
 		"""
 
-		return direct_local.get (f_count)
+		if (len (args) > 1):
+		#
+			if (args[0] in self): return dict.get (self,*args)
+			else: return args[1]
+		#
+		else: return dict.get (self,*args)
 	#
-	get_local = staticmethod (get_local)
 
 	def py_del ():
 	#
 		"""
 The last "py_del ()" call will activate the Python singleton destructor.
 
-@since  v1.0.0
+@since v0.1.00
 		"""
 
 		pass
 	#
 	py_del = staticmethod (py_del)
+
+	def py_get (count = False):
+	#
+		"""
+Get the direct_local singleton.
+
+@param  count Count "get ()" request
+@return (direct_local) Object on success
+@since  v0.1.00
+		"""
+
+		global _direct_core_local
+		if (not hasattr (_direct_core_local,"object")): _direct_core_local.object = direct_local ()
+		return _direct_core_local.object
+	#
+	py_get = staticmethod (py_get)
 #
 
 ##j## EOF

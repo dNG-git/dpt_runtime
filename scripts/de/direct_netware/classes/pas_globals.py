@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-de.direct_netware.classes.exception.dNGException
+de.direct_netware.classes.pas_globals
 
 @internal  We are using epydoc (JavaDoc style) to automate the documentation
            process for creating the Developer's Manual.
@@ -29,14 +29,15 @@ for a particular purpose.
 ----------------------------------------------------------------------------
 http://www.direct-netware.de/redirect.php?licenses;w3c
 ----------------------------------------------------------------------------
+#echo(pasCoreVersion)#
+pas/#echo(__FILEPATH__)#
+----------------------------------------------------------------------------
 NOTE_END //n"""
 
-import traceback,sys
-
-class dNGException (Exception):
+class _direct_globals_dict (dict):
 #
 	"""
-The extended dNGException is used to redirect exceptions to output streams.
+Provides the direct_globals dict.
 
 @author    direct Netware Group
 @copyright (C) direct Netware Group - All rights reserved
@@ -46,72 +47,60 @@ The extended dNGException is used to redirect exceptions to output streams.
            W3C (R) Software License
 	"""
 
-	exc_cause = None
-	exc_type = None
-	exc_value = None
-	exc_traceback = None
-
 	"""
 ----------------------------------------------------------------------------
 Extend the class
 ----------------------------------------------------------------------------
 	"""
 
-	def __init__ (self,value,py_exception = None):
+	def __init__ (self):
 	#
 		"""
-Constructor __init__ (dNGException)
+Constructor __init__ (direct_local)
 
-@param value Exception message value
-@param py_exception Inner exception
 @since v0.1.00
 		"""
 
-		Exception.__init__ (self,value)
-		( self.exc_type,self.exc_value,self.exc_traceback ) = sys.exc_info ()
-		self.exc_cause = py_exception
+		dict.__init__ (self)
 	#
 
-	def get_cause (self):
+	def __missing__ (self,key):
 	#
 		"""
-Return the cause.
+Python.org: If a subclass of dict defines a method __missing__(), if the key
+is not present, the d[key] operation calls that method with the key as
+argument.
 
-@return (mixed) Inner exception
+@param  key Key we are looking for
+@return (mixed) Defaults to None
 @since  v0.1.00
 		"""
 
-		return self.exc_cause
+		return None
 	#
 
-	def print_stack_trace (self,out_stream):
+	def get (self,*args):
 	#
 		"""
-Prints the stack trace to the given output stream.
+Python.org: Return the value for key if key is in the dictionary, else
+default.
 
-@param out_stream Output stream
-@since v0.1.00
+Implemented for IronPython which calls "__missing__ ()" in this case.
+
+@param  args Positional arguments
+@return (mixed) Defaults to none
+@since  v0.1.00
 		"""
 
-		if (out_stream != None): traceback.print_exception (self.exc_type,self.exc_value,self.exc_traceback,file = out_stream)
-	#
-
-	def print_current_stack_trace (out_stream):
-	#
-		"""
-Prints the stack trace to the given output stream.
-
-@param out_stream Output stream
-@since v0.1.00
-		"""
-
-		if (out_stream != None):
+		if (len (args) > 1):
 		#
-			( f_exc_type,f_exc_value,f_exc_traceback ) = sys.exc_info ()
-			traceback.print_exception (f_exc_type,f_exc_value,f_exc_traceback,file = out_stream)
+			if (args[0] in self): return dict.get (self,*args)
+			else: return args[1]
 		#
+		else: return dict.get (self,*args)
 	#
-	print_current_stack_trace = staticmethod (print_current_stack_trace)
 #
+
+direct_globals = _direct_globals_dict ()
 
 ##j## EOF

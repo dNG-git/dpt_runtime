@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-de.direct_netware.classes.pas_xml
+de.direct_netware.classes.pas_debug
 
 @internal  We are using epydoc (JavaDoc style) to automate the documentation
            process for creating the Developer's Manual.
@@ -34,20 +34,13 @@ pas/#echo(__FILEPATH__)#
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from threading import local
-import time
-
-from .ext_core.xml_writer import direct_xml_writer
 from .pas_globals import direct_globals
-from .pas_local import direct_local
+from .pas_logger import direct_logger
 
-_direct_core_xml = local ()
-
-class direct_xml (direct_xml_writer):
+class direct_debug (list):
 #
 	"""
-This class extends the bridge between PAS and XML to work with XML and
-create valid documents.
+Provides a debug singleton Python list.
 
 @author    direct Netware Group
 @copyright (C) direct Netware Group - All rights reserved
@@ -57,43 +50,69 @@ create valid documents.
            W3C (R) Software License
 	"""
 
+	logger = None
+	"""
+Logging object
+	"""
+
+	"""
+----------------------------------------------------------------------------
+Extend the class
+----------------------------------------------------------------------------
+	"""
+
 	def __init__ (self):
 	#
 		"""
-Constructor __init__ (direct_xml)
+Constructor __init__ (direct_debug)
 
 @since v0.1.00
 		"""
 
-		f_local = direct_local.py_get ()
-
-		if ("lang_charset" in f_local): direct_xml_writer.__init__ (self,f_local['lang_charset'],(time.time ()),direct_globals['settings']['timeout'])
-		else: direct_xml_writer.__init__ (self,"UTF-8",(time.time ()),direct_globals['settings']['timeout'])
-
-		self.debug = direct_globals['debug']
-		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -xml.__init__ (direct_xml)- (#echo(__LINE__)#)")
+		list.__init__ (self)
+		self.logger = direct_logger.py_get ()
 	#
 
 	def __del__ (self):
 	#
 		"""
-Destructor __del__ (direct_xml)
+Destructor __del__ (direct_debug)
 
 @since v0.1.00
 		"""
 
-		self.del_direct_xml ()
+		self.del_direct_debug ()
 	#
 
-	def del_direct_xml (self):
+	def del_direct_debug (self):
 	#
 		"""
-Destructor del_direct_xml (direct_xml)
+Destructor del_direct_debug (direct_debug)
 
 @since v0.1.00
 		"""
 
-		self.del_direct_xml_writer ()
+		direct_logger.py_del ()
+	#
+
+	def append (self,item,value = None,return_value = False):
+	#
+		"""
+"append ()" method to save the last 50 debug messages.
+
+@param  item Item to append
+@param  value Value to return
+@param  return_value True to return the given value
+@return (direct_debug) Object on success
+@since  v0.1.00
+		"""
+
+		if (len (self) > 50): self.pop (0)
+
+		list.append (self,item)
+		self.logger.write (direct_logger.DEBUG,item)
+
+		if (return_value): return value
 	#
 
 	def py_del ():
@@ -104,37 +123,23 @@ The last "py_del ()" call will activate the Python singleton destructor.
 @since v0.1.00
 		"""
 
-		global _direct_core_xml
-
-		if (not hasattr (_direct_core_xml,"counter")): _direct_core_xml.counter = 0
-		else: _direct_core_xml.counter -= 1
-
-		if (_direct_core_xml.counter == 0): _direct_core_xml.object = None
+		pass
 	#
 	py_del = staticmethod (py_del)
 
-	def py_get (count = False):
+	def py_get (debug = False,count = True):
 	#
 		"""
-Get the direct_xml singleton.
+Get the direct_debug singleton.
 
+@param  debug True if debugging is activated
 @param  count Count "get ()" request
-@return (direct_xml) Object on success
+@return (direct_debug) Object on success
 @since  v0.1.00
 		"""
 
-		global _direct_core_xml
-
-		if (not hasattr (_direct_core_xml,"object")):
-		#
-			_direct_core_xml.object = None
-			_direct_core_xml.counter = 0
-		#
-
-		if (_direct_core_xml.object == None): _direct_core_xml.object = direct_xml ()
-		if (count): _direct_core_xml.counter += 1
-
-		return _direct_core_xml.object
+		if (((debug == True) or (debug == "1")) and (not "debug" in direct_globals)): direct_globals['debug'] = direct_debug ()
+		return direct_globals['debug']
 	#
 	py_get = staticmethod (py_get)
 #

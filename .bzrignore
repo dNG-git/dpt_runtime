@@ -1,5 +1,5 @@
 _extras
 .*
-data/settings/swg_build_targets.php
+nbproject
+pas_core.*
 scripts/de/direct_netware/classes/ext_core/*
-makefile.php
