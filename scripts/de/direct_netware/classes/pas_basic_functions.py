@@ -82,7 +82,7 @@ Settings singleton
 	"""
 	settings_cache =[ ]
 	"""
-Settings singleton
+Setting files cache
 	"""
 
 	"""
@@ -100,10 +100,10 @@ Constructor __init__ (direct_basic_functions)
 		"""
 
 		self.settings = direct_settings.py_get (True)
-		if (not "debug_reporting" in self.settings): self.settings['debug_reporting'] = False
-		if (not "pas_lang" in self.settings): self.settings['pas_lang'] = "en"
-		if (not "pas_memcache" in self.settings): self.settings['pas_memcache'] = ""
-		if (not "timeout" in self.settings): self.settings['timeout'] = 3600
+		if ("debug_reporting" not in self.settings): self.settings['debug_reporting'] = False
+		if ("pas_lang" not in self.settings): self.settings['pas_lang'] = "en"
+		if ("pas_memcache" not in self.settings): self.settings['pas_memcache'] = ""
+		if ("timeout" not in self.settings): self.settings['timeout'] = 3600
 
 		self.settings_get ("{0}/settings/pas_core.xml".format (self.settings['path_data']))
 
@@ -116,7 +116,7 @@ Constructor __init__ (direct_basic_functions)
 		#
 			direct_globals['debug'] = None
 			self.debug = None
-			self.logger = direct_logger.py_get ()
+			if (("pas_log_level" in self.settings) and (hasattr (direct_logger,self.settings['pas_log_level']))): self.logger = direct_logger.py_get (getattr (direct_logger,self.settings['pas_log_level']))
 		#
 	#
 
@@ -139,9 +139,9 @@ Destructor del_direct_basic_functions (direct_basic_functions)
 @since v0.1.00
 		"""
 
-		if (self.debug != None): direct_debug.py_del ()
-		if (self.logger != None): direct_logger.py_del ()
-		direct_settings.py_del ()
+		if ((direct_debug != None) and (self.debug != None)): direct_debug.py_del ()
+		if ((direct_logger != None) and (self.logger != None)): direct_logger.py_del ()
+		if (direct_settings != None): direct_settings.py_del ()
 	#
 
 	def md5 (self,data):
@@ -320,50 +320,43 @@ Reads settings from file (XML-encoded) and adds them to direct_settings.
 		f_return = False
 
 		f_continue_check = True
-		f_file_object = direct_file_functions.py_get ()
 
-		if (f_file_object != None):
+		if ((use_cache) and (self.md5 (file_pathname) in self.settings_cache)):
 		#
-			if (use_cache):
-			#
-				if ((self.md5 (file_pathname)) in self.settings_cache):
-				#
-					f_return = True
-					f_continue_check = False
-				#
-			#
+			f_return = True
+			f_continue_check = False
+		#
 
-			if (f_continue_check):
+		if (f_continue_check):
+		#
+			f_xml_dict = self.memcache_get_file_merged_xml (file_pathname)
+
+			if (f_xml_dict != None):
 			#
-				f_xml_dict = self.memcache_get_file_merged_xml (file_pathname)
+				f_re_key_replace = re.compile ("pas_settings_file_v(\\d+)_",re.I)
+				self.settings_cache.append (self.md5 (file_pathname))
 
-				if (f_xml_dict != None):
+				for f_key in f_xml_dict:
 				#
-					f_re_key_replace = re.compile ("pas_settings_file_v(\\d+)_",re.I)
-					self.settings_cache.append (self.md5 (file_pathname))
+					f_xml_node_dict = f_xml_dict[f_key]
 
-					for f_key in f_xml_dict:
+					if ("tag" in f_xml_node_dict):
 					#
-						f_xml_node_dict = f_xml_dict[f_key]
-
-						if ("tag" in f_xml_node_dict):
-						#
-							f_key = f_re_key_replace.sub ("",f_key)
-							if ((not f_key in self.settings) or (len (f_xml_node_dict['value']) > 0)): self.settings[f_key] = direct_str (f_xml_node_dict['value'])
-						#
-						elif ((type (f_xml_node_dict) == list) and (len (f_xml_node_dict) > 0) and ("tag" in f_xml_node_dict[0])):
-						#
-							f_key = f_re_key_replace.sub ("",f_key)
-							self.settings[f_key] = [ ]
-
-							for f_xml_sub_node_dict in f_xml_node_dict: self.settings[f_key].append (direct_str (f_xml_sub_node_dict['value']))
-						#
+						f_key = f_re_key_replace.sub ("",f_key)
+						if ((f_key not in self.settings) or (len (f_xml_node_dict['value']) > 0)): self.settings[f_key] = direct_str (f_xml_node_dict['value'])
 					#
+					elif ((type (f_xml_node_dict) == list) and (len (f_xml_node_dict) > 0) and ("tag" in f_xml_node_dict[0])):
+					#
+						f_key = f_re_key_replace.sub ("",f_key)
+						self.settings[f_key] = [ ]
 
-					f_return = True
+						for f_xml_sub_node_dict in f_xml_node_dict: self.settings[f_key].append (direct_str (f_xml_sub_node_dict['value']))
+					#
 				#
-				elif (required): raise OSError ("The system could not load a required component.\n\n\"{0}\" was not found".format (file_pathname))
+
+				f_return = True
 			#
+			elif (required): raise OSError ("The system could not load a required component.\n\n\"{0}\" was not found".format (file_pathname))
 		#
 
 		return f_return
@@ -389,7 +382,7 @@ Writes the setting array to a file (XML-encoded).
 
 		if ((type (settings) == dict) and (f_xml_object != None)):
 		#
-			f_xml_object.node_add ("pas_settings_file_v1","",{ "xmlns": "urn:de.direct-netware.xmlns:pas.settings.v1" })
+			f_xml_object.node_add ("pas_settings_file_v1","",{ "xmlns": "urn:de-direct-netware-xmlns:pas.settings.v1" })
 
 			for f_setting_key in settings:
 			#
@@ -431,7 +424,7 @@ Get the direct_basic_functions singleton.
 
 		global _direct_core_basic_functions_counter
 
-		if (not "basic_functions" in direct_globals): direct_globals['basic_functions'] = direct_basic_functions ()
+		if ("basic_functions" not in direct_globals): direct_globals['basic_functions'] = direct_basic_functions ()
 		if (count): _direct_core_basic_functions_counter += 1
 
 		return direct_globals['basic_functions']

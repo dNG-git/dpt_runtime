@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-de.direct_netware.classes.pas_evar_manager
+de.direct_netware.classes.pas_evars
 
 @internal  We are using epydoc (JavaDoc style) to automate the
            documentation process for creating the Developer's Manual.
@@ -36,6 +36,7 @@ NOTE_END //n"""
 
 import base64,re
 
+from .pas_globals import direct_globals
 from .pas_xml import direct_xml
 from .pas_xml_bridge import direct_xml_bridge
 
@@ -65,8 +66,12 @@ function needs for its recursive job a helper function.
 @since  v0.1.00
 		"""
 
-		data = data.strip ()
+		f_debug = direct_globals['debug']
+		if (f_debug != None): f_debug.append ("#echo(__FILEPATH__)# -direct_evars.get (+data)- (#echo(__LINE__)#)")
+
 		f_return = { }
+
+		data = data.strip ()
 		f_result_object = re.compile("<evars>(.+?)</evars>",(re.S | re.I)).search (data)
 		f_xml_object = direct_xml_bridge.py_get ()
 
@@ -85,40 +90,44 @@ function needs for its recursive job a helper function.
 	#
 	get = staticmethod (get)
 
-	def get_walker (swgxml_dict):
+	def get_walker (xml_dict):
 	#
 		"""
-This is a helper function for "direct_evars_get ()" to convert an XML
+This is a helper function for "direct_evars.get ()" to convert an XML
 dictionary recursively.
 
-@param  swgxml_dict XML nodes in a specific level.
+@param  xml_dict XML nodes in a specific level.
 @return (dict) Key-value pair dictionary
 @since  v0.1.00
 		"""
 
 		f_return = { }
 
-		if (type (swgxml_dict) == dict):
+		if (type (xml_dict) == dict):
 		#
-			if ("xml.item" in swgxml_dict): del (swgxml_dict['xml.item'])
+			if ("xml.item" in xml_dict): del (xml_dict['xml.item'])
 
-			if ("xml.mtree" in swgxml_dict):
+			if ("xml.mtree" in xml_dict):
 			#
 				f_mtree = True
 				f_return = [ ]
-				del (swgxml_dict['xml.mtree'])
+				del (xml_dict['xml.mtree'])
 			#
 			else: f_mtree= False
 
-			if (len (swgxml_dict) > 0):
+			if (len (xml_dict) > 0):
 			#
-				for f_key in swgxml_dict:
+				for f_key in xml_dict:
 				#
 					try:
 					#
-						f_xml_node_dict = swgxml_dict[f_key]
+						f_xml_node_dict = xml_dict[f_key]
 
-						if (("xml.item" in f_xml_node_dict) or ("xml.mtree" in f_xml_node_dict)): f_return[f_key] = direct_evars.get_walker (f_xml_node_dict)
+						if (("xml.item" in f_xml_node_dict) or ("xml.mtree" in f_xml_node_dict)):
+						#
+							if (f_mtree): f_return.append (direct_evars.get_walker (f_xml_node_dict))
+							else: f_return[f_key] = direct_evars.get_walker (f_xml_node_dict)
+						#
 						elif (len (f_xml_node_dict['tag']) > 0):
 						#
 							if (f_mtree):
@@ -153,6 +162,9 @@ helper function will encode relevant data with b64encode if applicable.
 @return (str) XML string
 @since  v0.1.00
 		"""
+
+		f_debug = direct_globals['debug']
+		if (f_debug != None): f_debug.append ("#echo(__FILEPATH__)# -direct_evars.write (+data_dict,+binary_safe)- (#echo(__LINE__)#)")
 
 		f_return = ""
 		f_xml_object = direct_xml.py_get ()

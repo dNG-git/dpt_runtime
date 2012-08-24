@@ -92,7 +92,7 @@ Destructor del_direct_debug (direct_debug)
 @since v0.1.00
 		"""
 
-		direct_logger.py_del ()
+		if (direct_logger != None): direct_logger.py_del ()
 	#
 
 	def append (self,item,value = None,return_value = False):
@@ -138,7 +138,7 @@ Get the direct_debug singleton.
 @since  v0.1.00
 		"""
 
-		if (((debug == True) or (debug == "1")) and (not "debug" in direct_globals)): direct_globals['debug'] = direct_debug ()
+		if (((debug == True) or (debug == "1")) and ("debug" not in direct_globals)): direct_globals['debug'] = direct_debug ()
 		return direct_globals['debug']
 	#
 	py_get = staticmethod (py_get)

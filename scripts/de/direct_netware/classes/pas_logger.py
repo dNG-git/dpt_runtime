@@ -35,7 +35,8 @@ pas/#echo(__FILEPATH__)#
 NOTE_END //n"""
 
 from os import path
-import re,time
+from time import strftime
+import re
 
 try:
 #
@@ -124,12 +125,13 @@ Constructor __init__ (direct_logger)
 			self.logger.setLevel (logging_mode)
 		#
 
-		if ("pas_log" in direct_globals['settings']): direct_globals['settings']['pas_log'] = path.normpath ("{0}/{1}".format (direct_globals['settings']['path_base'],direct_globals['settings']['pas_log']))
+		if ("pas_log_pathname" in direct_globals['settings']): direct_globals['settings']['pas_log'] = direct_globals['settings']['pas_log_pathname']
+		elif ("pas_log" in direct_globals['settings']): direct_globals['settings']['pas_log'] = path.normpath ("{0}/{1}".format (direct_globals['settings']['path_base'],direct_globals['settings']['pas_log']))
 		else: direct_globals['settings']['pas_log'] = path.normpath ("{0}/logging.log".format (direct_globals['settings']['path_base']))
 
-		if (not "pas_log_datetime" in direct_globals['settings']): direct_globals['settings']['pas_log_datetime'] = "%m/%d/%Y %H:%M:%S"
-		if (not "pas_log_size_max" in direct_globals['settings']): direct_globals['settings']['pas_log_size_max'] = 104857600
-		if (not "pas_log_rotates" in direct_globals['settings']): direct_globals['settings']['pas_log_rotates'] = 5
+		if ("pas_log_datetime" not in direct_globals['settings']): direct_globals['settings']['pas_log_datetime'] = "%m/%d/%Y %H:%M:%S"
+		if ("pas_log_size_max" not in direct_globals['settings']): direct_globals['settings']['pas_log_size_max'] = 104857600
+		if ("pas_log_rotates" not in direct_globals['settings']): direct_globals['settings']['pas_log_rotates'] = 5
 
 		if (_direct_core_logger_mode == "java"):
 		#
@@ -147,6 +149,18 @@ Constructor __init__ (direct_logger)
 		#
 	#
 
+	def getEffectiveLevel (self):
+	#
+		"""
+Static "write ()" method to append INFO log messages.
+
+@param data Logging data
+@since v0.1.00
+		"""
+
+		return self.logger.getEffectiveLevel ()
+	#
+
 	def write (self,level,data):
 	#
 		"""
@@ -160,11 +174,11 @@ Constructor __init__ (direct_logger)
 		try:
 		#
 			f_exception = isinstance (data,Exception)
-			if (not f_exception): data = unicode (data)
+			if (not f_exception): data = repr (data)
 		#
 		except: f_exception = False
 
-		f_stamp = time.strftime (direct_globals['settings']['pas_log_datetime'])
+		f_stamp = strftime (direct_globals['settings']['pas_log_datetime'])
 
 		if (f_exception): f_stamp = "[exception] {0}".format (f_stamp)
 		elif (level == self.CRITICAL): f_stamp = "[critical]  {0}".format (f_stamp)
@@ -283,7 +297,7 @@ Get the direct_logger singleton.
 
 		global _direct_core_logger_counter
 
-		if (not "logger" in direct_globals):
+		if ("logger" not in direct_globals):
 		#
 			if (logging_mode == None):
 			#

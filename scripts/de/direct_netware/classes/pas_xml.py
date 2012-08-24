@@ -35,7 +35,6 @@ pas/#echo(__FILEPATH__)#
 NOTE_END //n"""
 
 from threading import local
-import time
 
 from .ext_core.xml_writer import direct_xml_writer
 from .pas_globals import direct_globals
@@ -67,8 +66,8 @@ Constructor __init__ (direct_xml)
 
 		f_local = direct_local.py_get ()
 
-		if ("lang_charset" in f_local): direct_xml_writer.__init__ (self,f_local['lang_charset'],(time.time ()),direct_globals['settings']['timeout'])
-		else: direct_xml_writer.__init__ (self,"UTF-8",(time.time ()),direct_globals['settings']['timeout'])
+		if ("lang_charset" in f_local): direct_xml_writer.__init__ (self,f_local['lang_charset'],-1,direct_globals['settings']['timeout'])
+		else: direct_xml_writer.__init__ (self,"UTF-8",-1,direct_globals['settings']['timeout'])
 
 		self.debug = direct_globals['debug']
 		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -xml.__init__ (direct_xml)- (#echo(__LINE__)#)")

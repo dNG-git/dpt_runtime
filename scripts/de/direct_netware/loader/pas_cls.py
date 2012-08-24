@@ -34,7 +34,6 @@ pas/#echo(__FILEPATH__)#
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from optparse import OptionParser
 import sys,threading,time
 
 try:
@@ -76,6 +75,10 @@ class direct_cls (object):
            W3C (R) Software License
 	"""
 
+	argparser = None
+	"""
+Argument parser instance
+	"""
 	debug = None
 	"""
 Debug message container
@@ -84,9 +87,9 @@ Debug message container
 	"""
 Callable main loop without arguments
 	"""
-	option_parser = None
+	mainloop_event = None
 	"""
-OptionParser instance
+Mainloop event
 	"""
 
 	"""
@@ -108,9 +111,20 @@ Constructor __init__ (direct_cls)
 
 		self.debug = direct_globals['debug']
 		self.mainloop = None
-		self.option_parser = OptionParser ()
+		self.mainloop_event = threading.Event ()
 
 		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -cls_handler.__init__ (direct_cls)- (#echo(__LINE__)#)")
+	#
+
+	def del_direct_cls (self):
+	#
+		"""
+Destructor del_direct_cls (direct_cls)
+
+@since v0.1.00
+		"""
+
+		pass
 	#
 
 	def error (self,py_exception):
@@ -126,7 +140,7 @@ Prints the stack trace on this error event.
 		if (self.debug != None): print (self.debug)
 	#
 
-	def exit (self):
+	def exit (self,py_exception = None):
 	#
 		"""
 Executes registered callbacks before exiting this application.
@@ -138,6 +152,9 @@ Executes registered callbacks before exiting this application.
 		global _direct_core_cls_exit_callbacks
 
 		for f_callback in _direct_core_cls_exit_callbacks: f_callback ()
+
+		if (py_exception == None): sys.exit (0)
+		else: raise (py_exception)
 	#
 
 	def run (self):
@@ -151,16 +168,42 @@ Executes registered callbacks for the active application.
 		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -cls_handler.run ()- (#echo(__LINE__)#)")
 		global _direct_core_cls_run_callbacks
 
-		( f_options,f_invalid_args ) = self.option_parser.parse_args ()
-		self.option_parser = None
+		if ((self.argparser != None) and (hasattr (self.argparser,"parse_args"))): f_args = self.argparser.parse_args ()
+		else: f_args = { }
 
-		for f_callback in _direct_core_cls_run_callbacks: f_callback (f_options,f_invalid_args)
+		self.argparser = None
 
 		try:
 		#
+			for f_callback in _direct_core_cls_run_callbacks: f_callback (f_args)
+		#
+		except Exception as f_handled_exception: self.exit (f_handled_exception)
+
+		try:
+		#
+			self.mainloop_event.set ();
+
 			if (self.mainloop == None):
 			#
-				while (threading.active_count () > 1): time.sleep (10)
+				f_active = True
+				f_main_thread = threading.current_thread ()
+
+				while (f_active):
+				#
+					f_active = False
+
+					try:
+					#
+						for f_thread in (threading.enumerate ()):
+						#
+							if ((f_thread != None) and (f_main_thread != f_thread) and (f_thread.is_alive ()) and (not f_thread.daemon)): f_thread.join ()
+						#
+					#
+					except KeyboardInterrupt as f_handled_exception: raise f_handled_exception
+					except: f_active = True
+
+					if (f_active): time.sleep (1)
+				#
 			#
 			else: self.mainloop ()
 
@@ -293,7 +336,6 @@ Callback function for OS signals.
 
 	global _direct_core_cls
 	if (_direct_core_cls != None): _direct_core_cls.signal (os_signal,stack_frame)
-	sys.exit (0)
 #
 
 if (_direct_core_mode != "mono"):

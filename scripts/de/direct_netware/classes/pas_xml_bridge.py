@@ -35,7 +35,6 @@ pas/#echo(__FILEPATH__)#
 NOTE_END //n"""
 
 from threading import local
-import time
 
 from .ext_core.xml_reader import direct_xml_reader
 from .pas_globals import direct_globals
@@ -67,8 +66,8 @@ Constructor __init__ (direct_xml_bridge)
 
 		f_local = direct_local.py_get ()
 
-		if ("lang_charset" in f_local): direct_xml_reader.__init__ (self,f_local['lang_charset'],parse_only,(time.time ()),direct_globals['settings']['timeout'])
-		else: direct_xml_reader.__init__ (self,"UTF-8",parse_only,(time.time ()),direct_globals['settings']['timeout'])
+		if ("lang_charset" in f_local): direct_xml_reader.__init__ (self,f_local['lang_charset'],parse_only,-1,direct_globals['settings']['timeout'])
+		else: direct_xml_reader.__init__ (self,"UTF-8",parse_only,-1,direct_globals['settings']['timeout'])
 
 		self.debug = direct_globals['debug']
 		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -xml_bridge.__init__ (direct_xml_bridge)- (#echo(__LINE__)#)")

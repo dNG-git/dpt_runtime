@@ -1,5 +1,6 @@
 _extras
 .*
+make*.py*
 nbproject
 pas_core.*
 scripts/de/direct_netware/classes/ext_core/*

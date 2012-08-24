@@ -35,7 +35,7 @@ pas/#echo(__FILEPATH__)#
 NOTE_END //n"""
 
 from os import path
-import re,time
+import re
 
 from .ext_core.file import direct_file
 from .pas_globals import direct_globals
@@ -72,7 +72,7 @@ Constructor __init__ (direct_file_functions)
 @since v0.1.00
 		"""
 
-		direct_file.__init__ (self,direct_globals['settings']['swg_umask_change'],direct_globals['settings']['swg_chmod_files_change'],(time.time ()),direct_globals['settings']['timeout'])
+		direct_file.__init__ (self,direct_globals['settings']['pas_umask_change'],direct_globals['settings']['pas_chmod_files_change'],-1,direct_globals['settings']['timeout'])
 
 		self.debug = direct_globals['debug']
 		if (self.debug != None): self.debug.append ("#echo(__FILEPATH__)# -file_functions.__init__ (direct_file_functions)- (#echo(__LINE__)#)")

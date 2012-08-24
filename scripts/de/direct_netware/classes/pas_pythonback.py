@@ -34,8 +34,8 @@ pas/#echo(__FILEPATH__)#
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-try: _direct_core_unicode_object = { "type": unicode,"str": unicode.encode,"unicode": str.decode }
-except: _direct_core_unicode_object = { "type": bytes,"str": bytes.decode,"unicode": str.encode }
+try: unicode_settings = { "type": unicode,"str": unicode.encode,"unicode": str.decode }
+except: unicode_settings = { "type": bytes,"str": bytes.decode,"unicode": str.encode }
 
 def direct_str (data):
 #
@@ -47,8 +47,8 @@ Returns the string representing the (maybe encoded) input data
 @since  v0.1.00
 	"""
 
-	global _direct_core_unicode_object
-	if (type (data) == _direct_core_unicode_object['type']): data = _direct_core_unicode_object['str'] (data,"utf-8")
+	global unicode_settings
+	if (type (data) == unicode_settings['type']): data = unicode_settings['str'] (data,"utf-8")
 	return data
 #
 
@@ -62,11 +62,11 @@ Returns the bytes representing the (maybe encoded) input data
 @since  v0.1.00
 	"""
 
-	global _direct_core_unicode_object
+	global unicode_settings
 
 	try:
 	#
-		if (bytes == _direct_core_unicode_object['type']): data = direct_unicode (data)
+		if (bytes == unicode_settings['type']): data = direct_unicode (data)
 		else: data = direct_str (data)
 	#
 	except: data = direct_str (data)
@@ -84,8 +84,8 @@ Returns the unicode data representing the (maybe encoded) input data
 @since  v0.1.00
 	"""
 
-	global _direct_core_unicode_object
-	if (type (data) == str): data = _direct_core_unicode_object['unicode'] (data,"utf-8")
+	global unicode_settings
+	if (type (data) == str): data = unicode_settings['unicode'] (data,"utf-8")
 	return data
 #
 

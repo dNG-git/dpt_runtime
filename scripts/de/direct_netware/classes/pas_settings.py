@@ -145,7 +145,7 @@ Get the direct_settings singleton.
 @since  v0.1.00
 		"""
 
-		if (not "settings" in direct_globals): direct_globals['settings'] = direct_settings ()
+		if ("settings" not in direct_globals): direct_globals['settings'] = direct_settings ()
 		return direct_globals['settings']
 	#
 	py_get = staticmethod (py_get)
