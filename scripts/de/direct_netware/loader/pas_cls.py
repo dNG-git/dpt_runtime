@@ -252,6 +252,8 @@ The last "py_del ()" call will activate the Python singleton destructor.
 		"""
 Get the direct_cls singleton.
 
+:param count: Count "get ()" request
+
 :return: (direct_cls) Object on success
 :since:  v0.1.00
 		"""
