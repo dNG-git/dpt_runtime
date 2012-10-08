@@ -3,17 +3,6 @@
 
 """
 de.direct_netware.classes.pas_evars
-
-@internal  We are using epydoc (JavaDoc style) to automate the
-           documentation process for creating the Developer's Manual.
-           Use the following line to ensure 76 character sizes:
-----------------------------------------------------------------------------
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -46,12 +35,12 @@ class direct_evars (object):
 evars (Extended variables) are our answer for dynamic data in (for example)
 SQL log tables.
 
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
+:author:    direct Netware Group
+:copyright: direct Netware Group - All rights reserved
+:package:   pas_core
+:since:     v0.1.00
+:license:   http://www.direct-netware.de/redirect.php?licenses;mpl2
+            Mozilla Public License, v. 2.0
 	"""
 
 	def get (data):
@@ -60,10 +49,11 @@ SQL log tables.
 To receive all data (key-value pairs) from evars, use "get ()". This
 function needs for its recursive job a helper function.
 
-@param  data Internally evars are XML strings containing base64-encoded
-        data if chosen (for binary content).
-@return (dict) Key-value pair dictionary
-@since  v0.1.00
+:param data: Internally evars are XML strings containing base64-encoded
+             data if chosen (for binary content).
+
+:return: (dict) Key-value pair dictionary
+:since:  v0.1.00
 		"""
 
 		f_debug = direct_globals['debug']
@@ -96,9 +86,10 @@ function needs for its recursive job a helper function.
 This is a helper function for "direct_evars.get ()" to convert an XML
 dictionary recursively.
 
-@param  xml_dict XML nodes in a specific level.
-@return (dict) Key-value pair dictionary
-@since  v0.1.00
+:param xml_dict: XML nodes in a specific level.
+
+:return: (dict) Key-value pair dictionary
+:since:  v0.1.00
 		"""
 
 		f_return = { }
@@ -157,10 +148,11 @@ dictionary recursively.
 To save all data from f_data as an evars-string, call "write ()". The
 helper function will encode relevant data with b64encode if applicable.
 
-@param  data_dict Input dictionary
-@param  binary_safe True to encode values with base64.
-@return (str) XML string
-@since  v0.1.00
+:param data_dict: Input dictionary
+:param binary_safe: True to encode values with base64.
+
+:return: (str) XML string
+:since:  v0.1.00
 		"""
 
 		f_debug = direct_globals['debug']
@@ -192,10 +184,11 @@ helper function will encode relevant data with b64encode if applicable.
 This recursive function is used to protect binary data in a system optimized
 for strings.
 
-@param  data Input data
-@return (mixed) The return value is based on the input type (and will contain
-        base64-encoded values if required)
-@since  v0.1.00
+:param data: Input data
+
+:return: (mixed) The return value is based on the input type (and will
+         contain base64-encoded values if required)
+:since:  v0.1.00
 		"""
 
 		f_list_check = False

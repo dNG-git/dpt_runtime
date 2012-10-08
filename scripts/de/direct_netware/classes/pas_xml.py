@@ -3,17 +3,6 @@
 
 """
 de.direct_netware.classes.pas_xml
-
-@internal  We are using epydoc (JavaDoc style) to automate the documentation
-           process for creating the Developer's Manual.
-           Use the following line to ensure 76 character sizes:
-----------------------------------------------------------------------------
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -48,12 +37,12 @@ class direct_xml (direct_xml_writer):
 This class extends the bridge between PAS and XML to work with XML and
 create valid documents.
 
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
+:author:    direct Netware Group
+:copyright: direct Netware Group - All rights reserved
+:package:   pas_core
+:since:     v0.1.00
+:license:   http://www.direct-netware.de/redirect.php?licenses;mpl2
+            Mozilla Public License, v. 2.0
 	"""
 
 	def __init__ (self):
@@ -61,7 +50,7 @@ create valid documents.
 		"""
 Constructor __init__ (direct_xml)
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		f_local = direct_local.py_get ()
@@ -78,7 +67,7 @@ Constructor __init__ (direct_xml)
 		"""
 Destructor __del__ (direct_xml)
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		self.del_direct_xml ()
@@ -89,7 +78,7 @@ Destructor __del__ (direct_xml)
 		"""
 Destructor del_direct_xml (direct_xml)
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		self.del_direct_xml_writer ()
@@ -100,7 +89,7 @@ Destructor del_direct_xml (direct_xml)
 		"""
 The last "py_del ()" call will activate the Python singleton destructor.
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		global _direct_core_xml
@@ -117,9 +106,10 @@ The last "py_del ()" call will activate the Python singleton destructor.
 		"""
 Get the direct_xml singleton.
 
-@param  count Count "get ()" request
-@return (direct_xml) Object on success
-@since  v0.1.00
+:param count: Count "get ()" request
+
+:return: (direct_xml) Object on success
+:since:  v0.1.00
 		"""
 
 		global _direct_core_xml

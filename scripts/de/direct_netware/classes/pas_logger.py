@@ -3,17 +3,6 @@
 
 """
 de.direct_netware.classes.pas_logger
-
-@internal  We are using epydoc (JavaDoc style) to automate the documentation
-           process for creating the Developer's Manual.
-           Use the following line to ensure 76 character sizes:
-----------------------------------------------------------------------------
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -44,13 +33,14 @@ try:
 	from logging.handlers import RotatingFileHandler
 	import logging
 
-	if (hasattr (logging,"logMultiprocessing")): logging.logMultiprocessing = False 
+	if (hasattr (logging,"logMultiprocessing")): logging.logMultiprocessing = False
 	_direct_core_logger_mode = "py"
 #
 except ImportError: _direct_core_logger_mode = None
 
 if (_direct_core_logger_mode == None):
 #
+	from org.apache.log4j import Logger as logging
 	from org.apache.log4j import RollingFileAppender as RotatingFileHandler
 	from org.apache.log4j import SimpleLayout
 	from org.apache.log4j.Level import DEBUG,ERROR,INFO
@@ -70,12 +60,12 @@ class direct_logger (RotatingFileHandler):
 Provide logging functionality on top of
 "logging.handlers.RotatingFileHandler".
 
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
+:author:    direct Netware Group
+:copyright: direct Netware Group - All rights reserved
+:package:   pas_core
+:since:     v0.1.00
+:license:   http://www.direct-netware.de/redirect.php?licenses;mpl2
+            Mozilla Public License, v. 2.0
 	"""
 
 	CRITICAL = CRITICAL
@@ -108,22 +98,15 @@ Logger object
 		"""
 Constructor __init__ (direct_logger)
 
-@param logging_mode Logging level
-@since v0.1.00
+:param logging_mode: Logging level
+
+:since: v0.1.00
 		"""
 
 		global _direct_core_logger_mode
 
-		if (_direct_core_logger_mode == "java"):
-		#
-			self.logger = Logger.getLogger ('PASlogger')
-			self.logger.setLevel (logging_mode)
-		#
-		else:
-		#
-			self.logger = logging.getLogger ('PASlogger')
-			self.logger.setLevel (logging_mode)
-		#
+		self.logger = logging.getLogger ('PASlogger')
+		self.logger.setLevel (logging_mode)
 
 		if ("pas_log_pathname" in direct_globals['settings']): direct_globals['settings']['pas_log'] = direct_globals['settings']['pas_log_pathname']
 		elif ("pas_log" in direct_globals['settings']): direct_globals['settings']['pas_log'] = path.normpath ("{0}/{1}".format (direct_globals['settings']['path_base'],direct_globals['settings']['pas_log']))
@@ -154,8 +137,9 @@ Constructor __init__ (direct_logger)
 		"""
 Static "write ()" method to append INFO log messages.
 
-@param data Logging data
-@since v0.1.00
+:param data: Logging data
+
+:since: v0.1.00
 		"""
 
 		return self.logger.getEffectiveLevel ()
@@ -166,9 +150,10 @@ Static "write ()" method to append INFO log messages.
 		"""
 "write ()" adds all messages to the logger instance.
 
-@param level Logging level
-@param data Logging data
-@since v0.1.00
+:param level: Logging level
+:param data: Logging data
+
+:since: v0.1.00
 		"""
 
 		try:
@@ -209,8 +194,9 @@ Static "write ()" method to append INFO log messages.
 		"""
 Static "write ()" method to append CRITICAL log messages.
 
-@param data Logging data
-@since v0.1.00
+:param data: Logging data
+
+:since: v0.1.00
 		"""
 
 		direct_logger.py_get(count = False).write (CRITICAL,data)
@@ -222,8 +208,9 @@ Static "write ()" method to append CRITICAL log messages.
 		"""
 Static "write ()" method to append ERROR log messages.
 
-@param data Logging data
-@since v0.1.00
+:param data: Logging data
+
+:since: v0.1.00
 		"""
 
 		direct_logger.py_get(count = False).write (DEBUG,data)
@@ -235,8 +222,9 @@ Static "write ()" method to append ERROR log messages.
 		"""
 Static "write ()" method to append INFO log messages.
 
-@param data Logging data
-@since v0.1.00
+:param data: Logging data
+
+:since: v0.1.00
 		"""
 
 		direct_logger.py_get(count = False).write (INFO,data)
@@ -248,8 +236,9 @@ Static "write ()" method to append INFO log messages.
 		"""
 Static "write ()" method to append ERROR log messages.
 
-@param data Logging data
-@since v0.1.00
+:param data: Logging data
+
+:since: v0.1.00
 		"""
 
 		direct_logger.py_get(count = False).write (ERROR,data)
@@ -261,8 +250,9 @@ Static "write ()" method to append ERROR log messages.
 		"""
 Static "write ()" method to append WARNING log messages.
 
-@param data Logging data
-@since v0.1.00
+:param data: Logging data
+
+:since: v0.1.00
 		"""
 
 		direct_logger.py_get(count = False).write (WARNING,data)
@@ -274,7 +264,7 @@ Static "write ()" method to append WARNING log messages.
 		"""
 The last "py_del ()" call will activate the Python singleton destructor.
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		global _direct_core_logger_counter
@@ -289,10 +279,11 @@ The last "py_del ()" call will activate the Python singleton destructor.
 		"""
 Get the direct_logger singleton.
 
-@param  logging_mode Logging mode
-@param  count Count "get ()" request
-@return (direct_debug) Object on success
-@since  v0.1.00
+:param logging_mode: Logging mode
+:param count: Count "get ()" request
+
+:return: (direct_debug) Object on success
+:since:  v0.1.00
 		"""
 
 		global _direct_core_logger_counter

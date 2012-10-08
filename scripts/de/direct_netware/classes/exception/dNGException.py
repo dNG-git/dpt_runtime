@@ -3,17 +3,6 @@
 
 """
 de.direct_netware.classes.exception.dNGException
-
-@internal  We are using epydoc (JavaDoc style) to automate the documentation
-           process for creating the Developer's Manual.
-           Use the following line to ensure 76 character sizes:
-----------------------------------------------------------------------------
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -41,12 +30,12 @@ class dNGException (Exception):
 	"""
 The extended dNGException is used to redirect exceptions to output streams.
 
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
+:author:    direct Netware Group
+:copyright: direct Netware Group - All rights reserved
+:package:   pas_core
+:since:     v0.1.00
+:license:   http://www.direct-netware.de/redirect.php?licenses;mpl2
+            Mozilla Public License, v. 2.0
 	"""
 
 	exc_cause = None
@@ -65,9 +54,10 @@ Extend the class
 		"""
 Constructor __init__ (dNGException)
 
-@param value Exception message value
-@param py_exception Inner exception
-@since v0.1.00
+:param value: Exception message value
+:param py_exception: Inner exception
+
+:since: v0.1.00
 		"""
 
 		Exception.__init__ (self,value)
@@ -80,8 +70,8 @@ Constructor __init__ (dNGException)
 		"""
 Return the cause.
 
-@return (mixed) Inner exception
-@since  v0.1.00
+:return: (mixed) Inner exception
+:since:  v0.1.00
 		"""
 
 		return self.exc_cause
@@ -92,8 +82,9 @@ Return the cause.
 		"""
 Prints the stack trace to the given output stream.
 
-@param out_stream Output stream
-@since v0.1.00
+:param out_stream: Output stream
+
+:since: v0.1.00
 		"""
 
 		if (out_stream != None): traceback.print_exception (self.exc_type,self.exc_value,self.exc_traceback,file = out_stream)
@@ -104,8 +95,9 @@ Prints the stack trace to the given output stream.
 		"""
 Prints the stack trace to the given output stream.
 
-@param out_stream Output stream
-@since v0.1.00
+:param out_stream: Output stream
+
+:since: v0.1.00
 		"""
 
 		if (out_stream != None):

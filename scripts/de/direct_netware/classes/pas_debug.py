@@ -3,17 +3,6 @@
 
 """
 de.direct_netware.classes.pas_debug
-
-@internal  We are using epydoc (JavaDoc style) to automate the documentation
-           process for creating the Developer's Manual.
-           Use the following line to ensure 76 character sizes:
-----------------------------------------------------------------------------
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -42,12 +31,12 @@ class direct_debug (list):
 	"""
 Provides a debug singleton Python list.
 
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
+:author:    direct Netware Group
+:copyright: direct Netware Group - All rights reserved
+:package:   pas_core
+:since:     v0.1.00
+:license:   http://www.direct-netware.de/redirect.php?licenses;mpl2
+            Mozilla Public License, v. 2.0
 	"""
 
 	logger = None
@@ -66,7 +55,7 @@ Extend the class
 		"""
 Constructor __init__ (direct_debug)
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		list.__init__ (self)
@@ -78,7 +67,7 @@ Constructor __init__ (direct_debug)
 		"""
 Destructor __del__ (direct_debug)
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		self.del_direct_debug ()
@@ -89,7 +78,7 @@ Destructor __del__ (direct_debug)
 		"""
 Destructor del_direct_debug (direct_debug)
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		if (direct_logger != None): direct_logger.py_del ()
@@ -100,11 +89,12 @@ Destructor del_direct_debug (direct_debug)
 		"""
 "append ()" method to save the last 50 debug messages.
 
-@param  item Item to append
-@param  value Value to return
-@param  return_value True to return the given value
-@return (direct_debug) Object on success
-@since  v0.1.00
+:param item: Item to append
+:param value: Value to return
+:param return_value: True to return the given value
+
+:return: (direct_debug) Object on success
+:since:  v0.1.00
 		"""
 
 		if (len (self) > 50): self.pop (0)
@@ -120,7 +110,7 @@ Destructor del_direct_debug (direct_debug)
 		"""
 The last "py_del ()" call will activate the Python singleton destructor.
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		pass
@@ -132,10 +122,11 @@ The last "py_del ()" call will activate the Python singleton destructor.
 		"""
 Get the direct_debug singleton.
 
-@param  debug True if debugging is activated
-@param  count Count "get ()" request
-@return (direct_debug) Object on success
-@since  v0.1.00
+:param debug: True if debugging is activated
+:param count: Count "get ()" request
+
+:return: (direct_debug) Object on success
+:since:  v0.1.00
 		"""
 
 		if (((debug == True) or (debug == "1")) and ("debug" not in direct_globals)): direct_globals['debug'] = direct_debug ()

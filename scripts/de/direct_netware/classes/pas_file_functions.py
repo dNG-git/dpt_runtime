@@ -3,17 +3,6 @@
 
 """
 de.direct_netware.classes.pas_file_functions
-
-@internal  We are using epydoc (JavaDoc style) to automate the documentation
-           process for creating the Developer's Manual.
-           Use the following line to ensure 76 character sizes:
-----------------------------------------------------------------------------
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -50,12 +39,12 @@ class direct_file_functions (direct_file):
 This wrapper class extends "ext_core/file.py" and sets our default
 parameters.
 
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
+:author:    direct Netware Group
+:copyright: direct Netware Group - All rights reserved
+:package:   pas_core
+:since:     v0.1.00
+:license:   http://www.direct-netware.de/redirect.php?licenses;mpl2
+            Mozilla Public License, v. 2.0
 	"""
 
 	"""
@@ -69,7 +58,7 @@ Extend the class
 		"""
 Constructor __init__ (direct_file_functions)
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		direct_file.__init__ (self,direct_globals['settings']['pas_umask_change'],direct_globals['settings']['pas_chmod_files_change'],-1,direct_globals['settings']['timeout'])
@@ -84,14 +73,16 @@ Constructor __init__ (direct_file_functions)
 Let's work with files - use "file_get ()" to get content from a local file.
 A time check will stop the reading process before a script timeout occurs.
 
-@param  file_type Read mode to use. Options: "r", "s", "s0" and "s1" for ASCII
-        (string); "a", "a0" and "a1" for ASCII (one line per array element)
-        and "b" for binary. Use "a0" or "s0" to return the content as it is.
-        "a1" and "s1" remove "<?php exit (); ?>" strings but whitespace
-        characters at the start or end of the file content remain.
-@param  file_pathname File path
-@return (mixed) File content on success; False on error
-@since  v0.1.00
+:param file_type: Read mode to use. Options: "r", "s", "s0" and "s1" for
+                  ASCII (string); "a", "a0" and "a1" for ASCII (one line
+                  per array element) and "b" for binary. Use "a0" or "s0"
+                  to return the content as it is. "a1" and "s1" remove
+                  "<?php exit (); ?>" strings but whitespace characters at
+                  the start or end of the file content remain.
+:param file_pathname: File path
+
+:return: (mixed) File content on success; False on error
+:since:  v0.1.00
 		"""
 
 		file_type = direct_str (file_type)
@@ -147,15 +138,17 @@ A time check will stop the reading process before a script timeout occurs.
 		"""
 The following function will save given data (as data) to a file.
 
-@param  data Data to write (array or string)
-@param  file_pathname File path
-@param  file_type Write mode to use. Options: "r", "s", "s0" and "s1" for ASCII
-        (string); "a", "a0" and "a1" for ASCII (one line per array element)
-        and "b" for binary. Use "a0" or "s0" to save the content as it is.
-        "a1" and "s1" add "<?php exit (); ?>" strings but whitespace
-        characters at the start or end of the file content remain.
-@return (bool) True on success
-@since  v0.1.00
+:param data: Data to write (array or string)
+:param file_pathname: File path
+:param file_type: Write mode to use. Options: "r", "s", "s0" and "s1" for
+                  ASCII (str); "a", "a0" and "a1" for ASCII (one line per
+                  array element) and "b" for binary. Use "a0" or "s0" to
+                  save the content as it is. "a1" and "s1" add
+                  "<?php exit (); ?>" strings but whitespace characters at
+                  the start or end of the file content remain.
+
+:return: (bool) True on success
+:since:  v0.1.00
 		"""
 
 		file_type = direct_str (file_type)
@@ -188,7 +181,7 @@ The following function will save given data (as data) to a file.
 		"""
 The last "py_del ()" call will activate the Python singleton destructor.
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		global _direct_core_file_functions,_direct_core_file_functions_counter
@@ -203,9 +196,10 @@ The last "py_del ()" call will activate the Python singleton destructor.
 		"""
 Get the direct_file_functions singleton.
 
-@param  count Count "get ()" request
-@return (direct_file_functions) Object on success
-@since  v0.1.00
+:param count: Count "get ()" request
+
+:return: (direct_file_functions) Object on success
+:since:  v0.1.00
 		"""
 
 		global _direct_core_file_functions,_direct_core_file_functions_counter

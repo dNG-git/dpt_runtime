@@ -3,17 +3,6 @@
 
 """
 de.direct_netware.classes.pas_local
-
-@internal  We are using epydoc (JavaDoc style) to automate the documentation
-           process for creating the Developer's Manual.
-           Use the following line to ensure 76 character sizes:
-----------------------------------------------------------------------------
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -45,12 +34,12 @@ class direct_local (dict):
 	"""
 Provides the direct_local dict.
 
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
+:author:    direct Netware Group
+:copyright: direct Netware Group - All rights reserved
+:package:   pas_core
+:since:     v0.1.00
+:license:   http://www.direct-netware.de/redirect.php?licenses;mpl2
+            Mozilla Public License, v. 2.0
 	"""
 
 	"""
@@ -64,7 +53,7 @@ Extend the class
 		"""
 Constructor __init__ (direct_local)
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		global _direct_core_local
@@ -81,9 +70,10 @@ Python.org: If a subclass of dict defines a method __missing__(), if the key
 is not present, the d[key] operation calls that method with the key as
 argument.
 
-@param  key Key we are looking for
-@return (str) Defaults to " <key> "
-@since  v0.1.00
+:param key: Key we are looking for
+
+:return: (str) Defaults to " <key> "
+:since:  v0.1.00
 		"""
 
 		return " {0} ".format (direct_str (key))
@@ -97,9 +87,10 @@ default.
 
 Implemented for IronPython which calls "__missing__ ()" in this case.
 
-@param  args Positional arguments
-@return (mixed) Defaults to none
-@since  v1.0.5
+:param args: Positional arguments
+
+:return: (mixed) Defaults to none
+:since:  v0.1.00
 		"""
 
 		if (len (args) > 1):
@@ -115,7 +106,7 @@ Implemented for IronPython which calls "__missing__ ()" in this case.
 		"""
 The last "py_del ()" call will activate the Python singleton destructor.
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		pass
@@ -127,9 +118,10 @@ The last "py_del ()" call will activate the Python singleton destructor.
 		"""
 Get the direct_local singleton.
 
-@param  count Count "get ()" request
-@return (direct_local) Object on success
-@since  v0.1.00
+:param count: Count "get ()" request
+
+:return: (direct_local) Object on success
+:since:  v0.1.00
 		"""
 
 		global _direct_core_local

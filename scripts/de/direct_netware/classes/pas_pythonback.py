@@ -3,17 +3,6 @@
 
 """
 de.direct_netware.classes.pas_pythonback
-
-@internal  We are using epydoc (JavaDoc style) to automate the documentation
-           process for creating the Developer's Manual.
-           Use the following line to ensure 76 character sizes:
-----------------------------------------------------------------------------
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -42,9 +31,10 @@ def direct_str (data):
 	"""
 Returns the string representing the (maybe encoded) input data
 
-@param  data Input string
-@return (str) String representation
-@since  v0.1.00
+:param data: Input string
+
+:return: (str) String representation
+:since:  v0.1.00
 	"""
 
 	global unicode_settings
@@ -57,9 +47,10 @@ def direct_bytes (data):
 	"""
 Returns the bytes representing the (maybe encoded) input data
 
-@param  data Input string
-@return (bytes) Byte representation
-@since  v0.1.00
+:param data: Input string
+
+:return: (bytes) Byte representation
+:since:  v0.1.00
 	"""
 
 	global unicode_settings
@@ -79,9 +70,10 @@ def direct_unicode (data):
 	"""
 Returns the unicode data representing the (maybe encoded) input data
 
-@param  data Input string
-@return (bytes) Unicode representation
-@since  v0.1.00
+:param data: Input string
+
+:return: (bytes) Unicode representation
+:since:  v0.1.00
 	"""
 
 	global unicode_settings

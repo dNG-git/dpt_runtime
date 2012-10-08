@@ -3,17 +3,6 @@
 
 """
 de.direct_netware.classes.pas_basic_functions
-
-@internal  We are using epydoc (JavaDoc style) to automate the documentation
-           process for creating the Developer's Manual.
-           Use the following line to ensure 76 character sizes:
-----------------------------------------------------------------------------
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -60,12 +49,12 @@ class direct_basic_functions (object):
 Parse settings, check input or support localisations are required
 everywhere.
 
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
+:author:    direct Netware Group
+:copyright: direct Netware Group - All rights reserved
+:package:   pas_core
+:since:     v0.1.00
+:license:   http://www.direct-netware.de/redirect.php?licenses;mpl2
+            Mozilla Public License, v. 2.0
 	"""
 
 	debug = None
@@ -96,7 +85,7 @@ Construct the class
 		"""
 Constructor __init__ (direct_basic_functions)
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		self.settings = direct_settings.py_get (True)
@@ -125,7 +114,7 @@ Constructor __init__ (direct_basic_functions)
 		"""
 Destructor __del__ (direct_basic_functions)
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		self.del_direct_basic_functions ()
@@ -136,7 +125,7 @@ Destructor __del__ (direct_basic_functions)
 		"""
 Destructor del_direct_basic_functions (direct_basic_functions)
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		if ((direct_debug != None) and (self.debug != None)): direct_debug.py_del ()
@@ -149,9 +138,10 @@ Destructor del_direct_basic_functions (direct_basic_functions)
 		"""
 Computes the MD5 for the given data
 
-@param  data Input string
-@return (str) MD5 hexadecimal value
-@since  v0.1.00
+:param data: Input string
+
+:return: (str) MD5 hexadecimal value
+:since:  v0.1.00
 		"""
 
 		if (type (data) == str): f_data = data.encode ()
@@ -167,9 +157,10 @@ Reads a file from the memcache or the filesystem. Certain system files are
 read in on each page call. These small files are stored in the memcache
 (ramfs on UNIX for example) to increase the read performance.
 
-@param  file_pathname The file (which may also exist in the memcache)
-@return (mixed) Data on success; false on error
-@since  v0.1.00
+:param file_pathname: The file (which may also exist in the memcache)
+
+:return: (mixed) Data on success; false on error
+:since:  v0.1.00
 		"""
 
 		file_pathname = direct_str (file_pathname)
@@ -214,9 +205,10 @@ read in on each page call. These small files are stored in the memcache
 This function uses preparsed XML files to increase performance. Please node
 that these files are only readable as Python Pickle files.
 
-@param  file_pathname The XML file (which may also exist in the memcache)
-@return (mixed) Parsed merged XML array on success
-@since  v0.1.00
+:param file_pathname: The XML file (which may also exist in the memcache)
+
+:return: (mixed) Parsed merged XML array on success
+:since:  v0.1.00
 		"""
 
 		file_pathname = direct_str (file_pathname)
@@ -275,15 +267,17 @@ that these files are only readable as Python Pickle files.
 		"""
 Writes data to a file (and deletes the old memcache copy).
 
-@param  data Data string
-@param  file_pathname Target file
-@param  file_type Write mode to use. Options: "r", "s", "s0" and "s1" for ASCII
-        (str); "a", "a0" and "a1" for ASCII (one line per array element)
-        and "b" for binary. Use "a0" or "s0" to save the content as it is.
-        "a1" and "s1" add "<?php exit (); ?>" strings but whitespace
-        characters at the start or end of the file content remain.
-@return (mixed) True on success
-@since  v0.1.00
+:param data: Data string
+:param file_pathname: Target file
+:param file_type: Write mode to use. Options: "r", "s", "s0" and "s1" for
+                  ASCII (str); "a", "a0" and "a1" for ASCII (one line per
+                  array element) and "b" for binary. Use "a0" or "s0" to
+                  save the content as it is. "a1" and "s1" add
+                  "<?php exit (); ?>" strings but whitespace characters at
+                  the start or end of the file content remain.
+
+:return: (mixed) True on success
+:since:  v0.1.00
 		"""
 
 		file_pathname = direct_str (file_pathname)
@@ -305,13 +299,14 @@ Writes data to a file (and deletes the old memcache copy).
 		"""
 Reads settings from file (XML-encoded) and adds them to direct_settings.
 
-@param  file_pathname The file containing settings
-@param  required If the file is required (true) but does not exist,
-        an OSError exception is raised.
-@param  use_cache False to read a settings file even if it has already
-        been parsed.
-@return (bool) True on success; false on error
-@since  v0.1.00
+:param file_pathname: The file containing settings
+:param required: If the file is required (true) but does not exist,
+                 an OSError exception is raised.
+:param use_cache: False to read a settings file even if it has already
+                  been parsed.
+
+:return: (bool) True on success; false on error
+:since:  v0.1.00
 		"""
 
 		file_pathname = direct_str (file_pathname)
@@ -367,10 +362,11 @@ Reads settings from file (XML-encoded) and adds them to direct_settings.
 		"""
 Writes the setting array to a file (XML-encoded).
 
-@param  settings Settings array
-@param  file_pathname The file containing settings
-@return (bool) True on success; false on error
-@since  v0.1.00
+:param settings: Settings array
+:param file_pathname: The file containing settings
+
+:return: (bool) True on success; false on error
+:since:  v0.1.00
 		"""
 
 		file_pathname = direct_str (file_pathname)
@@ -402,7 +398,7 @@ Writes the setting array to a file (XML-encoded).
 		"""
 The last "py_del ()" call will activate the Python singleton destructor.
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		global _direct_core_basic_functions_counter
@@ -417,9 +413,10 @@ The last "py_del ()" call will activate the Python singleton destructor.
 		"""
 Get the direct_basic_functions singleton.
 
-@param  count Count "get ()" request
-@return (direct_basic_functions) Object on success
-@since  v0.1.00
+:param count: Count "get ()" request
+
+:return: (direct_basic_functions) Object on success
+:since:  v0.1.00
 		"""
 
 		global _direct_core_basic_functions_counter

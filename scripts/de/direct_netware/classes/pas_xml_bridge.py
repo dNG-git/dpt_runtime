@@ -3,17 +3,6 @@
 
 """
 de.direct_netware.classes.pas_xml_bridge
-
-@internal  We are using epydoc (JavaDoc style) to automate the documentation
-           process for creating the Developer's Manual.
-           Use the following line to ensure 76 character sizes:
-----------------------------------------------------------------------------
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -47,12 +36,12 @@ class direct_xml_bridge (direct_xml_reader):
 	"""
 This class provides a bridge between PAS and XML to read XML on the fly.
 
-@author    direct Netware Group
-@copyright (C) direct Netware Group - All rights reserved
-@package   pas_core
-@since     v0.1.00
-@license   http://www.direct-netware.de/redirect.php?licenses;mpl2
-           Mozilla Public License, v. 2.0
+:author:    direct Netware Group
+:copyright: direct Netware Group - All rights reserved
+:package:   pas_core
+:since:     v0.1.00
+:license:   http://www.direct-netware.de/redirect.php?licenses;mpl2
+            Mozilla Public License, v. 2.0
 	"""
 
 	def __init__ (self,parse_only = True):
@@ -60,8 +49,9 @@ This class provides a bridge between PAS and XML to read XML on the fly.
 		"""
 Constructor __init__ (direct_xml_bridge)
 
-@param parse_only Parse data only
-@since v0.1.00
+:param parse_only: Parse data only
+
+:since: v0.1.00
 		"""
 
 		f_local = direct_local.py_get ()
@@ -78,7 +68,7 @@ Constructor __init__ (direct_xml_bridge)
 		"""
 Destructor __del__ (direct_xml_bridge)
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		self.del_direct_xml_bridge ()
@@ -89,7 +79,7 @@ Destructor __del__ (direct_xml_bridge)
 		"""
 Destructor del_direct_xml_bridge (direct_xml_bridge)
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		self.del_direct_xml_reader ()
@@ -100,7 +90,7 @@ Destructor del_direct_xml_bridge (direct_xml_bridge)
 		"""
 The last "py_del ()" call will activate the Python singleton destructor.
 
-@since v0.1.00
+:since: v0.1.00
 		"""
 
 		global _direct_core_xml_bridge
@@ -117,9 +107,10 @@ The last "py_del ()" call will activate the Python singleton destructor.
 		"""
 Get the direct_xml_bridge singleton.
 
-@param  count Count "get ()" request
-@return (direct_xml_bridge) Object on success
-@since  v0.1.00
+:param count: Count "get ()" request
+
+:return: (direct_xml_bridge) Object on success
+:since:  v0.1.00
 		"""
 
 		global _direct_core_xml_bridge
