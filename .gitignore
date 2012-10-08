@@ -1,7 +1,7 @@
 _extras
 __py*
 .*
-*.py
+*.pyc
 make*.py*
 nbproject
 pas_core.*
