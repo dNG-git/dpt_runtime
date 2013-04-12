@@ -86,7 +86,7 @@ add_module_names = False
 pygments_style = 'sphinx'
 
 # A list of ignored prefixes for module index sorting.
-modindex_common_prefix = [ "de.direct_netware.classes.pas_","de.direct_netware.classes.exception.","de.direct_netware.loader.pas_" ]
+modindex_common_prefix = [ "dNG.classes.pas_","dNG.classes.exception.","dNG.loader.pas_" ]
 
 
 # -- Options for HTML output ---------------------------------------------------
