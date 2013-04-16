@@ -182,7 +182,7 @@ Executes registered callbacks for the active application.
 		except KeyboardInterrupt: self.shutdown()
 	#
 
-	def set_mainloop (self, py_function):
+	def set_mainloop(self, py_function):
 	#
 		"""
 Register a callback for the application main loop.
@@ -212,7 +212,7 @@ Sets the log_handler.
 		self.log_handler = log_handler
 	#
 
-	def signal (self, os_signal, stack_frame):
+	def signal(self, os_signal, stack_frame):
 	#
 		"""
 Handles an OS signal.
@@ -271,7 +271,7 @@ Get the cli singleton.
 	#
 
 	@staticmethod
-	def get_py_mode ():
+	def get_py_mode():
 	#
 		"""
 Returns the current Python engine (one of "java", "mono" and "py").
