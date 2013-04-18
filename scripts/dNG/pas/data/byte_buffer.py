@@ -25,8 +25,12 @@ NOTE_END //n"""
 
 from tempfile import TemporaryFile
 
-try: from cStringIO import StringIO
-except ImportError: from StringIO import StringIO
+try: from io import StringIO
+except ImportError:
+#
+	try: from cStringIO import StringIO
+	except ImportError: from StringIO import StringIO
+#
 
 from dNG.pas.data.settings import direct_settings
 from dNG.pas.pythonback import direct_bytes
