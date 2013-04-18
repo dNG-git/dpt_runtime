@@ -98,7 +98,9 @@ Get the log level.
 	def get_line(self, data):
 	#
 		"""
-Get the log level.
+Get the formatted log message.
+
+:param data: Log data
 
 :access: protected
 :return: (str) Formatted log line

@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.data.exception
+dNG.pas.data.translatable_exception
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -30,8 +30,8 @@ from .text.l10n import direct_l10n
 class direct_translatable_exception(direct_exception):
 #
 	"""
-The extended "direct_exception" is used to redirect exceptions to output
-streams.
+"direct_translatable_exception" gets a l10n message ID to translate the
+exception message to the selected language.
 
 :author:    direct Netware Group
 :copyright: direct Netware Group - All rights reserved
@@ -49,7 +49,7 @@ Translated message
 	def __init__(self, l10n_id, value = None, py_exception = None):
 	#
 		"""
-Constructor __init__(direct_exception)
+Constructor __init__(direct_translatable_exception)
 
 :param l10n_id: L10n translatable key (prefixed with "errors_")
 :param value: Exception message value

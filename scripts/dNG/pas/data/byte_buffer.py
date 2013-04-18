@@ -42,21 +42,21 @@ safe.
 :copyright: (C) direct Netware Group - All rights reserved
 :package:   pas.core
 :since:     v0.1.00
-:license:   http://www.direct-netware.de/redirect?licenses;mpl2
+:license:   http://www.direct-netware.de/redirect.py?licenses;mpl2
             Mozilla Public License, v. 2.0
 	"""
 
 	def __init__(self):
 	#
 		"""
-Constructor __init__(direct_byte_file_ptr)
+Constructor __init__(direct_byte_buffer)
 
 :since: v0.1.00
 		"""
 
 		self.buffer = StringIO()
 		"""
-External file pointer.
+Internal byte buffer.
 		"""
 		self.file_ptr = None
 		"""
@@ -64,7 +64,7 @@ External file pointer.
 		"""
 		self.file_threshold = int(direct_settings.get("pas_core_byte_file_ptr_file_threshold", 5242880))
 		"""
-Threshold to write a given received request body element to an external file.
+Threshold to write the internal buffer to an external file.
 		"""
 	#
 
