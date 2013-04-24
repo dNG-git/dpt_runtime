@@ -47,7 +47,7 @@ Provides l10n (localisation) methods on top of an dict.
 
 	log_handler = None
 	"""
-The LogHandler is called whenever debug messages should be logged or errors
+The log_handler is called whenever debug messages should be logged or errors
 happened.
 	"""
 	default_lang = None

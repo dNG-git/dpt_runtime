@@ -54,7 +54,7 @@ Settings instance
 	"""
 	log_handler = None
 	"""
-The LogHandler is called whenever debug messages should be logged or errors
+The log_handler is called whenever debug messages should be logged or errors
 happened.
 	"""
 	synchronized = RLock()

@@ -265,7 +265,7 @@ Get the settings singleton.
 	def get_instance(count = True):
 	#
 		"""
-Get the settings singleton.
+Get the cache singleton.
 
 :param count: Count "get()" request
 

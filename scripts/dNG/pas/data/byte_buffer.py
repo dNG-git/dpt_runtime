@@ -23,14 +23,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+from io import BytesIO
 from tempfile import TemporaryFile
-
-try: from io import StringIO
-except ImportError:
-#
-	try: from cStringIO import StringIO
-	except ImportError: from StringIO import StringIO
-#
 
 from dNG.pas.data.settings import direct_settings
 from dNG.pas.pythonback import direct_bytes
@@ -58,7 +52,7 @@ Constructor __init__(direct_byte_buffer)
 :since: v0.1.00
 		"""
 
-		self.buffer = StringIO()
+		self.buffer = BytesIO()
 		"""
 Internal byte buffer.
 		"""
