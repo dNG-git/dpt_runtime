@@ -41,11 +41,6 @@ exception message to the selected language.
             Mozilla Public License, v. 2.0
 	"""
 
-	l10n_message = None
-	"""
-Translated message
-	"""
-
 	def __init__(self, l10n_id, value = None, py_exception = None):
 	#
 		"""
@@ -59,6 +54,10 @@ Constructor __init__(direct_translatable_exception)
 		"""
 
 		self.l10n_message = direct_l10n.get("errors_{0}".format(l10n_id), l10n_id)
+		"""
+Translated message
+		"""
+
 		if (value == None): value = self.l10n_message
 
 		direct_exception.__init__(self, value, py_exception)

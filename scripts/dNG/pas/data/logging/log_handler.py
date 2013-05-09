@@ -31,6 +31,15 @@ import os
 from .abstract_log_handler import direct_abstract_log_handler
 from dNG.pas.data.settings import direct_settings
 
+API_JAVA = 1
+"""
+Java based log handlers
+"""
+API_PYTHON = 2
+"""
+Python log handlers
+"""
+
 try:
 #
 	from logging import CRITICAL, DEBUG, ERROR, INFO, NOTSET, WARNING
@@ -38,7 +47,7 @@ try:
 	import logging
 
 	if (hasattr(logging, "logMultiprocessing")): logging.logMultiprocessing = False
-	_direct_log_handler_mode = "py"
+	_direct_log_handler_mode = API_PYTHON
 #
 except ImportError: _direct_log_handler_mode = None
 
@@ -51,7 +60,7 @@ if (_direct_log_handler_mode == None):
 	from org.apache.log4j.Level import FATAL as CRITICAL
 	from org.apache.log4j.Level import OFF as NOTSET
 	from org.apache.log4j.Level import WARN as WARNING
-	_direct_log_handler_mode = "java"
+	_direct_log_handler_mode = API_JAVA
 #
 
 class direct_log_handler(direct_abstract_log_handler):
@@ -88,7 +97,7 @@ Constructor __init__(direct_log_handler)
 :since: v0.1.00
 		"""
 
-		global _direct_log_handler_mode
+		global _direct_log_handler_mode, API_JAVA
 
 		direct_abstract_log_handler.__init__(self)
 
@@ -114,10 +123,10 @@ Preserve the amount of files
 		"""
 
 		self.levels = {
-		"debug": DEBUG,
-		"error": ERROR,
-		"info": INFO,
-		"warning": WARNING
+			"debug": DEBUG,
+			"error": ERROR,
+			"info": INFO,
+			"warning": WARNING
 		}
 
 		level = direct_settings.get("pas_core_log_level")
@@ -131,7 +140,7 @@ Preserve the amount of files
 		elif (direct_settings.is_defined("pas_core_log_name") and (os.access(path.normpath("{0}/log/{1}".format(direct_settings.get("path_base"), direct_settings.get("pas_core_log_name"))), os.W_OK) or ((not os.access(path.normpath("{0}/log/{1}".format(direct_settings.get("path_base"), direct_settings.get("pas_core_log_name"))), os.F_OK)) and os.access(path.normpath("{0}/log".format(direct_settings.get("path_base"))), os.W_OK)))): self.log_file_pathname = path.normpath("{0}/log/{1}".format(direct_settings.get("path_base"), direct_settings.get("pas_core_log_name")))
 		else: self.log_file_pathname = path.normpath("{0}/pas.log".format(direct_settings.get("path_base")))
 
-		if (_direct_log_handler_mode == "java"):
+		if (_direct_log_handler_mode == API_JAVA):
 		#
 			self.log_handler = RotatingFileHandler(SimpleLayout(), self.log_file_pathname)
 			self.log_handler.setLevel(self.level)
@@ -162,9 +171,9 @@ Add the logger name given to the active log handler.
 :since:  v0.1.00
 		"""
 
-		global _direct_log_handler_mode
+		global _direct_log_handler_mode, API_JAVA
 
-		if (_direct_log_handler_mode == "java"): logging.getLogger(name).addAppender(self.log_handler)
+		if (_direct_log_handler_mode == API_JAVA): logging.getLogger(name).addAppender(self.log_handler)
 		else: direct_abstract_log_handler.add_logger(self, name)
 	#
 
@@ -217,7 +226,7 @@ The last "return_instance()" call will free the singleton reference.
 
 		direct_log_handler.synchronized.acquire()
 
-		if (direct_log_handler != None):
+		if (direct_log_handler.instance != None):
 		#
 			if (direct_log_handler.ref_count > 0): direct_log_handler.ref_count -= 1
 			if (direct_log_handler.ref_count == 0): direct_log_handler.instance = None

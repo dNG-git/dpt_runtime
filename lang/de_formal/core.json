@@ -1,0 +1,18 @@
+{
+ "core_continue": "Vorgang fortsetzen",
+
+ "core_title_error": "Fehlermeldung",
+ "core_title_error_critical": "Kritische Fehlermeldung",
+ "core_title_error_details": "Weitere Informationen zur Fehlermeldung",
+
+ "errors_core_access_denied": "Der Zugriff auf die gesicherte Funktion wurde durch das System verweigert.",
+ "errors_core_database_error": "Die Anwendung hat einen Fehler während der Datenbankkommunikation festgestellt und kann die derzeitige Aufgabe nicht beenden.",
+ "errors_core_required_object_not_found": "Die Anwendung konnte eine benötigte Komponente nicht laden.",
+ "errors_core_tid_invalid": "Die angegebene Vorgangs-ID ist ungültig.",
+ "errors_core_unknown_error": "Die Anwendung hat einen unbekannten Fehler festgestellt und kann die derzeitige Aufgabe nicht beenden.",
+ "errors_core_unsupported_command": "Die Anwendung wurde mit einem unbekannten Kommando aufgerufen.",
+
+ "lang_charset": "UTF-8",
+ "lang_iso": "de-DE",
+ "lang_iso_domain": "de"
+}

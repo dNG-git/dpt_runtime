@@ -26,12 +26,26 @@ NOTE_END //n"""
 import threading, time
 import gc
 
-from dNG.pas.data.exception import direct_exception
+try: import signal
+except ImportError: pass
+
+IMPLEMENTATION_JAVA = 1
+"""
+Java based Python implementation
+"""
+IMPLEMENTATION_PYTHON = 2
+"""
+Native Python implementation
+"""
+IMPLEMENTATION_MONO = 3
+"""
+Mono/.NET based Python implementation
+"""
 
 try:
 #
 	import java.lang.System
-	_direct_cli_mode = "java"
+	_direct_cli_mode = IMPLEMENTATION_JAVA
 #
 except ImportError: _direct_cli_mode = None
 
@@ -39,12 +53,13 @@ try:
 #
 	import clr
 	clr.AddReferenceByPartialName("IronPython")
-	_direct_cli_mode = "mono"
+	_direct_cli_mode = IMPLEMENTATION_MONO
 #
 except ImportError: pass
 
-if (_direct_cli_mode != "mono"): import signal
-if (_direct_cli_mode == None): _direct_cli_mode = "py"
+from dNG.pas.data.exception import direct_exception
+
+if (_direct_cli_mode == None): _direct_cli_mode = IMPLEMENTATION_PYTHON
 
 class direct_cli(object):
 #

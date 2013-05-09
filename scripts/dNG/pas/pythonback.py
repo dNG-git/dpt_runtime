@@ -23,8 +23,22 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-try: direct_settings = { "bytes": unicode.encode, "bytes_type": str, "str": unicode.encode, "unicode": str.decode, "unicode_type": unicode }
-except: direct_settings = { "bytes": str.encode, "bytes_type": bytes, "str": bytes.decode, "unicode": bytes.decode, "unicode_type": str }
+try:
+#
+	_PY_BYTES = unicode.encode
+	PY_BYTES_TYPE = str
+	_PY_STR = unicode.encode
+	_PY_UNICODE = str.decode
+	PY_UNICODE_TYPE = unicode
+#
+except:
+#
+	_PY_BYTES = str.encode
+	PY_BYTES_TYPE = bytes
+	_PY_STR = bytes.decode
+	_PY_UNICODE = bytes.decode
+	PY_UNICODE_TYPE = str
+#
 
 def direct_bytes(data):
 #
@@ -37,8 +51,8 @@ Returns the bytes representing the (maybe encoded) input data
 :since:  v0.1.00
 	"""
 
-	global direct_settings
-	if (type(data) != direct_settings['bytes_type']): data = direct_settings['bytes'](data, "utf-8")
+	global _PY_BYTES, PY_BYTES_TYPE
+	if (type(data) != PY_BYTES_TYPE): data = _PY_BYTES(data, "utf-8")
 	return data
 #
 
@@ -53,10 +67,10 @@ Returns the string representing the (maybe encoded) input data
 :since:  v0.1.00
 	"""
 
-	global direct_settings
+	global _PY_STR, PY_BYTES_TYPE, PY_UNICODE_TYPE
 
 	var_type = type(data)
-	if (var_type != str and (var_type == direct_settings['bytes_type'] or var_type == direct_settings['unicode_type'])): data = direct_settings['str'](data, "utf-8")
+	if (var_type != str and (var_type == PY_BYTES_TYPE or var_type == PY_UNICODE_TYPE)): data = _PY_STR(data, "utf-8")
 
 	return data
 #
@@ -72,8 +86,8 @@ Returns the unicode data representing the (maybe encoded) input data
 :since:  v0.1.00
 	"""
 
-	global direct_settings
-	if (type(data) != direct_settings['unicode_type']): data = direct_settings['unicode'](data, "utf-8")
+	global _PY_UNICODE, PY_UNICODE_TYPE
+	if (type(data) != PY_UNICODE_TYPE): data = _PY_UNICODE(data, "utf-8")
 	return data
 #
 
