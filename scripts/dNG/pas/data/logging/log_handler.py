@@ -224,15 +224,14 @@ The last "return_instance()" call will free the singleton reference.
 :since: v0.1.00
 		"""
 
-		direct_log_handler.synchronized.acquire()
-
-		if (direct_log_handler.instance != None):
+		with direct_log_handler.synchronized:
 		#
-			if (direct_log_handler.ref_count > 0): direct_log_handler.ref_count -= 1
-			if (direct_log_handler.ref_count == 0): direct_log_handler.instance = None
+			if (direct_log_handler.instance != None):
+			#
+				if (direct_log_handler.ref_count > 0): direct_log_handler.ref_count -= 1
+				if (direct_log_handler.ref_count == 0): direct_log_handler.instance = None
+			#
 		#
-
-		direct_log_handler.synchronized.release()
 	#
 
 	def warning(self, data):
@@ -294,12 +293,11 @@ Get the log_handler singleton.
 :since:  v0.1.00
 		"""
 
-		direct_log_handler.synchronized.acquire()
-
-		if (direct_log_handler.instance == None): direct_log_handler.instance = direct_log_handler()
-		if (count): direct_log_handler.ref_count += 1
-
-		direct_log_handler.synchronized.release()
+		with direct_log_handler.synchronized:
+		#
+			if (direct_log_handler.instance == None): direct_log_handler.instance = direct_log_handler()
+			if (count): direct_log_handler.ref_count += 1
+		#
 
 		return direct_log_handler.instance
 	#

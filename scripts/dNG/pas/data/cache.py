@@ -163,46 +163,44 @@ Get the settings singleton.
 
 		var_return = None
 
-		direct_cache.synchronized.acquire()
-
-		if (direct_cache.use_pyinotify):
+		with direct_cache.synchronized:
 		#
-			if (not direct_cache.use_thread): direct_cache.pyinotify_instance.check_events()
+			if (direct_cache.use_pyinotify):
+			#
+				if (not direct_cache.use_thread): direct_cache.pyinotify_instance.check_events()
+			#
+			elif (file_pathname in self.watched_files and self.watched_files[file_pathname] != os.stat(file_pathname).st_mtime):
+			#
+				self.size -= len(self[file_pathname])
+				self.history.remove(file_pathname)
+				del(self[file_pathname])
+			#
+	
+			if (file_pathname in self):
+			#
+				var_return = self[file_pathname]
+				self.history.remove(file_pathname)
+				self.history.insert(0, file_pathname)
+			#
 		#
-		elif (file_pathname in self.watched_files and self.watched_files[file_pathname] != os.stat(file_pathname).st_mtime):
-		#
-			self.size -= len(self[file_pathname])
-			self.history.remove(file_pathname)
-			del(self[file_pathname])
-		#
-
-		if (file_pathname in self):
-		#
-			var_return = self[file_pathname]
-			self.history.remove(file_pathname)
-			self.history.insert(0, file_pathname)
-		#
-
-		direct_cache.synchronized.release()
 
 		return var_return
 	#
 
 	def process_IN_CLOSE_WRITE(self, event):
 	#
-		direct_cache.synchronized.acquire()
-
-		self.size -= len(self[event.pathname])
-		self.history.remove(event.pathname)
-		del(self[event.pathname])
-
-		if (event.pathname in self.watched_files):
+		with direct_cache.synchronized:
 		#
-			direct_cache.watchmanager_instance.rm_watch(self.watched_files[event.pathname])
-			del(self.watched_files[event.pathname])
-		#
+			self.size -= len(self[event.pathname])
+			self.history.remove(event.pathname)
+			del(self[event.pathname])
 
-		direct_cache.synchronized.release()
+			if (event.pathname in self.watched_files):
+			#
+				direct_cache.watchmanager_instance.rm_watch(self.watched_files[event.pathname])
+				del(self.watched_files[event.pathname])
+			#
+		#
 	#
 
 	def return_instance(self):
@@ -213,27 +211,26 @@ The last "return_instance()" call will free the singleton reference.
 :since: v0.1.00
 		"""
 
-		direct_cache.synchronized.acquire()
-
-		if (direct_cache.instance != None):
+		with direct_cache.synchronized:
 		#
-			if (direct_cache.ref_count > 0): direct_cache.ref_count -= 1
-
-			if (direct_cache.ref_count == 0):
+			if (direct_cache.instance != None):
 			#
-				direct_cache.instance = None
-
-				if (direct_cache.pyinotify_instance != None):
+				if (direct_cache.ref_count > 0): direct_cache.ref_count -= 1
+	
+				if (direct_cache.ref_count == 0):
 				#
-					try: direct_cache.pyinotify_instance.stop()
-					except: pass
-
-					direct_cache.pyinotify_instance = None
+					direct_cache.instance = None
+	
+					if (direct_cache.pyinotify_instance != None):
+					#
+						try: direct_cache.pyinotify_instance.stop()
+						except: pass
+	
+						direct_cache.pyinotify_instance = None
+					#
 				#
 			#
 		#
-
-		direct_cache.synchronized.release()
 	#
 
 	def set_file(self, file_pathname, cache_entry):
@@ -247,47 +244,46 @@ Get the settings singleton.
 :since:  v0.1.00
 		"""
 
-		direct_cache.synchronized.acquire()
-
-		if (file_pathname not in self):
+		with direct_cache.synchronized:
 		#
-			is_valid = True
-
-			if (direct_cache.use_pyinotify):
+			if (file_pathname not in self):
 			#
-				inotify_result = direct_cache.watchmanager_instance.add_watch(file_pathname, IN_CLOSE_WRITE)
+				is_valid = True
 
-				if (inotify_result[file_pathname] < 0): is_valid = False
-				else: self.watched_files.update(inotify_result)
-			#
-			else: self.watched_files[file_pathname] = os.stat(file_pathname).st_mtime
+				if (direct_cache.use_pyinotify):
+				#
+					inotify_result = direct_cache.watchmanager_instance.add_watch(file_pathname, IN_CLOSE_WRITE)
 
-			if (is_valid):
+					if (inotify_result[file_pathname] < 0): is_valid = False
+					else: self.watched_files.update(inotify_result)
+				#
+				else: self.watched_files[file_pathname] = os.stat(file_pathname).st_mtime
+
+				if (is_valid):
+				#
+					self[file_pathname] = cache_entry
+					self.history.insert(0, file_pathname)
+					self.size += len(cache_entry)
+
+					if (self.size > self.cache_max_size):
+					#
+						key = self.history.pop()
+
+						self.size -= len(self[key])
+						del(self[key])
+					#
+				#
 			#
+			elif (self[file_pathname] != cache_entry):
+			#
+				self.size -= len(self[file_pathname])
+				self.history.remove(file_pathname)
+
 				self[file_pathname] = cache_entry
 				self.history.insert(0, file_pathname)
 				self.size += len(cache_entry)
-
-				if (self.size > self.cache_max_size):
-				#
-					key = self.history.pop()
-
-					self.size -= len(self[key])
-					del(self[key])
-				#
 			#
 		#
-		elif (self[file_pathname] != cache_entry):
-		#
-			self.size -= len(self[file_pathname])
-			self.history.remove(file_pathname)
-
-			self[file_pathname] = cache_entry
-			self.history.insert(0, file_pathname)
-			self.size += len(cache_entry)
-		#
-
-		direct_cache.synchronized.release()
 	#
 
 	@staticmethod
@@ -302,28 +298,27 @@ Get the cache singleton.
 :since:  v0.1.00
 		"""
 
-		direct_cache.synchronized.acquire()
-
-		if (direct_cache.instance == None):
+		with direct_cache.synchronized:
 		#
-			direct_cache.instance = direct_cache()
-
-			if (direct_cache.use_pyinotify):
+			if (direct_cache.instance == None):
 			#
-				if (direct_cache.watchmanager_instance == None): direct_cache.watchmanager_instance = WatchManager()
+				direct_cache.instance = direct_cache()
 
-				if (direct_cache.use_thread):
+				if (direct_cache.use_pyinotify):
 				#
-					direct_cache.pyinotify_instance = ThreadedNotifier(direct_cache.watchmanager_instance, direct_cache.instance, timeout = 5)
-					direct_cache.pyinotify_instance.start()
+					if (direct_cache.watchmanager_instance == None): direct_cache.watchmanager_instance = WatchManager()
+
+					if (direct_cache.use_thread):
+					#
+						direct_cache.pyinotify_instance = ThreadedNotifier(direct_cache.watchmanager_instance, direct_cache.instance, timeout = 5)
+						direct_cache.pyinotify_instance.start()
+					#
+					else: direct_cache.pyinotify_instance = Notifier(direct_cache.watchmanager_instance, direct_cache.instance, timeout = 5)
 				#
-				else: direct_cache.pyinotify_instance = Notifier(direct_cache.watchmanager_instance, direct_cache.instance, timeout = 5)
 			#
+
+			if (count): direct_cache.ref_count += 1
 		#
-
-		if (count): direct_cache.ref_count += 1
-
-		direct_cache.synchronized.release()
 
 		return direct_cache.instance
 	#
@@ -341,12 +336,11 @@ Set the filesystem change implementation to use.
 
 		global _direct_cache_mode
 
-		direct_cache.synchronized.acquire()
-
-		if (implementation == direct_cache.USE_INOTIFY and _direct_cache_mode == "inotify"): direct_cache.use_pyinotify = True
-		else: direct_cache.use_pyinotify = False
-
-		direct_cache.synchronized.release()
+		with direct_cache.synchronized:
+		#
+			if (implementation == direct_cache.USE_INOTIFY and _direct_cache_mode == "inotify"): direct_cache.use_pyinotify = True
+			else: direct_cache.use_pyinotify = False
+		#
 	#
 #
 

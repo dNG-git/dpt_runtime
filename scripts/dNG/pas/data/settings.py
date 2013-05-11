@@ -166,15 +166,14 @@ Get the settings singleton.
 :since:  v0.1.00
 		"""
 
-		direct_settings.synchronized.acquire()
-
-		if (direct_settings.instance == None):
+		with direct_settings.synchronized:
 		#
-			direct_settings.instance = direct_settings()
-			direct_settings.read_file("{0}/settings/core.json".format(direct_settings.instance['path_data']))
+			if (direct_settings.instance == None):
+			#
+				direct_settings.instance = direct_settings()
+				direct_settings.read_file("{0}/settings/core.json".format(direct_settings.instance['path_data']))
+			#
 		#
-
-		direct_settings.synchronized.release()
 
 		return direct_settings.instance
 	#

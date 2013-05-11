@@ -218,9 +218,10 @@ Get the loader instance.
 :since:  v0.1.00
 		"""
 
-		direct_named_loader.synchronized.acquire()
-		if (direct_named_loader.instance == None): direct_named_loader.instance = direct_named_loader()
-		direct_named_loader.synchronized.release()
+		with direct_named_loader.synchronized:
+		#
+			if (direct_named_loader.instance == None): direct_named_loader.instance = direct_named_loader()
+		#
 
 		return direct_named_loader.instance
 	#
