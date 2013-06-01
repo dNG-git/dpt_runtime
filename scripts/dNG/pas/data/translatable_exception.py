@@ -23,7 +23,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from dNG.pas.pythonback import direct_str
+from .binary import direct_binary
 from .exception import direct_exception
 from .text.l10n import direct_l10n
 
@@ -74,7 +74,7 @@ format_spec.
 :since: v0.1.00
 		"""
 
-		if (format_spec == "l10n_message"): return direct_str(self.l10n_message)
+		if (format_spec == "l10n_message"): return direct_binary.str(self.l10n_message)
 		else: direct_exception.__format__(self, format_spec)
 	#
 #

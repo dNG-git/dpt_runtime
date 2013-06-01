@@ -29,7 +29,7 @@ import os
 
 from dNG.data.file import direct_file
 from dNG.data.json_parser import direct_json_parser
-from dNG.pas.pythonback import direct_str
+from dNG.pas.data.binary import direct_binary
 
 class direct_settings(dict):
 #
@@ -72,10 +72,10 @@ Constructor __init__(direct_settings)
 
 		dict.__init__(self)
 
-		self['path_system'] = path.normpath("{0}/../../../..".format(direct_str(__file__)))
-		self['path_base'] = (direct_str(os.environ['dNGpath']) if ("dNGpath" in os.environ) else path.normpath("{0}/..".format(self['path_system'])))
-		self['path_data'] = (direct_str(os.environ['dNGpathData']) if ("dNGpathData" in os.environ) else path.normpath("{0}/data".format(self['path_base'])))
-		self['path_lang'] = (direct_str(os.environ['dNGpathLang']) if ("dNGpathLang" in os.environ) else path.normpath("{0}/lang".format(self['path_base'])))
+		self['path_system'] = path.normpath("{0}/../../../..".format(direct_binary.str(__file__)))
+		self['path_base'] = (direct_binary.str(os.environ['dNGpath']) if ("dNGpath" in os.environ) else path.normpath("{0}/..".format(self['path_system'])))
+		self['path_data'] = (direct_binary.str(os.environ['dNGpathData']) if ("dNGpathData" in os.environ) else path.normpath("{0}/data".format(self['path_base'])))
+		self['path_lang'] = (direct_binary.str(os.environ['dNGpathLang']) if ("dNGpathLang" in os.environ) else path.normpath("{0}/lang".format(self['path_base'])))
 	#
 
 	def get_dict(self):
@@ -147,11 +147,7 @@ Returns the value with the specified key or all settings.
 		"""
 
 		instance = direct_settings.get_instance()
-
-		if (key != None): var_return = (instance[key] if (key in instance) else default)
-		else: var_return = instance.get_dict()
-
-		return var_return
+		return (instance.get_dict() if (key == None) else dict.get(instance, key, default))
 	#
 
 	@staticmethod

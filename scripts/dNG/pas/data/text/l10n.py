@@ -24,13 +24,13 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 NOTE_END //n"""
 
 from os import path
-from threading import RLock
+from threading import local, RLock
 import re
 
 from dNG.data.file import direct_file
 from dNG.data.json_parser import direct_json_parser
+from dNG.pas.data.binary import direct_binary
 from dNG.pas.data.settings import direct_settings
-from dNG.pas.pythonback import direct_str
 
 class direct_l10n(dict):
 #
@@ -57,6 +57,10 @@ Default application language
 	instances = { }
 	"""
 L10n instances
+	"""
+	local = local()
+	"""
+Local data handle
 	"""
 	synchronized = RLock()
 	"""
@@ -180,7 +184,7 @@ Load the given language section.
 :since: v0.1.00
 		"""
 
-		file_basename = direct_str(file_basename)
+		file_basename = direct_binary.str(file_basename)
 		instance = direct_l10n.get_instance(lang)
 
 		file_pathname = ""
@@ -233,15 +237,11 @@ Returns the value with the specified key or $key if undefined.
 		"""
 
 		instance = direct_l10n.get_instance(lang)
-
-		if (default == None): var_return = (instance[key] if (key in instance) else key)
-		else: var_return = (instance[key] if (key in instance) else default)
-
-		return var_return
+		return dict.get(instance, key, (key if (default == None) else default))
 	#
 
 	@staticmethod
-	def get_default_lang(lang):
+	def get_default_lang():
 	#
 		"""
 Returns the defined default language of the current task.
@@ -250,7 +250,7 @@ Returns the defined default language of the current task.
 :since:  v0.1.00
 		"""
 
-		return direct_l10n.default_lang
+		return (direct_l10n.local.lang if (hasattr(direct_l10n.local, "lang")) else direct_l10n.default_lang)
 	#
 
 	@staticmethod
@@ -266,19 +266,14 @@ Get the l10n singleton for the given or default language.
 :since:  v0.1.00
 		"""
 
-		direct_l10n.synchronized.acquire()
-
-		if (lang == None and direct_l10n.default_lang != None): lang = direct_l10n.default_lang
-		elif (direct_l10n.default_lang == None): direct_l10n.default_lang = lang
-
-		if (lang == None):
+		with direct_l10n.synchronized:
 		#
-			direct_l10n.synchronized.release()
-			raise RuntimeError("Language not defined and default language is undefined.", 22)
-		#
-		elif (lang not in direct_l10n.instances): direct_l10n.instances[lang] = direct_l10n(lang)
+			if (lang == None): lang = direct_l10n.get_default_lang()
+			elif (direct_l10n.default_lang == None): direct_l10n.default_lang = lang
 
-		direct_l10n.synchronized.release()
+			if (lang == None): raise RuntimeError("Language not defined and default language is undefined.", 22)
+			elif (lang not in direct_l10n.instances): direct_l10n.instances[lang] = direct_l10n(lang)
+		#
 
 		return direct_l10n.instances[lang]
 	#
@@ -287,7 +282,7 @@ Get the l10n singleton for the given or default language.
 	def set_default_lang(lang):
 	#
 		"""
-Defines the default language of the current task.
+Defines the default language of the application.
 
 :param lang: Language code
 
@@ -295,6 +290,20 @@ Defines the default language of the current task.
 		"""
 
 		direct_l10n.default_lang = lang
+	#
+
+	@staticmethod
+	def set_thread_lang(lang):
+	#
+		"""
+Defines a default language for the calling thread.
+
+:param lang: Language code
+
+:since: v0.1.00
+		"""
+
+		direct_l10n.local.lang = lang
 	#
 
 	@staticmethod

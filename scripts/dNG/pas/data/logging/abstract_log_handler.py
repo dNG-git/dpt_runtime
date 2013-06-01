@@ -25,8 +25,8 @@ NOTE_END //n"""
 
 import logging, re, sys, traceback
 
+from dNG.pas.data.binary import direct_binary
 from dNG.pas.data.exception import direct_exception
-from dNG.pas.pythonback import direct_str
 
 class direct_abstract_log_handler(object):
 #
@@ -119,7 +119,7 @@ Get the formatted log message.
 		#
 		else:
 		#
-			data = direct_str(data)
+			data = direct_binary.str(data)
 			if (type(data) != str): data = repr(data)
 		#
 

@@ -26,8 +26,8 @@ NOTE_END //n"""
 from io import BytesIO
 from tempfile import TemporaryFile
 
+from dNG.pas.data.binary import direct_binary
 from dNG.pas.data.settings import direct_settings
-from dNG.pas.pythonback import direct_bytes
 
 class direct_byte_buffer(object):
 #
@@ -108,7 +108,7 @@ and return the number of bytes written.
 
 		if (self.file_ptr == None):
 		#
-			var_return = self.buffer.write(direct_bytes(b))
+			var_return = self.buffer.write(direct_binary.bytes(b))
 
 			if (self.buffer.tell() > self.file_threshold):
 			#
@@ -121,7 +121,7 @@ and return the number of bytes written.
 				self.buffer = None
 			#
 		#
-		else: var_return = self.file_ptr.write(direct_bytes(b))
+		else: var_return = self.file_ptr.write(direct_binary.bytes(b))
 
 		return var_return
 	#
