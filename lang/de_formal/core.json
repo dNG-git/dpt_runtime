@@ -1,6 +1,9 @@
 {
  "core_continue": "Vorgang fortsetzen",
 
+ "core_no": "Nein",
+ "core_yes": "Ja",
+
  "core_title_error": "Fehlermeldung",
  "core_title_error_critical": "Kritische Fehlermeldung",
  "core_title_error_details": "Weitere Informationen zur Fehlermeldung",

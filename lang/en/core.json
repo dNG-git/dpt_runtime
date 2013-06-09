@@ -1,5 +1,7 @@
 {
  "core_continue": "Continue task",
+ "core_no": "No",
+ "core_yes": "Yes",
 
  "core_title_error": "Error message",
  "core_title_error_critical": "Critical error message",

@@ -31,11 +31,12 @@ from dNG.data.file import direct_file
 from dNG.data.json_parser import direct_json_parser
 from dNG.pas.data.binary import direct_binary
 from dNG.pas.data.settings import direct_settings
+from dNG.pas.module.named_loader import direct_named_loader
 
 class direct_l10n(dict):
 #
 	"""
-Provides l10n (localisation) methods on top of an dict.
+Provides l10n (localization) methods on top of an dict.
 
 :author:    direct Netware Group
 :copyright: direct Netware Group - All rights reserved
@@ -134,18 +135,36 @@ Read all settings from the given file.
 :since: v0.1.00
 		"""
 
-		file_object = direct_file()
-		file_pathname = path.normpath(file_pathname)
+		cache_instance = direct_named_loader.get_singleton("dNG.pas.data.cache", False)
 
-		if (file_object.open(file_pathname, True, "r")):
+		try:
 		#
-			file_content = file_object.read()
-			file_object.close()
+			file_pathname = path.normpath(file_pathname)
+			file_content = (None if (cache_instance == None) else cache_instance.get_file(file_pathname))
 
-			file_content = file_content.replace("\r", "")
-			if ((not self.import_raw_json(file_content)) and direct_l10n.log_handler != None): direct_l10n.log_handler.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
+			if (file_content == None):
+			#
+				file_object = direct_file()
+
+				if (file_object.open(file_pathname, True, "r")):
+				#
+					file_content = file_object.read()
+					file_object.close()
+
+					file_content = file_content.replace("\r", "")
+					if (cache_instance != None): cache_instance.set_file(file_pathname, file_content)
+				#
+				elif (direct_l10n.log_handler != None): direct_l10n.log_handler.info("{0} not found".format(file_pathname))
+			#
+
+			if (file_content != None and (not self.import_raw_json(file_content)) and direct_l10n.log_handler != None): direct_l10n.log_handler.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
 		#
-		elif (direct_l10n.log_handler != None): direct_l10n.log_handler.info("{0} not found".format(file_pathname))
+		except Exception as handled_exception:
+		#
+			if (direct_l10n.log_handler != None): direct_l10n.log_handler.error(handled_exception)
+		#
+
+		if (cache_instance != None): cache_instance.return_instance()
 	#
 
 	def return_instance(self):

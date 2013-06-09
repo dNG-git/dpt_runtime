@@ -211,7 +211,6 @@ Read all settings from the given file.
 
 		file_pathname = path.normpath(file_pathname)
 		file_content = (None if (direct_settings.cache_instance == None) else direct_settings.cache_instance.get_file(file_pathname))
-		is_file_found = True
 
 		if (file_content == None):
 		#
@@ -226,14 +225,10 @@ Read all settings from the given file.
 				if (direct_settings.cache_instance != None): direct_settings.cache_instance.set_file(file_pathname, file_content)
 			#
 			elif (required): raise RuntimeError("{0} not found".format(file_pathname), 2)
-			else:
-			#
-				is_file_found = False
-				if (direct_settings.log_handler != None): direct_settings.log_handler.debug("{0} not found".format(file_pathname))
-			#
+			elif (direct_settings.log_handler != None): direct_settings.log_handler.debug("{0} not found".format(file_pathname))
 		#
 
-		if (is_file_found and (file_content == None or (not direct_settings.import_raw_json(file_content)))):
+		if (file_content != None and (not direct_settings.import_raw_json(file_content))):
 		#
 			if (required): raise RuntimeError("{0} is not a valid JSON encoded settings file".format(file_pathname), 61)
 			elif (direct_settings.log_handler != None): direct_settings.log_handler.warning("{0} is not a valid JSON encoded settings file".format(file_pathname))
