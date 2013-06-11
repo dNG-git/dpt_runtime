@@ -29,20 +29,22 @@ import mimetypes
 
 from dNG.data.file import direct_file
 from dNG.data.json_parser import direct_json_parser
-from dNG.pas.data.settings import direct_settings
 from dNG.pas.module.named_loader import direct_named_loader
+from .settings import direct_settings
+from .logging.log_line import direct_log_line
 
 class direct_mimetype(object):
 #
 	"""
 Provides MimeType related methods on top of Python basic ones.
 
-:author:    direct Netware Group
-:copyright: direct Netware Group - All rights reserved
-:package:   pas.core
-:since:     v0.1.01
-:license:   http://www.direct-netware.de/redirect.py?licenses;mpl2
-            Mozilla Public License, v. 2.0
+:author:     direct Netware Group
+:copyright:  direct Netware Group - All rights reserved
+:package:    pas
+:subpackage: core
+:since:      v0.1.01
+:license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
+             Mozilla Public License, v. 2.0
 	"""
 
 	instance = None
@@ -66,26 +68,10 @@ Constructor __init__(direct_mimetype)
 		"""
 Mimetype extension list
 		"""
-		self.log_handler = direct_named_loader.get_singleton("dNG.pas.data.logging.log_handler", False)
-		"""
-The log_handler is called whenever debug messages should be logged or errors
-happened.
-		"""
 		self.mimetypes = None
 		"""
 Mimetype definitions
 		"""
-	#
-
-	def __del__(self):
-	#
-		"""
-Destructor __del__(direct_mimetype)
-
-:since: v0.1.01
-		"""
-
-		if (self.log_handler != None): self.log_handler.return_instance()
 	#
 
 	def get(self, extension = None, mimetype = None):
@@ -184,13 +170,13 @@ Import a given JSON encoded string as an array of settings.
 					for extension in data[mimetype]['extensions']:
 					#
 						if (extension not in self.extensions): self.extensions[extension] = mimetype
-						elif (self.log_handler != None): self.log_handler.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[extension]))
+						else: direct_log_line.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[extension]))
 					#
 				# 
 				elif ("extension" in data[mimetype]):
 				#
 					if (data[mimetype]['extension'] not in self.extensions): self.extensions[data[mimetype]['extension']] = mimetype
-					elif (self.log_handler != None): self.log_handler.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[data[mimetype]['extension']]))
+					else: direct_log_line.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[data[mimetype]['extension']]))
 				#
 			#
 		#
@@ -227,16 +213,13 @@ Read all settings from the given file.
 					file_content = file_content.replace("\r", "")
 					if (cache_instance != None): cache_instance.set_file(file_pathname, file_content)
 				#
-				elif (self.log_handler != None): self.log_handler.info("{0} not found".format(file_pathname))
+				else: direct_log_line.info("{0} not found".format(file_pathname))
 			#
 			elif (self.mimetypes != None): file_content = None
 
-			if (file_content != None and (not self.import_raw_json(file_content)) and self.log_handler != None): self.log_handler.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
+			if (file_content != None and (not self.import_raw_json(file_content))): direct_log_line.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
 		#
-		except Exception as handled_exception:
-		#
-			if (self.log_handler != None): self.log_handler.error(handled_exception)
-		#
+		except Exception as handled_exception: direct_log_line.error(handled_exception)
 
 		if (cache_instance != None): cache_instance.return_instance()
 	#

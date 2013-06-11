@@ -33,12 +33,13 @@ class direct_abstract_log_handler(object):
 	"""
 The abstract log handler provides common variables and methods.
 
-:author:    direct Netware Group
-:copyright: direct Netware Group - All rights reserved
-:package:   pas.core
-:since:     v0.1.00
-:license:   http://www.direct-netware.de/redirect.py?licenses;mpl2
-            Mozilla Public License, v. 2.0
+:author:     direct Netware Group
+:copyright:  direct Netware Group - All rights reserved
+:package:    pas
+:subpackage: core
+:since:      v0.1.00
+:license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
+             Mozilla Public License, v. 2.0
 	"""
 
 	def __init__(self):

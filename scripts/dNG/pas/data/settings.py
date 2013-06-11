@@ -29,19 +29,20 @@ import os
 
 from dNG.data.file import direct_file
 from dNG.data.json_parser import direct_json_parser
-from dNG.pas.data.binary import direct_binary
+from .binary import direct_binary
 
 class direct_settings(dict):
 #
 	"""
 The settings singleton provides methods on top of an dict.
 
-:author:    direct Netware Group
-:copyright: direct Netware Group - All rights reserved
-:package:   pas.core
-:since:     v0.1.00
-:license:   http://www.direct-netware.de/redirect.py?licenses;mpl2
-            Mozilla Public License, v. 2.0
+:author:     direct Netware Group
+:copyright:  direct Netware Group - All rights reserved
+:package:    pas
+:subpackage: core
+:since:      v0.1.00
+:license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
+             Mozilla Public License, v. 2.0
 	"""
 
 	cache_instance = None

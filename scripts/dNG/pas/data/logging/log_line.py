@@ -31,12 +31,13 @@ class direct_log_line(object):
 "direct_log_line" provides static methods to log a single line to the active
 log handler.
 
-:author:    direct Netware Group
-:copyright: direct Netware Group - All rights reserved
-:package:   pas.core
-:since:     v0.1.00
-:license:   http://www.direct-netware.de/redirect.py?licenses;mpl2
-            Mozilla Public License, v. 2.0
+:author:     direct Netware Group
+:copyright:  direct Netware Group - All rights reserved
+:package:    pas
+:subpackage: core
+:since:      v0.1.00
+:license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
+             Mozilla Public License, v. 2.0
 	"""
 
 	@staticmethod

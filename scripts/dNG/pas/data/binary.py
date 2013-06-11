@@ -46,12 +46,13 @@ class direct_binary(object):
 Python 2.x and Python 3.x handle UTF-8 strings differently. This class
 abstracts this behaviour.
 
-:author:    direct Netware Group
-:copyright: (C) direct Netware Group - All rights reserved
-:package:   pas.core
-:since:     v0.1.00
-:license:   http://www.direct-netware.de/redirect.py?licenses;mpl2
-            Mozilla Public License, v. 2.0
+:author:     direct Netware Group
+:copyright:  (C) direct Netware Group - All rights reserved
+:package:    pas
+:subpackage: core
+:since:      v0.1.00
+:license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
+             Mozilla Public License, v. 2.0
 	"""
 
 	BYTES_TYPE = _PY_BYTES_TYPE

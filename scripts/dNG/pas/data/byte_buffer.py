@@ -26,8 +26,8 @@ NOTE_END //n"""
 from io import BytesIO
 from tempfile import TemporaryFile
 
-from dNG.pas.data.binary import direct_binary
-from dNG.pas.data.settings import direct_settings
+from .binary import direct_binary
+from .settings import direct_settings
 
 class direct_byte_buffer(object):
 #
@@ -36,12 +36,13 @@ class direct_byte_buffer(object):
 can call "read()", "seek()" and "write()". Note that this class is not thread
 safe.
 
-:author:    direct Netware Group
-:copyright: (C) direct Netware Group - All rights reserved
-:package:   pas.core
-:since:     v0.1.00
-:license:   http://www.direct-netware.de/redirect.py?licenses;mpl2
-            Mozilla Public License, v. 2.0
+:author:     direct Netware Group
+:copyright:  (C) direct Netware Group - All rights reserved
+:package:    pas
+:subpackage: core
+:since:      v0.1.00
+:license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
+             Mozilla Public License, v. 2.0
 	"""
 
 	def __init__(self):

@@ -43,12 +43,13 @@ class direct_named_loader(object):
 "direct_named_loader" provides singletons and objects based on a callable
 common name.
 
-:author:    direct Netware Group
-:copyright: direct Netware Group - All rights reserved
-:package:   pas.core
-:since:     v0.1.00
-:license:   http://www.direct-netware.de/redirect.py?licenses;mpl2
-            Mozilla Public License, v. 2.0
+:author:     direct Netware Group
+:copyright:  direct Netware Group - All rights reserved
+:package:    pas
+:subpackage: core
+:since:      v0.1.00
+:license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
+             Mozilla Public License, v. 2.0
 	"""
 
 	instance = None
@@ -284,7 +285,7 @@ Get the class name for the given common name.
 
 		var_return = None
 
-		( package, module_name) = module.rsplit(".", 1)
+		package = module.rsplit(".", 1)[0]
 
 		try:
 		#

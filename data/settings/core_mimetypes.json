@@ -65,7 +65,6 @@
  "application/x-hdf": { "extension": "hdf" },
  "application/x-ipk": { "extension": "ipk", "type": "archive" },
  "application/x-java-jnlp-file": { "extension": "jnlp" },
- "application/x-javascript": { "extension": "js" },
  "application/x-koan": { "extensions": [ "skd", "skm", "skp", "skt" ] },
  "application/x-latex": { "extension": "latex", "type": "document" },
  "application/x-netcdf": { "extensions": [ "cdf", "nc" ] },

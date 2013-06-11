@@ -26,7 +26,7 @@ NOTE_END //n"""
 from threading import RLock
 import os
 
-from dNG.pas.module.named_loader import direct_named_loader
+from .logging.log_line import direct_log_line
 
 try:
 #
@@ -42,12 +42,13 @@ if (_direct_cache_mode == "fs"):
 		"""
 Dummy ProcessEvent class for unsupported pyinotify
 
-:author:    direct Netware Group
-:copyright: direct Netware Group - All rights reserved
-:package:   pas.core
-:since:     v0.1.00
-:license:   http://www.direct-netware.de/redirect.py?licenses;mpl2
-            Mozilla Public License, v. 2.0
+:author:     direct Netware Group
+:copyright:  direct Netware Group - All rights reserved
+:package:    pas
+:subpackage: core
+:since:      v0.1.00
+:license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
+             Mozilla Public License, v. 2.0
 		"""
 
 		pass
@@ -56,14 +57,15 @@ Dummy ProcessEvent class for unsupported pyinotify
 class direct_cache(dict, ProcessEvent):
 #
 	"""
-The settings singleton provides methods on top of an dict.
+The cache singleton provides caching mechanisms.
 
-:author:    direct Netware Group
-:copyright: direct Netware Group - All rights reserved
-:package:   pas.core
-:since:     v0.1.00
-:license:   http://www.direct-netware.de/redirect.py?licenses;mpl2
-            Mozilla Public License, v. 2.0
+:author:     direct Netware Group
+:copyright:  direct Netware Group - All rights reserved
+:package:    pas
+:subpackage: core
+:since:      v0.1.00
+:license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
+             Mozilla Public License, v. 2.0
 	"""
 
 	USE_FS = 1
@@ -122,11 +124,6 @@ Max size of the cache
 		"""
 Holds a history of requests and updates (newest first)
 		"""
-		self.log_handler = direct_named_loader.get_singleton("dNG.pas.data.logging.log_handler", False)
-		"""
-The log_handler is called whenever debug messages should be logged or errors
-happened.
-		"""
 		self.size = 0
 		"""
 Size in bytes
@@ -136,28 +133,17 @@ Size in bytes
 pyinotify watch fds or dict with latest modified timestamps
 		"""
 
-		if (self.log_handler != None): self.log_handler.debug("pas.cache mode is '{0}'".format("inotify" if (direct_cache.use_pyinotify) else "fs"))
-	#
-
-	def __del__(self):
-	#
-		"""
-Destructor __del__(direct_cache)
-
-:since: v0.1.00
-		"""
-
-		if (self.log_handler != None): self.log_handler.return_instance()
+		direct_log_line.debug("pas.cache mode is '{0}'".format("inotify" if (direct_cache.use_pyinotify) else "fs"))
 	#
 
 	def get_file(self, file_pathname):
 	#
 		"""
-Get the settings singleton.
+Get the content from cache for the given file path and name.
 
-:param count: Count "get()" request
+:param file_pathname: Cached file path and name
 
-:return: (direct_settings) Object on success
+:return: (mixed) Cached entry; None if no hit or changed
 :since:  v0.1.00
 		"""
 
@@ -189,6 +175,14 @@ Get the settings singleton.
 
 	def process_IN_CLOSE_WRITE(self, event):
 	#
+		"""
+Handles "IN_CLOSE_WRITE" inotify events.
+
+:param event: Inotify event
+
+:since: v0.1.00
+		"""
+
 		with direct_cache.synchronized:
 		#
 			self.size -= len(self[event.pathname])
@@ -236,12 +230,12 @@ The last "return_instance()" call will free the singleton reference.
 	def set_file(self, file_pathname, cache_entry):
 	#
 		"""
-Get the settings singleton.
+Fill the cache for the given file path and name with the given cache entry.
 
-:param count: Count "get()" request
+:param file_pathname: File path and name
+:param cache_entry: Cache entry
 
-:return: (direct_settings) Object on success
-:since:  v0.1.00
+:since: v0.1.00
 		"""
 
 		with direct_cache.synchronized:

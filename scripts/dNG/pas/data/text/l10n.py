@@ -31,6 +31,7 @@ from dNG.data.file import direct_file
 from dNG.data.json_parser import direct_json_parser
 from dNG.pas.data.binary import direct_binary
 from dNG.pas.data.settings import direct_settings
+from dNG.pas.data.logging.log_line import direct_log_line
 from dNG.pas.module.named_loader import direct_named_loader
 
 class direct_l10n(dict):
@@ -38,19 +39,15 @@ class direct_l10n(dict):
 	"""
 Provides l10n (localization) methods on top of an dict.
 
-:author:    direct Netware Group
-:copyright: direct Netware Group - All rights reserved
-:package:   pas.core
-:since:     v0.1.00
-:license:   http://www.direct-netware.de/redirect.py?licenses;mpl2
-            Mozilla Public License, v. 2.0
+:author:     direct Netware Group
+:copyright:  direct Netware Group - All rights reserved
+:package:    pas
+:subpackage: core
+:since:      v0.1.00
+:license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
+             Mozilla Public License, v. 2.0
 	"""
 
-	log_handler = None
-	"""
-The log_handler is called whenever debug messages should be logged or errors
-happened.
-	"""
 	default_lang = None
 	"""
 Default application language
@@ -154,15 +151,12 @@ Read all settings from the given file.
 					file_content = file_content.replace("\r", "")
 					if (cache_instance != None): cache_instance.set_file(file_pathname, file_content)
 				#
-				elif (direct_l10n.log_handler != None): direct_l10n.log_handler.info("{0} not found".format(file_pathname))
+				else: direct_log_line.info("{0} not found".format(file_pathname))
 			#
 
-			if (file_content != None and (not self.import_raw_json(file_content)) and direct_l10n.log_handler != None): direct_l10n.log_handler.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
+			if (file_content != None and (not self.import_raw_json(file_content))): direct_log_line.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
 		#
-		except Exception as handled_exception:
-		#
-			if (direct_l10n.log_handler != None): direct_l10n.log_handler.error(handled_exception)
-		#
+		except Exception as handled_exception: direct_log_line.error(handled_exception)
 
 		if (cache_instance != None): cache_instance.return_instance()
 	#
@@ -323,20 +317,6 @@ Defines a default language for the calling thread.
 		"""
 
 		direct_l10n.local.lang = lang
-	#
-
-	@staticmethod
-	def set_log_handler(log_handler):
-	#
-		"""
-Sets the log_handler.
-
-:param log_handler: log_handler to use
-
-:since: v0.1.00
-		"""
-
-		direct_l10n.log_handler = log_handler
 	#
 #
 
