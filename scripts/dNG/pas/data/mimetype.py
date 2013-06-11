@@ -153,6 +153,7 @@ Import a given JSON encoded string as an array of settings.
 		if (data == None): var_return = False
 		else:
 		#
+			self.extensions = { }
 			self.mimetypes = { }
 
 			for mimetype in data:
