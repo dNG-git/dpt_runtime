@@ -78,6 +78,10 @@ file.
              Mozilla Public License, v. 2.0
 	"""
 
+	appender_defined = False
+	"""
+Append log file handlers only once
+	"""
 	instance = None
 	"""
 log_handler instance
@@ -138,29 +142,34 @@ Preserve the amount of files
 		self.logger = logging.getLogger(self.ident)
 		self.logger.setLevel(self.level)
 
-		if (direct_settings.is_defined("pas_core_log_pathname") and os.access(path.normpath(direct_settings.get("pas_core_log_pathname")), os.W_OK)): self.log_file_pathname = path.normpath(direct_settings.get("pas_core_log_pathname"))
-		elif (direct_settings.is_defined("pas_core_log_name") and (os.access(path.normpath("{0}/log/{1}".format(direct_settings.get("path_base"), direct_settings.get("pas_core_log_name"))), os.W_OK) or ((not os.access(path.normpath("{0}/log/{1}".format(direct_settings.get("path_base"), direct_settings.get("pas_core_log_name"))), os.F_OK)) and os.access(path.normpath("{0}/log".format(direct_settings.get("path_base"))), os.W_OK)))): self.log_file_pathname = path.normpath("{0}/log/{1}".format(direct_settings.get("path_base"), direct_settings.get("pas_core_log_name")))
-		else: self.log_file_pathname = path.normpath("{0}/pas.log".format(direct_settings.get("path_base")))
-
-		if (_direct_log_handler_mode == API_JAVA):
+		if (not direct_log_handler.appender_defined):
 		#
-			self.log_handler = RotatingFileHandler(SimpleLayout(), self.log_file_pathname)
-			self.log_handler.setLevel(self.level)
-			self.log_handler.setMaxBackupIndex(self.log_file_rotates)
-			self.log_handler.setMaximumFileSize(self.log_file_size_max)
+			if (direct_settings.is_defined("pas_core_log_pathname") and os.access(path.normpath(direct_settings.get("pas_core_log_pathname")), os.W_OK)): self.log_file_pathname = path.normpath(direct_settings.get("pas_core_log_pathname"))
+			elif (direct_settings.is_defined("pas_core_log_name") and (os.access(path.normpath("{0}/log/{1}".format(direct_settings.get("path_base"), direct_settings.get("pas_core_log_name"))), os.W_OK) or ((not os.access(path.normpath("{0}/log/{1}".format(direct_settings.get("path_base"), direct_settings.get("pas_core_log_name"))), os.F_OK)) and os.access(path.normpath("{0}/log".format(direct_settings.get("path_base"))), os.W_OK)))): self.log_file_pathname = path.normpath("{0}/log/{1}".format(direct_settings.get("path_base"), direct_settings.get("pas_core_log_name")))
+			else: self.log_file_pathname = path.normpath("{0}/pas.log".format(direct_settings.get("path_base")))
 
-			logger_root = logging.getRootLogger()
+			if (_direct_log_handler_mode == API_JAVA):
+			#
+				self.log_handler = RotatingFileHandler(SimpleLayout(), self.log_file_pathname)
+				self.log_handler.setLevel(self.level)
+				self.log_handler.setMaxBackupIndex(self.log_file_rotates)
+				self.log_handler.setMaximumFileSize(self.log_file_size_max)
 
-			if (len(logger_root.getAllAppenders()) < 1): logger_root.addAppender(self.log_handler)
-			else: self.logger.addAppender(self.log_handler)
-		#
-		else:
-		#
-			self.log_handler = RotatingFileHandler(self.log_file_pathname, maxBytes = self.log_file_size_max, backupCount = self.log_file_rotates)
-			logger_root = logging.getLogger()
+				logger_root = logging.getRootLogger()
 
-			if ((hasattr(logger_root, "hasHandlers") and logger_root.hasHandlers()) or (len(logger_root.handlers) > 0)): self.logger.addHandler(self.log_handler)
-			else: logger_root.addHandler(self.log_handler)
+				if (len(logger_root.getAllAppenders()) < 1): logger_root.addAppender(self.log_handler)
+				else: self.logger.addAppender(self.log_handler)
+			#
+			else:
+			#
+				self.log_handler = RotatingFileHandler(self.log_file_pathname, maxBytes = self.log_file_size_max, backupCount = self.log_file_rotates)
+				logger_root = logging.getLogger()
+
+				if ((hasattr(logger_root, "hasHandlers") and logger_root.hasHandlers()) or (len(logger_root.handlers) > 0)): self.logger.addHandler(self.log_handler)
+				else: logger_root.addHandler(self.log_handler)
+			#
+
+			direct_log_handler.appender_defined = True
 		#
 	#
 
