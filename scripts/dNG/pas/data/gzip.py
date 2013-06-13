@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.data.gzip
+dNG.pas.data.Gzip
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -26,12 +26,12 @@ NOTE_END //n"""
 from struct import pack
 from zlib import compressobj, crc32, Z_FINISH
 
-from .binary import direct_binary
+from .binary import Binary
 
-class direct_gzip(object):
+class Gzip(object):
 #
 	"""
-"direct_gzip" creates a Gzip compressed stream similar to the
+"Gzip" creates a Gzip compressed stream similar to the
 "zlib.compressobj" object.
 
 :author:     direct Netware Group
@@ -46,7 +46,7 @@ class direct_gzip(object):
 	def __init__(self, level = 6):
 	#
 		"""
-Constructor __init__(direct_gzip_compressor)
+Constructor __init__(Gzip)
 
 :since: v0.1.01
 		"""
@@ -72,7 +72,7 @@ Total size of compressed data
 		elif (level == 1): deflate_flag = 4
 		else: deflate_flag = 0
 
-		self.header = pack("<8s2B", direct_binary.bytes("\x1f\x8b" + ("\x00" if (level == 0) else "\x08") + "\x00\x00\x00\x00\x00"), deflate_flag, 255)
+		self.header = pack("<8s2B", Binary.bytes("\x1f\x8b" + ("\x00" if (level == 0) else "\x08") + "\x00\x00\x00\x00\x00"), deflate_flag, 255)
 
 	#
 
@@ -88,7 +88,7 @@ for at least part of the data in string.
 :since:  v0.1.01
 		"""
 
-		data = direct_binary.bytes(string)
+		data = Binary.bytes(string)
 
 		self.crc32 = (crc32(data) if (self.crc32 == None) else crc32(data, self.crc32))
 		self.size += len(data)
@@ -115,7 +115,7 @@ remaining compressed output is returned.
 		"""
 
 		if (mode != Z_FINISH): raise RuntimeError("Gzip flush only supports Z_FINISH", 1)
-		return self.compressor.flush(Z_FINISH)[:-4] + pack("<2I", self.crc32 & 0xffffffff, int(self.size % 4294967296))
+		return self.compressor.flush(Z_FINISH) + pack("<2I", self.crc32 & 0xffffffff, int(self.size % 4294967296))
 	#
 #
 

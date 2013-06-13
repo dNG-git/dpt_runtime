@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.data.cache
+dNG.pas.data.Cache
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -26,16 +26,16 @@ NOTE_END //n"""
 from threading import RLock
 import os
 
-from .logging.log_line import direct_log_line
+from .logging.log_line import LogLine
 
 try:
 #
 	from pyinotify import IN_CLOSE_WRITE, Notifier, ProcessEvent, ThreadedNotifier, WatchManager
-	_direct_cache_mode = "inotify"
+	_mode = "inotify"
 #
-except ImportError: _direct_cache_mode = "fs"
+except ImportError: _mode = "fs"
 
-if (_direct_cache_mode == "fs"):
+if (_mode == "fs"):
 #
 	class ProcessEvent(object):
 	#
@@ -54,7 +54,7 @@ Dummy ProcessEvent class for unsupported pyinotify
 		pass
 	#
 
-class direct_cache(dict, ProcessEvent):
+class Cache(dict, ProcessEvent):
 #
 	"""
 The cache singleton provides caching mechanisms.
@@ -109,7 +109,7 @@ pyinotify WatchManager instance
 	def __init__(self):
 	#
 		"""
-Constructor __init__(direct_cache)
+Constructor __init__(Cache)
 
 :since: v0.1.00
 		"""
@@ -133,7 +133,7 @@ Size in bytes
 pyinotify watch fds or dict with latest modified timestamps
 		"""
 
-		direct_log_line.debug("pas.cache mode is '{0}'".format("inotify" if (direct_cache.use_pyinotify) else "fs"))
+		LogLine.debug("pas.cache mode is '{0}'".format("inotify" if (Cache.use_pyinotify) else "fs"))
 	#
 
 	def get_file(self, file_pathname):
@@ -149,11 +149,11 @@ Get the content from cache for the given file path and name.
 
 		var_return = None
 
-		with direct_cache.synchronized:
+		with Cache.synchronized:
 		#
-			if (direct_cache.use_pyinotify):
+			if (Cache.use_pyinotify):
 			#
-				if (not direct_cache.use_thread): direct_cache.pyinotify_instance.check_events()
+				if (not Cache.use_thread): Cache.pyinotify_instance.check_events()
 			#
 			elif (file_pathname in self.watched_files and self.watched_files[file_pathname] != os.stat(file_pathname).st_mtime):
 			#
@@ -183,7 +183,7 @@ Handles "IN_CLOSE_WRITE" inotify events.
 :since: v0.1.00
 		"""
 
-		with direct_cache.synchronized:
+		with Cache.synchronized:
 		#
 			self.size -= len(self[event.pathname])
 			self.history.remove(event.pathname)
@@ -191,7 +191,7 @@ Handles "IN_CLOSE_WRITE" inotify events.
 
 			if (event.pathname in self.watched_files):
 			#
-				direct_cache.watchmanager_instance.rm_watch(self.watched_files[event.pathname])
+				Cache.watchmanager_instance.rm_watch(self.watched_files[event.pathname])
 				del(self.watched_files[event.pathname])
 			#
 		#
@@ -205,22 +205,22 @@ The last "return_instance()" call will free the singleton reference.
 :since: v0.1.00
 		"""
 
-		with direct_cache.synchronized:
+		with Cache.synchronized:
 		#
-			if (direct_cache.instance != None):
+			if (Cache.instance != None):
 			#
-				if (direct_cache.ref_count > 0): direct_cache.ref_count -= 1
+				if (Cache.ref_count > 0): Cache.ref_count -= 1
 	
-				if (direct_cache.ref_count == 0):
+				if (Cache.ref_count == 0):
 				#
-					direct_cache.instance = None
+					Cache.instance = None
 	
-					if (direct_cache.pyinotify_instance != None):
+					if (Cache.pyinotify_instance != None):
 					#
-						try: direct_cache.pyinotify_instance.stop()
+						try: Cache.pyinotify_instance.stop()
 						except: pass
 	
-						direct_cache.pyinotify_instance = None
+						Cache.pyinotify_instance = None
 					#
 				#
 			#
@@ -238,15 +238,15 @@ Fill the cache for the given file path and name with the given cache entry.
 :since: v0.1.00
 		"""
 
-		with direct_cache.synchronized:
+		with Cache.synchronized:
 		#
 			if (file_pathname not in self):
 			#
 				is_valid = True
 
-				if (direct_cache.use_pyinotify):
+				if (Cache.use_pyinotify):
 				#
-					inotify_result = direct_cache.watchmanager_instance.add_watch(file_pathname, IN_CLOSE_WRITE)
+					inotify_result = Cache.watchmanager_instance.add_watch(file_pathname, IN_CLOSE_WRITE)
 
 					if (inotify_result[file_pathname] < 0): is_valid = False
 					else: self.watched_files.update(inotify_result)
@@ -288,33 +288,33 @@ Get the cache singleton.
 
 :param count: Count "get()" request
 
-:return: (direct_cache) Object on success
+:return: (Cache) Object on success
 :since:  v0.1.00
 		"""
 
-		with direct_cache.synchronized:
+		with Cache.synchronized:
 		#
-			if (direct_cache.instance == None):
+			if (Cache.instance == None):
 			#
-				direct_cache.instance = direct_cache()
+				Cache.instance = Cache()
 
-				if (direct_cache.use_pyinotify):
+				if (Cache.use_pyinotify):
 				#
-					if (direct_cache.watchmanager_instance == None): direct_cache.watchmanager_instance = WatchManager()
+					if (Cache.watchmanager_instance == None): Cache.watchmanager_instance = WatchManager()
 
-					if (direct_cache.use_thread):
+					if (Cache.use_thread):
 					#
-						direct_cache.pyinotify_instance = ThreadedNotifier(direct_cache.watchmanager_instance, direct_cache.instance, timeout = 5)
-						direct_cache.pyinotify_instance.start()
+						Cache.pyinotify_instance = ThreadedNotifier(Cache.watchmanager_instance, Cache.instance, timeout = 5)
+						Cache.pyinotify_instance.start()
 					#
-					else: direct_cache.pyinotify_instance = Notifier(direct_cache.watchmanager_instance, direct_cache.instance, timeout = 5)
+					else: Cache.pyinotify_instance = Notifier(Cache.watchmanager_instance, Cache.instance, timeout = 5)
 				#
 			#
 
-			if (count): direct_cache.ref_count += 1
+			if (count): Cache.ref_count += 1
 		#
 
-		return direct_cache.instance
+		return Cache.instance
 	#
 
 	@staticmethod
@@ -328,12 +328,12 @@ Set the filesystem change implementation to use.
 :since: v0.1.00
 		"""
 
-		global _direct_cache_mode
+		global _mode
 
-		with direct_cache.synchronized:
+		with Cache.synchronized:
 		#
-			if (implementation == direct_cache.USE_INOTIFY and _direct_cache_mode == "inotify"): direct_cache.use_pyinotify = True
-			else: direct_cache.use_pyinotify = False
+			if (implementation == Cache.USE_INOTIFY and _mode == "inotify"): Cache.use_pyinotify = True
+			else: Cache.use_pyinotify = False
 		#
 	#
 #

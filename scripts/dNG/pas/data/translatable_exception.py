@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.data.translatable_exception
+dNG.pas.data.TranslatableException
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -23,15 +23,15 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from .binary import direct_binary
-from .exception import direct_exception
-from .text.l10n import direct_l10n
+from .binary import Binary
+from .traced_exception import TracedException
+from .text.l10n import L10n
 
-class direct_translatable_exception(direct_exception):
+class TranslatableException(TracedException):
 #
 	"""
-"direct_translatable_exception" gets a l10n message ID to translate the
-exception message to the selected language.
+"TranslatableException" gets a l10n message ID to translate the exception
+message to the selected language.
 
 :author:     direct Netware Group
 :copyright:  direct Netware Group - All rights reserved
@@ -45,7 +45,7 @@ exception message to the selected language.
 	def __init__(self, l10n_id, value = None, py_exception = None):
 	#
 		"""
-Constructor __init__(direct_translatable_exception)
+Constructor __init__(TranslatableException)
 
 :param l10n_id: L10n translatable key (prefixed with "errors_")
 :param value: Exception message value
@@ -54,14 +54,14 @@ Constructor __init__(direct_translatable_exception)
 :since: v0.1.00
 		"""
 
-		self.l10n_message = direct_l10n.get("errors_{0}".format(l10n_id), l10n_id)
+		self.l10n_message = L10n.get("errors_{0}".format(l10n_id), l10n_id)
 		"""
 Translated message
 		"""
 
 		if (value == None): value = self.l10n_message
 
-		direct_exception.__init__(self, value, py_exception)
+		TracedException.__init__(self, value, py_exception)
 	#
 
 	def __format__(self, format_spec):
@@ -75,8 +75,8 @@ format_spec.
 :since: v0.1.00
 		"""
 
-		if (format_spec == "l10n_message"): return direct_binary.str(self.l10n_message)
-		else: direct_exception.__format__(self, format_spec)
+		if (format_spec == "l10n_message"): return Binary.str(self.l10n_message)
+		else: TracedException.__format__(self, format_spec)
 	#
 #
 

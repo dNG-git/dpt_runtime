@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.data.binary
+dNG.pas.data.Binary
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ except:
 	_PY_UNICODE_TYPE = str
 #
 
-class direct_binary(object):
+class Binary(object):
 #
 	"""
 Python 2.x and Python 3.x handle UTF-8 strings differently. This class

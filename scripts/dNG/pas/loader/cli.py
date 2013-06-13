@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.loader.cli
+dNG.pas.loader.Cli
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -23,8 +23,9 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-import threading, time
 import gc
+import threading
+import time
 
 try: import signal
 except ImportError: pass
@@ -45,26 +46,26 @@ Mono/.NET based Python implementation
 try:
 #
 	import java.lang.System
-	_direct_cli_mode = IMPLEMENTATION_JAVA
+	_mode = IMPLEMENTATION_JAVA
 #
-except ImportError: _direct_cli_mode = None
+except ImportError: _mode = None
 
 try:
 #
 	import clr
 	clr.AddReferenceByPartialName("IronPython")
-	_direct_cli_mode = IMPLEMENTATION_MONO
+	_mode = IMPLEMENTATION_MONO
 #
 except ImportError: pass
 
-from dNG.pas.data.exception import direct_exception
+from dNG.pas.data.traced_exception import TracedException
 
-if (_direct_cli_mode == None): _direct_cli_mode = IMPLEMENTATION_PYTHON
+if (_mode == None): _mode = IMPLEMENTATION_PYTHON
 
-class direct_cli(object):
+class Cli(object):
 #
 	"""
-"direct_cli" makes it easy to build command line applications.
+"Cli" makes it easy to build command line applications.
 
 :author:     direct Netware Group
 :copyright:  direct Netware Group - All rights reserved
@@ -85,13 +86,13 @@ Callbacks for "shutdown()"
 	"""
 	instance = None
 	"""
-"direct_cli" instance
+"Cli" instance
 	"""
 
 	def __init__(self):
 	#
 		"""
-Constructor __init__(direct_cli)
+Constructor __init__(Cli)
 
 :since: v0.1.00
 		"""
@@ -114,7 +115,7 @@ Callable main loop without arguments
 Mainloop event
 		"""
 
-		direct_cli.instance = self
+		Cli.instance = self
 	#
 
 	def error(self, py_exception):
@@ -128,8 +129,8 @@ Prints the stack trace on this error event.
 :since:  v0.1.00
 		"""
 
-		if (isinstance(py_exception, direct_exception)): py_exception.print_stack_trace()
-		else: direct_exception.print_current_stack_trace()
+		if (isinstance(py_exception, TracedException)): py_exception.print_stack_trace()
+		else: TracedException.print_current_stack_trace()
 	#
 
 	def return_instance(self):
@@ -159,7 +160,7 @@ Executes registered callbacks for the active application.
 
 		self.arg_parser = None
 
-		for callback in direct_cli.callbacks_run:
+		for callback in Cli.callbacks_run:
 		#
 			try: callback(args)
 			except Exception as handled_exception: self.shutdown(handled_exception)
@@ -261,7 +262,7 @@ Cleanup unused objects
 
 		gc.collect()
 
-		for callback in direct_cli.callbacks_shutdown:
+		for callback in Cli.callbacks_shutdown:
 		#
 			try: callback()
 			except Exception as handled_exception: self.error(handled_exception)
@@ -278,11 +279,11 @@ Get the cli singleton.
 
 :param count: Count "get()" request
 
-:return: (direct_cli) Object on success
+:return: (Cli) Object on success
 :since:  v0.1.00
 		"""
 
-		return direct_cli.instance
+		return Cli.instance
 	#
 
 	@staticmethod
@@ -295,8 +296,8 @@ Returns the current Python engine (one of "java", "mono" and "py").
 :since:  v0.1.00
 		"""
 
-		global _direct_cli_mode
-		return _direct_cli_mode
+		global _mode
+		return _mode
 	#
 
 	@staticmethod
@@ -310,7 +311,7 @@ Register a callback for the application main loop.
 :since: v0.1.00
 		"""
 
-		direct_cli.instance.set_mainloop(py_function)
+		Cli.instance.set_mainloop(py_function)
 	#
 
 	@staticmethod
@@ -324,7 +325,7 @@ Register a callback for the application activation event.
 :since: v0.1.00
 		"""
 
-		direct_cli.callbacks_run.append(py_function)
+		Cli.callbacks_run.append(py_function)
 	#
 
 	@staticmethod
@@ -338,7 +339,7 @@ Register a callback for the application shutdown event.
 :since: v0.1.00
 		"""
 
-		direct_cli.callbacks_shutdown.append(py_function)
+		Cli.callbacks_shutdown.append(py_function)
 	#
 #
 
@@ -353,7 +354,7 @@ Callback function for OS signals.
 :since: v0.1.00
 	"""
 
-	if (direct_cli.instance != None): direct_cli.instance.signal(os_signal, stack_frame)
+	if (Cli.instance != None): Cli.instance.signal(os_signal, stack_frame)
 #
 
 if (hasattr(signal, "SIGABRT")): signal.signal(signal.SIGABRT, direct_cls_signal)

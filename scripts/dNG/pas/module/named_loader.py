@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.module.named_loader
+dNG.pas.module.NamedLoader
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -25,22 +25,23 @@ NOTE_END //n"""
 
 from os import path
 from threading import RLock
+import re
 
-_direct_named_loader_mode = "base"
+_mode = "base"
 
 try:
 
 	import importlib
-	_direct_named_loader_mode = "lib"
+	_mode = "lib"
 
 except ImportError: import imp
 
-from dNG.pas.data.settings import direct_settings
+from dNG.pas.data.settings import Settings
 
-class direct_named_loader(object):
+class NamedLoader(object):
 #
 	"""
-"direct_named_loader" provides singletons and objects based on a callable
+"NamedLoader" provides singletons and objects based on a callable
 common name.
 
 :author:     direct Netware Group
@@ -52,9 +53,14 @@ common name.
              Mozilla Public License, v. 2.0
 	"""
 
+	RE_CAMEL_CASE_SPLITTER = re.compile("([a-z0-9]|[A-Z]+(?![A-Z]+$))([A-Z])")
+	"""
+CamelCase RegExp
+	"""
+
 	instance = None
 	"""
-"direct_named_loader" instance
+"NamedLoader" instance
 	"""
 	log_handler = None
 	"""
@@ -73,7 +79,7 @@ Lock used in multi thread environments.
 	def __init__(self):
 	#
 		"""
-Constructor __init__(direct_named_loader)
+Constructor __init__(NamedLoader)
 
 :since: v0.1.00
 		"""
@@ -87,7 +93,7 @@ Base directory we search for python files.
 Underlying configuration array
 		"""
 
-		if (direct_settings.is_defined("pas_modules")): self.import_module_config(direct_settings.get("pas_modules"))
+		if (Settings.is_defined("pas_modules")): self.import_module_config(Settings.get("pas_modules"))
 	#
 
 	def get(self, common_name):
@@ -113,7 +119,7 @@ Returns the base directory for scanning and loading python files.
 :since:  v0.1.00
 		"""
 
-		if (self.base_dir == None): self.base_dir = direct_settings.get("path_system")
+		if (self.base_dir == None): self.base_dir = Settings.get("path_system")
 		return self.base_dir
 	#
 
@@ -147,7 +153,7 @@ Sets the base directory for scanning and loading python files.
 	#
 
 	@staticmethod
-	def get_class(common_name, classname_prefix = "direct_"):
+	def get_class(common_name):
 	#
 		"""
 Get the class name for the given common name.
@@ -162,20 +168,13 @@ Get the class name for the given common name.
 
 		var_return = None
 
-		loader = direct_named_loader.get_loader()
+		loader = NamedLoader.get_loader()
 
-		if (loader.is_registered(common_name)):
-		#
-			( package, module_name ) = loader.get(common_name).rsplit(".", 1)
-			classname = module_name
-		#
-		else:
-		#
-			( package, module_name ) = common_name.rsplit(".", 1)
-			classname = "{0}{1}".format(classname_prefix, module_name)
-		#
+		if (loader.is_registered(common_name)): ( package, classname ) = loader.get(common_name).rsplit(".", 1)
+		else: ( package, classname ) = common_name.rsplit(".", 1)
 
-		module = direct_named_loader.load_module("{0}.{1}".format(package, module_name))
+		module_name = NamedLoader.RE_CAMEL_CASE_SPLITTER.sub("\\1_\\2", classname).lower()
+		module = NamedLoader.load_module("{0}.{1}".format(package, module_name))
 
 		if (hasattr(module, classname)): var_return = getattr(module, classname)
 		return var_return
@@ -196,7 +195,7 @@ Returns a new instance based on its common name.
 
 		var_return = None
 
-		var_class = direct_named_loader.get_class(common_name)
+		var_class = NamedLoader.get_class(common_name)
 
 		if (var_class != None):
 		#
@@ -219,12 +218,12 @@ Get the loader instance.
 :since:  v0.1.00
 		"""
 
-		with direct_named_loader.synchronized:
+		with NamedLoader.synchronized:
 		#
-			if (direct_named_loader.instance == None): direct_named_loader.instance = direct_named_loader()
+			if (NamedLoader.instance == None): NamedLoader.instance = NamedLoader()
 		#
 
-		return direct_named_loader.instance
+		return NamedLoader.instance
 	#
 
 	@staticmethod
@@ -242,7 +241,7 @@ Returns a singleton based on its common name.
 
 		var_return = None
 
-		var_class = direct_named_loader.get_class(common_name)
+		var_class = NamedLoader.get_class(common_name)
 
 		if (var_class != None):
 		#
@@ -266,7 +265,7 @@ Checks if a common name is defined or can be resolved to a class name.
 :since:  v0.1.00
 		"""
 
-		return (False if (direct_named_loader.get_class(common_name) == None) else True)
+		return (False if (NamedLoader.get_class(common_name) == None) else True)
 	#
 
 	@staticmethod
@@ -289,13 +288,13 @@ Get the class name for the given common name.
 
 		try:
 		#
-			if (package not in direct_named_loader.module_list): direct_named_loader.load_package(package)
-			var_return = direct_named_loader.load_py_file(module)
-			if (var_return != None): direct_named_loader.module_list.append(module)
+			if (package not in NamedLoader.module_list): NamedLoader.load_package(package)
+			var_return = NamedLoader.load_py_file(module)
+			if (var_return != None): NamedLoader.module_list.append(module)
 		#
 		except Exception as handled_exception:
 		#
-			if (direct_named_loader.log_handler != None): direct_named_loader.log_handler.error(handled_exception)
+			if (NamedLoader.log_handler != None): NamedLoader.log_handler.error(handled_exception)
 		#
 
 		return var_return
@@ -319,12 +318,12 @@ Get the class name for the given common name.
 
 		try:
 		#
-			var_return = direct_named_loader.load_py_file(package)
-			if (var_return != None): direct_named_loader.module_list.append(package)
+			var_return = NamedLoader.load_py_file(package)
+			if (var_return != None): NamedLoader.module_list.append(package)
 		#
 		except Exception as handled_exception:
 		#
-			if (direct_named_loader.log_handler != None): direct_named_loader.log_handler.error(handled_exception)
+			if (NamedLoader.log_handler != None): NamedLoader.log_handler.error(handled_exception)
 		#
 
 		return var_return
@@ -344,10 +343,10 @@ Get the class name for the given common name.
 :since:  v0.1.00
 		"""
 
-		global _direct_named_loader_mode
+		global _mode
 
-		if (_direct_named_loader_mode == "lib"): return direct_named_loader.load_py_file_lib(py_name)
-		else: return direct_named_loader.load_py_file_base(py_name)
+		if (_mode == "lib"): return NamedLoader.load_py_file_lib(py_name)
+		else: return NamedLoader.load_py_file_base(py_name)
 	#
 
 	@staticmethod
@@ -374,7 +373,7 @@ Get the class name for the given common name.
 
 		try:
 		#
-			( file_obj, file_path, py_description ) = imp.find_module(py_file, [ path.normpath("{0}/{1}".format(direct_named_loader.get_loader().get_base_dir(), py_path)) ])
+			( file_obj, file_path, py_description ) = imp.find_module(py_file, [ path.normpath("{0}/{1}".format(NamedLoader.get_loader().get_base_dir(), py_path)) ])
 			var_return = imp.load_module(py_name, file_obj, file_path, py_description)
 			if (file_obj != None): file_obj.close()
 		#
@@ -385,7 +384,7 @@ Get the class name for the given common name.
 		if (exception != None):
 		#
 			var_return = None
-			if (direct_named_loader.log_handler != None): direct_named_loader.log_handler.error(exception)
+			if (NamedLoader.log_handler != None): NamedLoader.log_handler.error(exception)
 		#
 
 		return var_return
@@ -412,7 +411,7 @@ Get the class name for the given common name.
 		try: var_return = importlib.import_module(py_name)
 		except Exception as handled_exception: exception = handled_exception
 
-		if (exception != None and direct_named_loader.log_handler != None): direct_named_loader.log_handler.error(exception)
+		if (exception != None and NamedLoader.log_handler != None): NamedLoader.log_handler.error(exception)
 
 		return var_return
 	#
@@ -428,7 +427,7 @@ Sets the log_handler.
 :since: v0.1.00
 		"""
 
-		direct_named_loader.log_handler = log_handler
+		NamedLoader.log_handler = log_handler
 	#
 #
 

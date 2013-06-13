@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.data.mimetype
+dNG.pas.data.MimeType
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -27,13 +27,13 @@ from os import path
 from threading import RLock
 import mimetypes
 
-from dNG.data.file import direct_file
-from dNG.data.json_parser import direct_json_parser
-from dNG.pas.module.named_loader import direct_named_loader
-from .settings import direct_settings
-from .logging.log_line import direct_log_line
+from dNG.data.file import File
+from dNG.data.json_parser import JsonParser
+from dNG.pas.module.named_loader import NamedLoader
+from .settings import Settings
+from .logging.log_line import LogLine
 
-class direct_mimetype(object):
+class MimeType(object):
 #
 	"""
 Provides MimeType related methods on top of Python basic ones.
@@ -59,7 +59,7 @@ Lock used in multi thread environments.
 	def __init__(self):
 	#
 		"""
-Constructor __init__(direct_mimetype)
+Constructor __init__(MimeType)
 
 :since: v0.1.01
 		"""
@@ -147,7 +147,7 @@ Import a given JSON encoded string as an array of settings.
 
 		var_return = True
 
-		json_parser = direct_json_parser()
+		json_parser = JsonParser()
 		data = json_parser.json2data(json)
 
 		if (data == None): var_return = False
@@ -171,13 +171,13 @@ Import a given JSON encoded string as an array of settings.
 					for extension in data[mimetype]['extensions']:
 					#
 						if (extension not in self.extensions): self.extensions[extension] = mimetype
-						else: direct_log_line.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[extension]))
+						else: LogLine.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[extension]))
 					#
 				# 
 				elif ("extension" in data[mimetype]):
 				#
 					if (data[mimetype]['extension'] not in self.extensions): self.extensions[data[mimetype]['extension']] = mimetype
-					else: direct_log_line.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[data[mimetype]['extension']]))
+					else: LogLine.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[data[mimetype]['extension']]))
 				#
 			#
 		#
@@ -195,16 +195,16 @@ Read all settings from the given file.
 :since: v0.1.01
 		"""
 
-		cache_instance = direct_named_loader.get_singleton("dNG.pas.data.cache", False)
+		cache_instance = NamedLoader.get_singleton("dNG.pas.data.Cache", False)
 
 		try:
 		#
-			file_pathname = path.normpath("{0}/settings/core_mimetypes.json".format(direct_settings.get("path_data")))
+			file_pathname = path.normpath("{0}/settings/core_mimetypes.json".format(Settings.get("path_data")))
 			file_content = (None if (cache_instance == None) else cache_instance.get_file(file_pathname))
 
 			if (file_content == None):
 			#
-				file_object = direct_file()
+				file_object = File()
 
 				if (file_object.open(file_pathname, True, "r")):
 				#
@@ -214,13 +214,13 @@ Read all settings from the given file.
 					file_content = file_content.replace("\r", "")
 					if (cache_instance != None): cache_instance.set_file(file_pathname, file_content)
 				#
-				else: direct_log_line.info("{0} not found".format(file_pathname))
+				else: LogLine.info("{0} not found".format(file_pathname))
 			#
 			elif (self.mimetypes != None): file_content = None
 
-			if (file_content != None and (not self.import_raw_json(file_content))): direct_log_line.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
+			if (file_content != None and (not self.import_raw_json(file_content))): LogLine.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
 		#
-		except Exception as handled_exception: direct_log_line.error(handled_exception)
+		except Exception as handled_exception: LogLine.error(handled_exception)
 
 		if (cache_instance != None): cache_instance.return_instance()
 	#
@@ -238,25 +238,24 @@ destructor.
 	#
 
 	@staticmethod
-	def get_instance(lang = None, count = False):
+	def get_instance(count = False):
 	#
 		"""
-Get the l10n singleton for the given or default language.
+Get the MimeType singleton for the given or default language.
 
-:param lang: Language code
 :param count: Count "get()" request
 
-:return: (direct_l10n) Object on success
+:return: (MimeType) Object on success
 :since:  v0.1.01
 		"""
 
-		with direct_mimetype.synchronized:
+		with MimeType.synchronized:
 		#
-			if (direct_mimetype.instance == None): direct_mimetype.instance = direct_mimetype()
-			direct_mimetype.instance.refresh()
+			if (MimeType.instance == None): MimeType.instance = MimeType()
+			MimeType.instance.refresh()
 		#
 
-		return direct_mimetype.instance
+		return MimeType.instance
 	#
 #
 

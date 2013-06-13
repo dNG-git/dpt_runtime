@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.data.logging.abstract_log_handler
+dNG.pas.data.logging.AbstractLogHandler
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -23,12 +23,15 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-import logging, re, sys, traceback
+import logging
+import re
+import sys
+import traceback
 
-from dNG.pas.data.binary import direct_binary
-from dNG.pas.data.exception import direct_exception
+from dNG.pas.data.binary import Binary
+from dNG.pas.data.traced_exception import TracedException
 
-class direct_abstract_log_handler(object):
+class AbstractLogHandler(object):
 #
 	"""
 The abstract log handler provides common variables and methods.
@@ -45,7 +48,7 @@ The abstract log handler provides common variables and methods.
 	def __init__(self):
 	#
 		"""
-Constructor __init__(direct_abstract_log_handler)
+Constructor __init__(AbstractLogHandler)
 
 :since: v0.1.00
 		"""
@@ -108,7 +111,7 @@ Get the formatted log message.
 :since:  v0.1.00
 		"""
 
-		if (isinstance(data, direct_exception)): data = str(data)
+		if (isinstance(data, TracedException)): data = str(data)
 		elif (isinstance(data, Exception)):
 		#
 			try:
@@ -120,7 +123,7 @@ Get the formatted log message.
 		#
 		else:
 		#
-			data = direct_binary.str(data)
+			data = Binary.str(data)
 			if (type(data) != str): data = repr(data)
 		#
 

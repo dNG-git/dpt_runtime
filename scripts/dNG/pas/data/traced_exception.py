@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.data.exception
+dNG.pas.data.TracedException
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -23,12 +23,13 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-import traceback, sys
+import sys
+import traceback
 
-class direct_exception(Exception):
+class TracedException(Exception):
 #
 	"""
-The extended "direct_exception" is used to redirect exceptions to output
+The extended "Exception" is used to redirect exceptions to output
 streams.
 
 :author:     direct Netware Group
@@ -43,7 +44,7 @@ streams.
 	def __init__(self, value, py_exception = None):
 	#
 		"""
-Constructor __init__(direct_exception)
+Constructor __init__(Exception)
 
 :param value: Exception message value
 :param py_exception: Inner exception

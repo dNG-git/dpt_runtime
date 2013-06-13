@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.data.byte_buffer
+dNG.pas.data.ByteBuffer
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -26,14 +26,14 @@ NOTE_END //n"""
 from io import BytesIO
 from tempfile import TemporaryFile
 
-from .binary import direct_binary
-from .settings import direct_settings
+from .binary import Binary
+from .settings import Settings
 
-class direct_byte_buffer(object):
+class ByteBuffer(object):
 #
 	"""
-"direct_byte_buffer" holds data in memory until a threshold is exhausted. You
-can call "read()", "seek()" and "write()". Note that this class is not thread
+"ByteBuffer" holds data in memory until a threshold is exhausted. You can
+call "read()", "seek()" and "write()". Note that this class is not thread
 safe.
 
 :author:     direct Netware Group
@@ -48,7 +48,7 @@ safe.
 	def __init__(self):
 	#
 		"""
-Constructor __init__(direct_byte_buffer)
+Constructor __init__(ByteBuffer)
 
 :since: v0.1.00
 		"""
@@ -61,7 +61,7 @@ Internal byte buffer.
 		"""
 External file pointer.
 		"""
-		self.file_threshold = int(direct_settings.get("pas_core_byte_file_ptr_file_threshold", 5242880))
+		self.file_threshold = int(Settings.get("pas_core_byte_file_ptr_file_threshold", 5242880))
 		"""
 Threshold to write the internal buffer to an external file.
 		"""
@@ -109,7 +109,7 @@ and return the number of bytes written.
 
 		if (self.file_ptr == None):
 		#
-			var_return = self.buffer.write(direct_binary.bytes(b))
+			var_return = self.buffer.write(Binary.bytes(b))
 
 			if (self.buffer.tell() > self.file_threshold):
 			#
@@ -122,7 +122,7 @@ and return the number of bytes written.
 				self.buffer = None
 			#
 		#
-		else: var_return = self.file_ptr.write(direct_binary.bytes(b))
+		else: var_return = self.file_ptr.write(Binary.bytes(b))
 
 		return var_return
 	#

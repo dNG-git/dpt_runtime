@@ -27,11 +27,11 @@ from os import path
 from threading import RLock
 import os
 
-from dNG.data.file import direct_file
-from dNG.data.json_parser import direct_json_parser
-from .binary import direct_binary
+from dNG.data.file import File
+from dNG.data.json_parser import JsonParser
+from .binary import Binary
 
-class direct_settings(dict):
+class Settings(dict):
 #
 	"""
 The settings singleton provides methods on top of an dict.
@@ -66,17 +66,17 @@ Lock used in multi thread environments.
 	def __init__(self):
 	#
 		"""
-Constructor __init__(direct_settings)
+Constructor __init__(Settings)
 
 :since: v0.1.00
 		"""
 
 		dict.__init__(self)
 
-		self['path_system'] = path.normpath("{0}/../../../..".format(direct_binary.str(__file__)))
-		self['path_base'] = (direct_binary.str(os.environ['dNGpath']) if ("dNGpath" in os.environ) else path.normpath("{0}/..".format(self['path_system'])))
-		self['path_data'] = (direct_binary.str(os.environ['dNGpathData']) if ("dNGpathData" in os.environ) else path.normpath("{0}/data".format(self['path_base'])))
-		self['path_lang'] = (direct_binary.str(os.environ['dNGpathLang']) if ("dNGpathLang" in os.environ) else path.normpath("{0}/lang".format(self['path_base'])))
+		self['path_system'] = path.normpath("{0}/../../../..".format(Binary.str(__file__)))
+		self['path_base'] = (Binary.str(os.environ['dNGpath']) if ("dNGpath" in os.environ) else path.normpath("{0}/..".format(self['path_system'])))
+		self['path_data'] = (Binary.str(os.environ['dNGpathData']) if ("dNGpathData" in os.environ) else path.normpath("{0}/data".format(self['path_base'])))
+		self['path_lang'] = (Binary.str(os.environ['dNGpathLang']) if ("dNGpathLang" in os.environ) else path.normpath("{0}/lang".format(self['path_base'])))
 	#
 
 	def get_dict(self):
@@ -131,7 +131,7 @@ Checks if a given key is a defined setting.
 :since:  v0.1.00
 		"""
 
-		return (key in direct_settings.get_instance())
+		return (key in Settings.get_instance())
 	#
 
 	@staticmethod
@@ -147,7 +147,7 @@ Returns the value with the specified key or all settings.
 :since:  v0.1.00
 		"""
 
-		instance = direct_settings.get_instance()
+		instance = Settings.get_instance()
 		return (instance.get_dict() if (key == None) else dict.get(instance, key, default))
 	#
 
@@ -159,20 +159,20 @@ Get the settings singleton.
 
 :param count: Count "get()" request
 
-:return: (direct_settings) Object on success
+:return: (Settings) Object on success
 :since:  v0.1.00
 		"""
 
-		with direct_settings.synchronized:
+		with Settings.synchronized:
 		#
-			if (direct_settings.instance == None):
+			if (Settings.instance == None):
 			#
-				direct_settings.instance = direct_settings()
-				direct_settings.read_file("{0}/settings/core.json".format(direct_settings.instance['path_data']))
+				Settings.instance = Settings()
+				Settings.read_file("{0}/settings/core.json".format(Settings.instance['path_data']))
 			#
 		#
 
-		return direct_settings.instance
+		return Settings.instance
 	#
 
 	@staticmethod
@@ -189,11 +189,11 @@ Import a given JSON encoded string as an dict of settings.
 
 		var_return = True
 
-		json_parser = direct_json_parser()
+		json_parser = JsonParser()
 		data = json_parser.json2data(json)
 
 		if (data == None): var_return = False
-		else: direct_settings.get_instance().update(data)
+		else: Settings.get_instance().update(data)
 
 		return var_return
 	#
@@ -211,11 +211,11 @@ Read all settings from the given file.
 		"""
 
 		file_pathname = path.normpath(file_pathname)
-		file_content = (None if (direct_settings.cache_instance == None) else direct_settings.cache_instance.get_file(file_pathname))
+		file_content = (None if (Settings.cache_instance == None) else Settings.cache_instance.get_file(file_pathname))
 
 		if (file_content == None):
 		#
-			file_object = direct_file()
+			file_object = File()
 
 			if (file_object.open(file_pathname, True, "r")):
 			#
@@ -223,16 +223,16 @@ Read all settings from the given file.
 				file_object.close()
 
 				file_content = file_content.replace("\r", "")
-				if (direct_settings.cache_instance != None): direct_settings.cache_instance.set_file(file_pathname, file_content)
+				if (Settings.cache_instance != None): Settings.cache_instance.set_file(file_pathname, file_content)
 			#
 			elif (required): raise RuntimeError("{0} not found".format(file_pathname), 2)
-			elif (direct_settings.log_handler != None): direct_settings.log_handler.debug("{0} not found".format(file_pathname))
+			elif (Settings.log_handler != None): Settings.log_handler.debug("{0} not found".format(file_pathname))
 		#
 
-		if (file_content != None and (not direct_settings.import_raw_json(file_content))):
+		if (file_content != None and (not Settings.import_raw_json(file_content))):
 		#
 			if (required): raise RuntimeError("{0} is not a valid JSON encoded settings file".format(file_pathname), 61)
-			elif (direct_settings.log_handler != None): direct_settings.log_handler.warning("{0} is not a valid JSON encoded settings file".format(file_pathname))
+			elif (Settings.log_handler != None): Settings.log_handler.warning("{0} is not a valid JSON encoded settings file".format(file_pathname))
 		#
 	#
 
@@ -248,7 +248,7 @@ Sets the value for the specified key.
 :since: v0.1.00
 		"""
 
-		direct_settings.get_instance()[key] = value
+		Settings.get_instance()[key] = value
 	#
 
 	@staticmethod
@@ -262,8 +262,8 @@ Sets the cache instance.
 :since: v0.1.00
 		"""
 
-		if (direct_settings.log_handler != None): direct_settings.log_handler.debug("#echo(__FILEPATH__)# -settings.set_cache(cache_instance)- (#echo(__LINE__)#)")
-		direct_settings.cache_instance = cache_instance
+		if (Settings.log_handler != None): Settings.log_handler.debug("#echo(__FILEPATH__)# -settings.set_cache(cache_instance)- (#echo(__LINE__)#)")
+		Settings.cache_instance = cache_instance
 	#
 
 	@staticmethod
@@ -277,7 +277,7 @@ Sets the log_handler.
 :since: v0.1.00
 		"""
 
-		direct_settings.log_handler = log_handler
+		Settings.log_handler = log_handler
 	#
 
 	@staticmethod

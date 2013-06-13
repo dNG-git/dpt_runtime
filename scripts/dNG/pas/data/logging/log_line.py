@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.data.logging.log_line
+dNG.pas.data.logging.LogLine
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -23,13 +23,13 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from dNG.pas.module.named_loader import direct_named_loader
+from dNG.pas.module.named_loader import NamedLoader
 
-class direct_log_line(object):
+class LogLine(object):
 #
 	"""
-"direct_log_line" provides static methods to log a single line to the active
-log handler.
+"LogLine" provides static methods to log a single line to the active log
+handler.
 
 :author:     direct Netware Group
 :copyright:  direct Netware Group - All rights reserved
@@ -51,7 +51,7 @@ Debug message method
 :since: v0.1.00
 		"""
 
-		log_handler = direct_named_loader.get_singleton("dNG.pas.data.logging.log_handler", False)
+		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
 
 		if (log_handler != None):
 		#
@@ -71,7 +71,7 @@ Error message method
 :since: v0.1.00
 		"""
 
-		log_handler = direct_named_loader.get_singleton("dNG.pas.data.logging.log_handler", False)
+		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
 
 		if (log_handler != None):
 		#
@@ -91,7 +91,7 @@ Info message method
 :since: v0.1.00
 		"""
 
-		log_handler = direct_named_loader.get_singleton("dNG.pas.data.logging.log_handler", False)
+		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
 
 		if (log_handler != None):
 		#
@@ -111,7 +111,7 @@ Warning message method
 :since: v0.1.00
 		"""
 
-		log_handler = direct_named_loader.get_singleton("dNG.pas.data.logging.log_handler", False)
+		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
 
 		if (log_handler != None):
 		#

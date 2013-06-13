@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.data.text.l10n
+dNG.pas.data.text.Tmd5
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -28,9 +28,9 @@ from math import floor
 try: import hashlib
 except ImportError: import md5 as hashlib
 
-from dNG.pas.data.binary import direct_binary
+from dNG.pas.data.binary import Binary
 
-class direct_tmd5(object):
+class Tmd5(object):
 #
 	"""
 To increase security we are using two additional steps for MD5. All strings
@@ -63,8 +63,8 @@ Generate the triple MD5 hash for the data given.
 
 		var_return = ""
 
-		bytemix = direct_binary.str(bytemix)
-		data = direct_binary.str(data)
+		bytemix = Binary.str(bytemix)
+		data = Binary.str(data)
 		data_length = (len(data) if (type(data) == str) else 0)
 
 		if (type(bytemix) == str and data_length > 0):
@@ -94,19 +94,19 @@ it together to our result.
 			"""
 
 			part = ("".join(chr(ord(char) | ord(bytechar)) for char, bytechar in zip(data[:part_length][::-1], bytemix_expanded[:part_length])) if (bytemixing) else data[:part_length][::-1])
-			var_return = hashlib.md5(direct_binary.bytes(part)).hexdigest()
+			var_return = hashlib.md5(Binary.bytes(part)).hexdigest()
 
 			data_remaining -= part_length
 			return_length += part_length
 
 			part = ("".join(chr(ord(char) | ord(bytechar)) for char, bytechar in zip(data[return_length:part_length + return_length][::-1], bytemix_expanded[return_length:part_length + return_length])) if (bytemixing) else data[return_length:part_length + return_length][::-1])
-			var_return += hashlib.md5(direct_binary.bytes(part)).hexdigest()
+			var_return += hashlib.md5(Binary.bytes(part)).hexdigest()
 
 			data_remaining -= part_length
 			return_length += part_length
 
 			part = ("".join(chr(ord(char) | ord(bytechar)) for char, bytechar in zip(data[return_length:data_remaining + return_length][::-1], bytemix_expanded[return_length:data_remaining + return_length])) if (bytemixing) else data[return_length:data_remaining + return_length][::-1])
-			var_return += hashlib.md5(direct_binary.bytes(part)).hexdigest()
+			var_return += hashlib.md5(Binary.bytes(part)).hexdigest()
 		#
 
 		return var_return

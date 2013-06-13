@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.data.logging.log_handler
+dNG.pas.data.logging.LogHandler
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -28,8 +28,8 @@ from threading import RLock
 from time import strftime
 import os
 
-from .abstract_log_handler import direct_abstract_log_handler
-from dNG.pas.data.settings import direct_settings
+from dNG.pas.data.settings import Settings
+from .abstract_log_handler import AbstractLogHandler
 
 API_JAVA = 1
 """
@@ -47,11 +47,11 @@ try:
 	import logging
 
 	if (hasattr(logging, "logMultiprocessing")): logging.logMultiprocessing = False
-	_direct_log_handler_mode = API_PYTHON
+	_api_type = API_PYTHON
 #
-except ImportError: _direct_log_handler_mode = None
+except ImportError: _api_type = None
 
-if (_direct_log_handler_mode == None):
+if (_api_type == None):
 #
 	from org.apache.log4j import Logger as logging
 	from org.apache.log4j import RollingFileAppender as RotatingFileHandler
@@ -60,14 +60,13 @@ if (_direct_log_handler_mode == None):
 	from org.apache.log4j.Level import FATAL as CRITICAL
 	from org.apache.log4j.Level import OFF as NOTSET
 	from org.apache.log4j.Level import WARN as WARNING
-	_direct_log_handler_mode = API_JAVA
+	_api_type = API_JAVA
 #
 
-class direct_log_handler(direct_abstract_log_handler):
+class LogHandler(AbstractLogHandler):
 #
 	"""
-"direct_log_handler" is the default logging endpoint writing messages to a
-file.
+"LogHandler" is the default logging endpoint writing messages to a file.
 
 :author:     direct Netware Group
 :copyright:  direct Netware Group - All rights reserved
@@ -98,14 +97,14 @@ Lock used in multi thread environments.
 	def __init__(self):
 	#
 		"""
-Constructor __init__(direct_log_handler)
+Constructor __init__(LogHandler)
 
 :since: v0.1.00
 		"""
 
-		global _direct_log_handler_mode, API_JAVA
+		global _api_type, API_JAVA
 
-		direct_abstract_log_handler.__init__(self)
+		AbstractLogHandler.__init__(self)
 
 		self.logger = None
 		"""
@@ -115,15 +114,15 @@ Logger object
 		"""
 Path and filename of the log file
 		"""
-		self.log_format_datetime = direct_settings.get("pas_core_log_datetime", "%m/%d/%Y %H:%M:%S")
+		self.log_format_datetime = Settings.get("pas_core_log_datetime", "%m/%d/%Y %H:%M:%S")
 		"""
 Date/Time format
 		"""
-		self.log_file_size_max = int(direct_settings.get("pas_core_log_size_max", 104857600))
+		self.log_file_size_max = int(Settings.get("pas_core_log_size_max", 104857600))
 		"""
 File size a log file gets rotated
 		"""
-		self.log_file_rotates = int(direct_settings.get("pas_core_log_rotates", 5))
+		self.log_file_rotates = int(Settings.get("pas_core_log_rotates", 5))
 		"""
 Preserve the amount of files
 		"""
@@ -135,20 +134,20 @@ Preserve the amount of files
 			"warning": WARNING
 		}
 
-		level = direct_settings.get("pas_core_log_level")
-		if (level == None): level = direct_settings.get("core_log_level", "warning")
+		level = Settings.get("pas_core_log_level")
+		if (level == None): level = Settings.get("core_log_level", "warning")
 		self.level = (self.levels[level] if (level in self.levels) else WARNING)
 
 		self.logger = logging.getLogger(self.ident)
 		self.logger.setLevel(self.level)
 
-		if (not direct_log_handler.appender_defined):
+		if (not LogHandler.appender_defined):
 		#
-			if (direct_settings.is_defined("pas_core_log_pathname") and os.access(path.normpath(direct_settings.get("pas_core_log_pathname")), os.W_OK)): self.log_file_pathname = path.normpath(direct_settings.get("pas_core_log_pathname"))
-			elif (direct_settings.is_defined("pas_core_log_name") and (os.access(path.normpath("{0}/log/{1}".format(direct_settings.get("path_base"), direct_settings.get("pas_core_log_name"))), os.W_OK) or ((not os.access(path.normpath("{0}/log/{1}".format(direct_settings.get("path_base"), direct_settings.get("pas_core_log_name"))), os.F_OK)) and os.access(path.normpath("{0}/log".format(direct_settings.get("path_base"))), os.W_OK)))): self.log_file_pathname = path.normpath("{0}/log/{1}".format(direct_settings.get("path_base"), direct_settings.get("pas_core_log_name")))
-			else: self.log_file_pathname = path.normpath("{0}/pas.log".format(direct_settings.get("path_base")))
+			if (Settings.is_defined("pas_core_log_pathname") and os.access(path.normpath(Settings.get("pas_core_log_pathname")), os.W_OK)): self.log_file_pathname = path.normpath(Settings.get("pas_core_log_pathname"))
+			elif (Settings.is_defined("pas_core_log_name") and (os.access(path.normpath("{0}/log/{1}".format(Settings.get("path_base"), Settings.get("pas_core_log_name"))), os.W_OK) or ((not os.access(path.normpath("{0}/log/{1}".format(Settings.get("path_base"), Settings.get("pas_core_log_name"))), os.F_OK)) and os.access(path.normpath("{0}/log".format(Settings.get("path_base"))), os.W_OK)))): self.log_file_pathname = path.normpath("{0}/log/{1}".format(Settings.get("path_base"), Settings.get("pas_core_log_name")))
+			else: self.log_file_pathname = path.normpath("{0}/pas.log".format(Settings.get("path_base")))
 
-			if (_direct_log_handler_mode == API_JAVA):
+			if (_api_type == API_JAVA):
 			#
 				self.log_handler = RotatingFileHandler(SimpleLayout(), self.log_file_pathname)
 				self.log_handler.setLevel(self.level)
@@ -169,7 +168,7 @@ Preserve the amount of files
 				else: logger_root.addHandler(self.log_handler)
 			#
 
-			direct_log_handler.appender_defined = True
+			LogHandler.appender_defined = True
 		#
 	#
 
@@ -182,10 +181,10 @@ Add the logger name given to the active log handler.
 :since:  v0.1.00
 		"""
 
-		global _direct_log_handler_mode, API_JAVA
+		global _api_type, API_JAVA
 
-		if (_direct_log_handler_mode == API_JAVA): logging.getLogger(name).addAppender(self.log_handler)
-		else: direct_abstract_log_handler.add_logger(self, name)
+		if (_api_type == API_JAVA): logging.getLogger(name).addAppender(self.log_handler)
+		else: AbstractLogHandler.add_logger(self, name)
 	#
 
 	def debug(self, data):
@@ -235,12 +234,12 @@ The last "return_instance()" call will free the singleton reference.
 :since: v0.1.00
 		"""
 
-		with direct_log_handler.synchronized:
+		with LogHandler.synchronized:
 		#
-			if (direct_log_handler.instance != None):
+			if (LogHandler.instance != None):
 			#
-				if (direct_log_handler.ref_count > 0): direct_log_handler.ref_count -= 1
-				if (direct_log_handler.ref_count == 0): direct_log_handler.instance = None
+				if (LogHandler.ref_count > 0): LogHandler.ref_count -= 1
+				if (LogHandler.ref_count == 0): LogHandler.instance = None
 			#
 		#
 	#
@@ -300,17 +299,17 @@ Get the log_handler singleton.
 
 :param count: Count "get()" request
 
-:return: (direct_log_handler) Object on success
+:return: (LogHandler) Object on success
 :since:  v0.1.00
 		"""
 
-		with direct_log_handler.synchronized:
+		with LogHandler.synchronized:
 		#
-			if (direct_log_handler.instance == None): direct_log_handler.instance = direct_log_handler()
-			if (count): direct_log_handler.ref_count += 1
+			if (LogHandler.instance == None): LogHandler.instance = LogHandler()
+			if (count): LogHandler.ref_count += 1
 		#
 
-		return direct_log_handler.instance
+		return LogHandler.instance
 	#
 #
 
