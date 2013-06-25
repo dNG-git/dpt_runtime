@@ -25,6 +25,7 @@ NOTE_END //n"""
 
 from os import path
 from threading import RLock
+from weakref import ref
 import mimetypes
 
 from dNG.data.file import File
@@ -47,13 +48,13 @@ Provides MimeType related methods on top of Python basic ones.
              Mozilla Public License, v. 2.0
 	"""
 
-	instance = None
-	"""
-Settings instance
-	"""
 	synchronized = RLock()
 	"""
 Lock used in multi thread environments.
+	"""
+	weakref_instance = None
+	"""
+MimeType weakref instance
 	"""
 
 	def __init__(self):
@@ -197,65 +198,54 @@ Read all settings from the given file.
 
 		cache_instance = NamedLoader.get_singleton("dNG.pas.data.Cache", False)
 
-		try:
+		file_pathname = path.normpath("{0}/settings/core_mimetypes.json".format(Settings.get("path_data")))
+		file_content = (None if (cache_instance == None) else cache_instance.get_file(file_pathname))
+
+		if (file_content == None):
 		#
-			file_pathname = path.normpath("{0}/settings/core_mimetypes.json".format(Settings.get("path_data")))
-			file_content = (None if (cache_instance == None) else cache_instance.get_file(file_pathname))
+			file_object = File()
 
-			if (file_content == None):
+			if (file_object.open(file_pathname, True, "r")):
 			#
-				file_object = File()
+				file_content = file_object.read()
+				file_object.close()
 
-				if (file_object.open(file_pathname, True, "r")):
-				#
-					file_content = file_object.read()
-					file_object.close()
-
-					file_content = file_content.replace("\r", "")
-					if (cache_instance != None): cache_instance.set_file(file_pathname, file_content)
-				#
-				else: LogLine.info("{0} not found".format(file_pathname))
+				file_content = file_content.replace("\r", "")
+				if (cache_instance != None): cache_instance.set_file(file_pathname, file_content)
 			#
-			elif (self.mimetypes != None): file_content = None
-
-			if (file_content != None and (not self.import_raw_json(file_content))): LogLine.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
+			else: LogLine.info("{0} not found".format(file_pathname))
 		#
-		except Exception as handled_exception: LogLine.error(handled_exception)
+		elif (self.mimetypes != None): file_content = None
 
-		if (cache_instance != None): cache_instance.return_instance()
-	#
-
-	def return_instance(self):
-	#
-		"""
-The last "return_instance()" call will activate the Python singleton
-destructor.
-
-:since: v0.1.01
-		"""
-
-		pass
+		if (file_content != None and (not self.import_raw_json(file_content))): LogLine.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
 	#
 
 	@staticmethod
-	def get_instance(count = False):
+	def get_instance():
 	#
 		"""
 Get the MimeType singleton for the given or default language.
-
-:param count: Count "get()" request
 
 :return: (MimeType) Object on success
 :since:  v0.1.01
 		"""
 
+		var_return = None
+
 		with MimeType.synchronized:
 		#
-			if (MimeType.instance == None): MimeType.instance = MimeType()
-			MimeType.instance.refresh()
+			if (MimeType.weakref_instance != None): var_return = MimeType.weakref_instance()
+
+			if (var_return == None):
+			#
+				var_return = MimeType()
+				MimeType.weakref_instance = ref(var_return)
+			#
+
+			var_return.refresh()
 		#
 
-		return MimeType.instance
+		return var_return
 	#
 #
 

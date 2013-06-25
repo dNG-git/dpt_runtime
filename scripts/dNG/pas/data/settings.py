@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.data.settings
+dNG.pas.data.Settings
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -92,18 +92,6 @@ Get the underlying settings dict.
 		return self
 	#
 
-	def return_instance(self):
-	#
-		"""
-The last "return_instance()" call will activate the Python singleton
-destructor.
-
-:since: v0.1.00
-		"""
-
-		pass
-	#
-
 	def set_dict(self, settings):
 	#
 		"""
@@ -152,16 +140,16 @@ Returns the value with the specified key or all settings.
 	#
 
 	@staticmethod
-	def get_instance(count = False):
+	def get_instance():
 	#
 		"""
 Get the settings singleton.
 
-:param count: Count "get()" request
-
 :return: (Settings) Object on success
 :since:  v0.1.00
 		"""
+
+		var_return = None
 
 		with Settings.synchronized:
 		#

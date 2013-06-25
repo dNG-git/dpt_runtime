@@ -24,6 +24,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 NOTE_END //n"""
 
 from threading import RLock
+from weakref import ref
 import os
 
 from .logging.log_line import LogLine
@@ -77,17 +78,9 @@ Use filesystem mtimes to detect changes
 Use inotify to detect changes
 	"""
 
-	instance = None
-	"""
-Cache instance
-	"""
 	pyinotify_instance = None
 	"""
 pyinotify instance
-	"""
-	ref_count = 0
-	"""
-Instances used
 	"""
 	synchronized = RLock()
 	"""
@@ -104,6 +97,10 @@ Use pyinotify if available
 	watchmanager_instance = None
 	"""
 pyinotify WatchManager instance
+	"""
+	weakref_instance = None
+	"""
+Cache weakref instance
 	"""
 
 	def __init__(self):
@@ -134,6 +131,23 @@ pyinotify watch fds or dict with latest modified timestamps
 		"""
 
 		LogLine.debug("pas.cache mode is '{0}'".format("inotify" if (Cache.use_pyinotify) else "fs"))
+	#
+
+	def __del__(self):
+	#
+		"""
+Destructor __del__(Cache)
+
+:since: v0.1.00
+		"""
+
+		if (Cache.pyinotify_instance != None):
+		#
+			try: Cache.pyinotify_instance.stop()
+			except: pass
+
+			Cache.pyinotify_instance = None
+		#
 	#
 
 	def get_file(self, file_pathname):
@@ -197,36 +211,6 @@ Handles "IN_CLOSE_WRITE" inotify events.
 		#
 	#
 
-	def return_instance(self):
-	#
-		"""
-The last "return_instance()" call will free the singleton reference.
-
-:since: v0.1.00
-		"""
-
-		with Cache.synchronized:
-		#
-			if (Cache.instance != None):
-			#
-				if (Cache.ref_count > 0): Cache.ref_count -= 1
-	
-				if (Cache.ref_count == 0):
-				#
-					Cache.instance = None
-	
-					if (Cache.pyinotify_instance != None):
-					#
-						try: Cache.pyinotify_instance.stop()
-						except: pass
-	
-						Cache.pyinotify_instance = None
-					#
-				#
-			#
-		#
-	#
-
 	def set_file(self, file_pathname, cache_entry):
 	#
 		"""
@@ -281,22 +265,25 @@ Fill the cache for the given file path and name with the given cache entry.
 	#
 
 	@staticmethod
-	def get_instance(count = True):
+	def get_instance():
 	#
 		"""
 Get the cache singleton.
-
-:param count: Count "get()" request
 
 :return: (Cache) Object on success
 :since:  v0.1.00
 		"""
 
+		var_return = None
+
 		with Cache.synchronized:
 		#
-			if (Cache.instance == None):
+			if (Cache.weakref_instance != None): var_return = Cache.weakref_instance()
+
+			if (var_return == None):
 			#
-				Cache.instance = Cache()
+				var_return = Cache()
+				Cache.weakref_instance = ref(var_return)
 
 				if (Cache.use_pyinotify):
 				#
@@ -310,11 +297,9 @@ Get the cache singleton.
 					else: Cache.pyinotify_instance = Notifier(Cache.watchmanager_instance, Cache.instance, timeout = 5)
 				#
 			#
-
-			if (count): Cache.ref_count += 1
 		#
 
-		return Cache.instance
+		return var_return
 	#
 
 	@staticmethod

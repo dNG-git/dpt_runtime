@@ -25,6 +25,7 @@ NOTE_END //n"""
 
 from os import path
 from threading import RLock
+from weakref import ref
 import re
 
 _mode = "base"
@@ -58,10 +59,6 @@ common name.
 CamelCase RegExp
 	"""
 
-	instance = None
-	"""
-"NamedLoader" instance
-	"""
 	log_handler = None
 	"""
 The log_handler is called whenever debug messages should be logged or errors
@@ -74,6 +71,10 @@ List of modules loaded
 	synchronized = RLock()
 	"""
 Lock used in multi thread environments.
+	"""
+	weakref_instance = None
+	"""
+"NamedLoader" weakref instance
 	"""
 
 	def __init__(self):
@@ -218,12 +219,20 @@ Get the loader instance.
 :since:  v0.1.00
 		"""
 
+		var_return = None
+
 		with NamedLoader.synchronized:
 		#
-			if (NamedLoader.instance == None): NamedLoader.instance = NamedLoader()
+			if (NamedLoader.weakref_instance != None): var_return = NamedLoader.weakref_instance()
+
+			if (var_return == None):
+			#
+				var_return = NamedLoader()
+				NamedLoader.weakref_instance = ref(var_return)
+			#
 		#
 
-		return NamedLoader.instance
+		return var_return
 	#
 
 	@staticmethod

@@ -52,12 +52,7 @@ Debug message method
 		"""
 
 		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
-
-		if (log_handler != None):
-		#
-			log_handler.debug(data)
-			log_handler.return_instance()
-		#
+		if (log_handler != None): log_handler.debug(data)
 	#
 
 	@staticmethod
@@ -72,12 +67,7 @@ Error message method
 		"""
 
 		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
-
-		if (log_handler != None):
-		#
-			log_handler.error(data)
-			log_handler.return_instance()
-		#
+		if (log_handler != None): log_handler.error(data)
 	#
 
 	@staticmethod
@@ -92,12 +82,7 @@ Info message method
 		"""
 
 		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
-
-		if (log_handler != None):
-		#
-			log_handler.info(data)
-			log_handler.return_instance()
-		#
+		if (log_handler != None): log_handler.info(data)
 	#
 
 	@staticmethod
@@ -112,12 +97,7 @@ Warning message method
 		"""
 
 		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
-
-		if (log_handler != None):
-		#
-			log_handler.warning(data)
-			log_handler.return_instance()
-		#
+		if (log_handler != None): log_handler.warning(data)
 	#
 #
 

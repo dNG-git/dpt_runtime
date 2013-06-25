@@ -23,6 +23,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+from weakref import ref
 import gc
 import threading
 import time
@@ -84,9 +85,9 @@ Callbacks for "run()"
 	"""
 Callbacks for "shutdown()"
 	"""
-	instance = None
+	weakref_instance = None
 	"""
-"Cli" instance
+"Cli" weakref instance
 	"""
 
 	def __init__(self):
@@ -115,7 +116,7 @@ Callable main loop without arguments
 Mainloop event
 		"""
 
-		Cli.instance = self
+		Cli.weakref_instance = ref(self)
 	#
 
 	def error(self, py_exception):
@@ -131,18 +132,6 @@ Prints the stack trace on this error event.
 
 		if (isinstance(py_exception, TracedException)): py_exception.print_stack_trace()
 		else: TracedException.print_current_stack_trace()
-	#
-
-	def return_instance(self):
-	#
-		"""
-The last "return_instance()" call will activate the Python singleton
-destructor.
-
-:since: v0.1.00
-		"""
-
-		pass
 	#
 
 	def run(self):
@@ -272,18 +261,16 @@ Cleanup unused objects
 	#
 
 	@staticmethod
-	def get_instance(count = False):
+	def get_instance():
 	#
 		"""
 Get the cli singleton.
-
-:param count: Count "get()" request
 
 :return: (Cli) Object on success
 :since:  v0.1.00
 		"""
 
-		return Cli.instance
+		return Cli.weakref_instance()
 	#
 
 	@staticmethod

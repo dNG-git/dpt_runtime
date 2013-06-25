@@ -26,6 +26,7 @@ NOTE_END //n"""
 from os import path
 from threading import RLock
 from time import strftime
+from weakref import ref
 import os
 
 from dNG.pas.data.settings import Settings
@@ -81,17 +82,13 @@ class LogHandler(AbstractLogHandler):
 	"""
 Append log file handlers only once
 	"""
-	instance = None
-	"""
-log_handler instance
-	"""
-	ref_count = 0
-	"""
-Instances used
-	"""
 	synchronized = RLock()
 	"""
 Lock used in multi thread environments.
+	"""
+	weakref_instance = None
+	"""
+log_handler weakref instance
 	"""
 
 	def __init__(self):
@@ -226,24 +223,6 @@ Info message method
 		if (self.level == DEBUG or self.level == INFO): self.write(INFO, data)
 	#
 
-	def return_instance(self):
-	#
-		"""
-The last "return_instance()" call will free the singleton reference.
-
-:since: v0.1.00
-		"""
-
-		with LogHandler.synchronized:
-		#
-			if (LogHandler.instance != None):
-			#
-				if (LogHandler.ref_count > 0): LogHandler.ref_count -= 1
-				if (LogHandler.ref_count == 0): LogHandler.instance = None
-			#
-		#
-	#
-
 	def warning(self, data):
 	#
 		"""
@@ -292,24 +271,29 @@ Warning message method
 	#
 
 	@staticmethod
-	def get_instance(count = True):
+	def get_instance():
 	#
 		"""
 Get the log_handler singleton.
-
-:param count: Count "get()" request
 
 :return: (LogHandler) Object on success
 :since:  v0.1.00
 		"""
 
+		var_return = None
+
 		with LogHandler.synchronized:
 		#
-			if (LogHandler.instance == None): LogHandler.instance = LogHandler()
-			if (count): LogHandler.ref_count += 1
+			if (LogHandler.weakref_instance != None): var_return = LogHandler.weakref_instance()
+
+			if (var_return == None):
+			#
+				var_return = LogHandler()
+				LogHandler.weakref_instance = ref(var_return)
+			#
 		#
 
-		return LogHandler.instance
+		return var_return
 	#
 #
 

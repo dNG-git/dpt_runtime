@@ -134,43 +134,25 @@ Read all settings from the given file.
 
 		cache_instance = NamedLoader.get_singleton("dNG.pas.data.Cache", False)
 
-		try:
+		file_pathname = path.normpath(file_pathname)
+		file_content = (None if (cache_instance == None) else cache_instance.get_file(file_pathname))
+
+		if (file_content == None):
 		#
-			file_pathname = path.normpath(file_pathname)
-			file_content = (None if (cache_instance == None) else cache_instance.get_file(file_pathname))
+			file_object = File()
 
-			if (file_content == None):
+			if (file_object.open(file_pathname, True, "r")):
 			#
-				file_object = File()
+				file_content = file_object.read()
+				file_object.close()
 
-				if (file_object.open(file_pathname, True, "r")):
-				#
-					file_content = file_object.read()
-					file_object.close()
-
-					file_content = file_content.replace("\r", "")
-					if (cache_instance != None): cache_instance.set_file(file_pathname, file_content)
-				#
-				else: LogLine.info("{0} not found".format(file_pathname))
+				file_content = file_content.replace("\r", "")
+				if (cache_instance != None): cache_instance.set_file(file_pathname, file_content)
 			#
-
-			if (file_content != None and (not self.import_raw_json(file_content))): LogLine.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
+			else: LogLine.info("{0} not found".format(file_pathname))
 		#
-		except Exception as handled_exception: LogLine.error(handled_exception)
 
-		if (cache_instance != None): cache_instance.return_instance()
-	#
-
-	def return_instance(self):
-	#
-		"""
-The last "return_instance()" call will activate the Python singleton
-destructor.
-
-:since: v0.1.00
-		"""
-
-		pass
+		if (file_content != None and (not self.import_raw_json(file_content))): LogLine.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
 	#
 
 	def write_file(self, file_pathname, template_pathname):
@@ -267,13 +249,12 @@ Returns the defined default language of the current task.
 	#
 
 	@staticmethod
-	def get_instance(lang = None, count = False):
+	def get_instance(lang = None):
 	#
 		"""
 Get the l10n singleton for the given or default language.
 
 :param lang: Language code
-:param count: Count "get()" request
 
 :return: (L10n) Object on success
 :since:  v0.1.00
