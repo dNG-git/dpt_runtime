@@ -1,6 +1,6 @@
 {
  "core_back": "Back",
- "core_continue": "Continue task",
+ "core_continue": "Continue",
 
  "core_no": "No",
  "core_yes": "Yes",
@@ -8,6 +8,7 @@
  "core_title_error": "Error message",
  "core_title_error_critical": "Critical error message",
  "core_title_error_details": "Additional error information",
+ "core_title_task_done": "Confirmation",
 
  "errors_core_access_denied": "Access to the restricted function has been denied by the system.",
  "errors_core_database_error": "The application encountered an database communication error and is unable complete the current task.",

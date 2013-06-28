@@ -149,8 +149,6 @@ Get the settings singleton.
 :since:  v0.1.00
 		"""
 
-		var_return = None
-
 		with Settings.synchronized:
 		#
 			if (Settings.instance == None):

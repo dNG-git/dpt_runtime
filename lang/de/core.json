@@ -1,6 +1,6 @@
 {
  "core_back": "Zurück",
- "core_continue": "Vorgang fortsetzen",
+ "core_continue": "Fortfahren",
 
  "core_no": "Nein",
  "core_yes": "Ja",
@@ -8,6 +8,7 @@
  "core_title_error": "Fehlermeldung",
  "core_title_error_critical": "Kritische Fehlermeldung",
  "core_title_error_details": "Weitere Informationen zur Fehlermeldung",
+ "core_title_task_done": "Bestätigung",
 
  "errors_core_access_denied": "Der Zugriff auf die gesicherte Funktion wurde durch das System verweigert.",
  "errors_core_database_error": "Die Anwendung hat einen Fehler während der Datenbankkommunikation festgestellt und kann die derzeitige Aufgabe nicht beenden.",
