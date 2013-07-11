@@ -92,7 +92,6 @@ Underlying l10n dict
 		"""
 Returns the language code of this instance.
 
-:access: protected
 :return: (str) Language code
 :since:  v0.1.00
 		"""
@@ -111,15 +110,15 @@ Import a given JSON encoded string as an array of settings.
 :since:  v0.1.00
 		"""
 
-		var_return = True
+		_return = True
 
 		json_parser = JsonParser()
 		data = json_parser.json2data(json)
 
-		if (data == None): var_return = False
+		if (data == None): _return = False
 		else: self.update(data)
 
-		return var_return
+		return _return
 	#
 
 	def read_file(self, file_pathname):

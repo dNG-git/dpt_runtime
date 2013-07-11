@@ -24,22 +24,21 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 NOTE_END //n"""
 
 from weakref import ref
-import gc
 import threading
 import time
 
 try: import signal
 except ImportError: pass
 
-IMPLEMENTATION_JAVA = 1
+_IMPLEMENTATION_JAVA = 1
 """
 Java based Python implementation
 """
-IMPLEMENTATION_PYTHON = 2
+_IMPLEMENTATION_PYTHON = 2
 """
 Native Python implementation
 """
-IMPLEMENTATION_MONO = 3
+_IMPLEMENTATION_MONO = 3
 """
 Mono/.NET based Python implementation
 """
@@ -47,21 +46,22 @@ Mono/.NET based Python implementation
 try:
 #
 	import java.lang.System
-	_mode = IMPLEMENTATION_JAVA
+	_mode = _IMPLEMENTATION_JAVA
 #
-except ImportError: _mode = None
+except ImportError: _mode = _IMPLEMENTATION_PYTHON
 
-try:
+if (_mode == _IMPLEMENTATION_PYTHON):
 #
-	import clr
-	clr.AddReferenceByPartialName("IronPython")
-	_mode = IMPLEMENTATION_MONO
+	try:
+	#
+		import clr
+		clr.AddReferenceByPartialName("IronPython")
+		_mode = _IMPLEMENTATION_MONO
+	#
+	except ImportError: pass
 #
-except ImportError: pass
 
 from dNG.pas.data.traced_exception import TracedException
-
-if (_mode == None): _mode = IMPLEMENTATION_PYTHON
 
 class Cli(object):
 #
@@ -75,6 +75,19 @@ class Cli(object):
 :since:      v0.1.00
 :license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
              Mozilla Public License, v. 2.0
+	"""
+
+	IMPLEMENTATION_JAVA = _IMPLEMENTATION_JAVA
+	"""
+Java based Python implementation
+	"""
+	IMPLEMENTATION_PYTHON = _IMPLEMENTATION_PYTHON
+	"""
+Native Python implementation
+	"""
+	IMPLEMENTATION_MONO = _IMPLEMENTATION_MONO
+	"""
+Mono/.NET based Python implementation
 	"""
 
 	callbacks_run = [ ]
@@ -119,18 +132,17 @@ Mainloop event
 		Cli.weakref_instance = ref(self)
 	#
 
-	def error(self, py_exception):
+	def error(self, _exception):
 	#
 		"""
 Prints the stack trace on this error event.
 
-:param py_exception: Inner exception
+:param _exception: Inner exception
 
-:access: protected
-:since:  v0.1.00
+:since: v0.1.00
 		"""
 
-		if (isinstance(py_exception, TracedException)): py_exception.print_stack_trace()
+		if (isinstance(_exception, TracedException)): _exception.print_stack_trace()
 		else: TracedException.print_current_stack_trace()
 	#
 
@@ -142,7 +154,7 @@ Executes registered callbacks for the active application.
 :since: v0.1.00
 		"""
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -cli.run()- (#echo(__LINE__)#)")
+		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -Cli.run()- (#echo(__LINE__)#)")
 
 		if (self.arg_parser != None and hasattr(self.arg_parser, "parse_args")): args = self.arg_parser.parse_args()
 		else: args = { }
@@ -155,52 +167,51 @@ Executes registered callbacks for the active application.
 			except Exception as handled_exception: self.shutdown(handled_exception)
 		#
 
+		Cli.callbacks_run = [ ]
+
 		try:
 		#
 			self.mainloop_event.set()
+			if (self.mainloop != None): self.mainloop()
 
-			if (self.mainloop == None):
+			active = True
+			main_thread = threading.current_thread()
+
+			while (active):
 			#
-				active = True
-				main_thread = threading.current_thread()
+				active = False
 
-				while (active):
+				try:
 				#
-					active = False
-
-					try:
+					for thread in threading.enumerate():
 					#
-						for thread in threading.enumerate():
-						#
-							if (thread != None and main_thread != thread and thread.is_alive() and (not thread.daemon)): thread.join()
-						#
+						if (thread != None and main_thread != thread and thread.is_alive() and (not thread.daemon)): thread.join()
 					#
-					except KeyboardInterrupt as handled_exception: raise
-					except: active = True
-
-					if (active): time.sleep(1)
 				#
+				except KeyboardInterrupt as handled_exception: raise
+				except: active = True
+
+				if (active): time.sleep(1)
 			#
-			else: self.mainloop()
 
 			self.shutdown()
 		#
 		except KeyboardInterrupt: self.shutdown()
 	#
 
-	def set_mainloop(self, py_function):
+	def set_mainloop(self, callback):
 	#
 		"""
 Register a callback for the application main loop.
 
-:param py_function: Python callback
+:param callback: Python callback
 
 :since: v0.1.00
 		"""
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -cli.set_mainloop(py_function)- (#echo(__LINE__)#)")
+		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -Cli.set_mainloop(callback)- (#echo(__LINE__)#)")
 
-		if (self.mainloop == None): self.mainloop = py_function
+		if (self.mainloop == None): self.mainloop = callback
 		else: raise RuntimeError("Main loop already registered")
 	#
 
@@ -217,7 +228,7 @@ Sets the log_handler.
 		self.log_handler = log_handler
 	#
 
-	def signal(self, os_signal, stack_frame):
+	def _signal(self, os_signal, stack_frame):
 	#
 		"""
 Handles an OS signal.
@@ -225,31 +236,28 @@ Handles an OS signal.
 :param os_signal: OS signal
 :param stack_frame: Stack frame
 
-:access: protected
-:since:  v0.1.00
+:since: v0.1.00
 		"""
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -cli.signal(os_signal, stack_frame)- (#echo(__LINE__)#)")
+		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -Cli._signal(os_signal, stack_frame)- (#echo(__LINE__)#)")
 		self.shutdown()
 	#
 
-	def shutdown(self, py_exception = None):
+	def shutdown(self, _exception = None):
 	#
 		"""
 Executes registered callbacks before shutting down this application.
 
-:param py_exception: Inner exception
+:param _exception: Inner exception
 
 :since: v0.1.00
 		"""
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -cli_handler.shutdown()- (#echo(__LINE__)#)")
+		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -Cli.shutdown()- (#echo(__LINE__)#)")
 
 		"""
 Cleanup unused objects
 		"""
-
-		gc.collect()
 
 		for callback in Cli.callbacks_shutdown:
 		#
@@ -257,7 +265,9 @@ Cleanup unused objects
 			except Exception as handled_exception: self.error(handled_exception)
 		#
 
-		if (py_exception != None): raise py_exception
+		Cli.callbacks_shutdown = [ ]
+
+		if (_exception != None): raise _exception
 	#
 
 	@staticmethod
@@ -288,45 +298,46 @@ Returns the current Python engine (one of "java", "mono" and "py").
 	#
 
 	@staticmethod
-	def register_mainloop(py_function):
+	def register_mainloop(callback):
 	#
 		"""
 Register a callback for the application main loop.
 
-:param py_function: Python callback
+:param callback: Python callback
 
 :since: v0.1.00
 		"""
 
-		Cli.instance.set_mainloop(py_function)
+		instance = Cli.get_instance()
+		if (instance != None): instance.set_mainloop(callback)
 	#
 
 	@staticmethod
-	def register_run_callback(py_function):
+	def register_run_callback(callback):
 	#
 		"""
 Register a callback for the application activation event.
 
-:param py_function: Python callback
+:param callback: Python callback
 
 :since: v0.1.00
 		"""
 
-		Cli.callbacks_run.append(py_function)
+		Cli.callbacks_run.append(callback)
 	#
 
 	@staticmethod
-	def register_shutdown_callback(py_function):
+	def register_shutdown_callback(callback):
 	#
 		"""
 Register a callback for the application shutdown event.
 
-:param py_function: Python callback
+:param callback: Python callback
 
 :since: v0.1.00
 		"""
 
-		Cli.callbacks_shutdown.append(py_function)
+		Cli.callbacks_shutdown.append(callback)
 	#
 #
 
@@ -341,7 +352,8 @@ Callback function for OS signals.
 :since: v0.1.00
 	"""
 
-	if (Cli.instance != None): Cli.instance.signal(os_signal, stack_frame)
+	instance = Cli.get_instance()
+	if (instance != None): instance._signal(os_signal, stack_frame)
 #
 
 if (hasattr(signal, "SIGABRT")): signal.signal(signal.SIGABRT, direct_cls_signal)

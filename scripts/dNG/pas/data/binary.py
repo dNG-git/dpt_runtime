@@ -89,8 +89,8 @@ Returns the string representing the (maybe encoded) input data.
 
 		global _PY_STR, _PY_BYTES_TYPE, _PY_UNICODE_TYPE
 
-		var_type = type(data)
-		if (var_type != str and (var_type == _PY_BYTES_TYPE or var_type == _PY_UNICODE_TYPE)): data = _PY_STR(data, "raw_unicode_escape")
+		_type = type(data)
+		if (_type != str and (_type == _PY_BYTES_TYPE or _type == _PY_UNICODE_TYPE)): data = _PY_STR(data, "raw_unicode_escape")
 
 		return data
 	#
@@ -109,8 +109,8 @@ Returns the string representing the (maybe UTF-8 encoded) input data.
 
 		global _PY_STR, _PY_BYTES_TYPE, _PY_UNICODE_TYPE
 
-		var_type = type(data)
-		if (var_type != str and (var_type == _PY_BYTES_TYPE or var_type == _PY_UNICODE_TYPE)): data = _PY_STR(data, "utf-8")
+		_type = type(data)
+		if (_type != str and (_type == _PY_BYTES_TYPE or _type == _PY_UNICODE_TYPE)): data = _PY_STR(data, "utf-8")
 
 		return data
 	#
@@ -129,10 +129,10 @@ Returns the unicode data representing the (maybe encoded) input data.
 
 		global _PY_BYTES, _PY_BYTES_TYPE, _PY_UNICODE, _PY_UNICODE_TYPE
 
-		var_type = type(data)
+		_type = type(data)
 
-		if (str != _PY_UNICODE_TYPE and var_type == str): data = _PY_UNICODE(data, "utf-8")
-		elif (str == _PY_UNICODE_TYPE and var_type == _PY_BYTES_TYPE): data = _PY_STR(data, "utf-8")
+		if (str != _PY_UNICODE_TYPE and _type == str): data = _PY_UNICODE(data, "utf-8")
+		elif (str == _PY_UNICODE_TYPE and _type == _PY_BYTES_TYPE): data = _PY_STR(data, "utf-8")
 
 		return data
 	#

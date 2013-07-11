@@ -77,10 +77,10 @@ python.org: Read up to n bytes from the object and return them.
 :since: v0.1.00
 		"""
 
-		if (self.file_ptr == None): var_return = (self.buffer.read() if (n < 0) else self.buffer.read(n))
-		else: var_return = (self.file_ptr.read() if (n < 0) else self.file_ptr.read(n))
+		if (self.file_ptr == None): _return = (self.buffer.read() if (n < 0) else self.buffer.read(n))
+		else: _return = (self.file_ptr.read() if (n < 0) else self.file_ptr.read(n))
 
-		return var_return
+		return _return
 	#
 
 	def seek(self, offset):
@@ -109,7 +109,7 @@ and return the number of bytes written.
 
 		if (self.file_ptr == None):
 		#
-			var_return = self.buffer.write(Binary.bytes(b))
+			_return = self.buffer.write(Binary.bytes(b))
 
 			if (self.buffer.tell() > self.file_threshold):
 			#
@@ -122,9 +122,9 @@ and return the number of bytes written.
 				self.buffer = None
 			#
 		#
-		else: var_return = self.file_ptr.write(Binary.bytes(b))
+		else: _return = self.file_ptr.write(Binary.bytes(b))
 
-		return var_return
+		return _return
 	#
 #
 

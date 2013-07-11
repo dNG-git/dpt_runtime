@@ -23,39 +23,11 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from threading import RLock
 from weakref import ref
-import os
 
-from .logging.log_line import LogLine
+from dNG.pas.vfs.file.watcher import Watcher
 
-try:
-#
-	from pyinotify import IN_CLOSE_WRITE, Notifier, ProcessEvent, ThreadedNotifier, WatchManager
-	_mode = "inotify"
-#
-except ImportError: _mode = "fs"
-
-if (_mode == "fs"):
-#
-	class ProcessEvent(object):
-	#
-		"""
-Dummy ProcessEvent class for unsupported pyinotify
-
-:author:     direct Netware Group
-:copyright:  direct Netware Group - All rights reserved
-:package:    pas
-:subpackage: core
-:since:      v0.1.00
-:license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
-             Mozilla Public License, v. 2.0
-		"""
-
-		pass
-	#
-
-class Cache(dict, ProcessEvent):
+class Cache(dict, Watcher):
 #
 	"""
 The cache singleton provides caching mechanisms.
@@ -64,40 +36,11 @@ The cache singleton provides caching mechanisms.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.1.00
+:since:      v0.1.01
 :license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
              Mozilla Public License, v. 2.0
 	"""
 
-	USE_FS = 1
-	"""
-Use filesystem mtimes to detect changes
-	"""
-	USE_INOTIFY = 2
-	"""
-Use inotify to detect changes
-	"""
-
-	pyinotify_instance = None
-	"""
-pyinotify instance
-	"""
-	synchronized = RLock()
-	"""
-Lock used in multi thread environments.
-	"""
-	use_thread = True
-	"""
-If the pyinotify instance should run in a separate thread
-	"""
-	use_pyinotify = False
-	"""
-Use pyinotify if available
-	"""
-	watchmanager_instance = None
-	"""
-pyinotify WatchManager instance
-	"""
 	weakref_instance = None
 	"""
 Cache weakref instance
@@ -108,10 +51,11 @@ Cache weakref instance
 		"""
 Constructor __init__(Cache)
 
-:since: v0.1.00
+:since: v0.1.01
 		"""
 
 		dict.__init__(self)
+		Watcher.__init__(self)
 
 		self.cache_max_size = 104857600
 		"""
@@ -125,29 +69,6 @@ Holds a history of requests and updates (newest first)
 		"""
 Size in bytes
 		"""
-		self.watched_files = { }
-		"""
-pyinotify watch fds or dict with latest modified timestamps
-		"""
-
-		LogLine.debug("pas.cache mode is '{0}'".format("inotify" if (Cache.use_pyinotify) else "fs"))
-	#
-
-	def __del__(self):
-	#
-		"""
-Destructor __del__(Cache)
-
-:since: v0.1.00
-		"""
-
-		if (Cache.pyinotify_instance != None):
-		#
-			try: Cache.pyinotify_instance.stop()
-			except: pass
-
-			Cache.pyinotify_instance = None
-		#
 	#
 
 	def get_file(self, file_pathname):
@@ -158,57 +79,24 @@ Get the content from cache for the given file path and name.
 :param file_pathname: Cached file path and name
 
 :return: (mixed) Cached entry; None if no hit or changed
-:since:  v0.1.00
+:since:  v0.1.01
 		"""
 
-		var_return = None
+		_return = None
 
 		with Cache.synchronized:
 		#
-			if (Cache.use_pyinotify):
-			#
-				if (not Cache.use_thread): Cache.pyinotify_instance.check_events()
-			#
-			elif (file_pathname in self.watched_files and self.watched_files[file_pathname] != os.stat(file_pathname).st_mtime):
-			#
-				self.size -= len(self[file_pathname])
-				self.history.remove(file_pathname)
-				del(self[file_pathname])
-			#
-	
+			if (self.is_synchronous()): self.check("file:///{0}".format(file_pathname))
+
 			if (file_pathname in self):
 			#
-				var_return = self[file_pathname]
+				_return = self[file_pathname]
 				self.history.remove(file_pathname)
 				self.history.insert(0, file_pathname)
 			#
 		#
 
-		return var_return
-	#
-
-	def process_IN_CLOSE_WRITE(self, event):
-	#
-		"""
-Handles "IN_CLOSE_WRITE" inotify events.
-
-:param event: Inotify event
-
-:since: v0.1.00
-		"""
-
-		with Cache.synchronized:
-		#
-			self.size -= len(self[event.pathname])
-			self.history.remove(event.pathname)
-			del(self[event.pathname])
-
-			if (event.pathname in self.watched_files):
-			#
-				Cache.watchmanager_instance.rm_watch(self.watched_files[event.pathname])
-				del(self.watched_files[event.pathname])
-			#
-		#
+		return _return
 	#
 
 	def set_file(self, file_pathname, cache_entry):
@@ -226,16 +114,7 @@ Fill the cache for the given file path and name with the given cache entry.
 		#
 			if (file_pathname not in self):
 			#
-				is_valid = True
-
-				if (Cache.use_pyinotify):
-				#
-					inotify_result = Cache.watchmanager_instance.add_watch(file_pathname, IN_CLOSE_WRITE)
-
-					if (inotify_result[file_pathname] < 0): is_valid = False
-					else: self.watched_files.update(inotify_result)
-				#
-				else: self.watched_files[file_pathname] = os.stat(file_pathname).st_mtime
+				is_valid = self.register("file:///{0}".format(file_pathname), self.uncache_changed)
 
 				if (is_valid):
 				#
@@ -264,6 +143,33 @@ Fill the cache for the given file path and name with the given cache entry.
 		#
 	#
 
+	def uncache_changed(self, event_type, url, changed_value = None):
+	#
+		"""
+Remove changed files from the cache.
+
+:param event_type: Filesystem watcher event type
+:param url: Filesystem URL watched
+:param changed_value: Changed filesystem value
+
+:since:  v0.1.01
+		"""
+
+		with Cache.synchronized:
+		#
+			file_pathname = url[8:]
+
+			if (file_pathname in self):
+			#
+				self.size -= len(self[file_pathname])
+				self.history.remove(file_pathname)
+				del(self[file_pathname])
+
+				self.unregister(url, self.uncache_changed)
+			#
+		#
+	#
+
 	@staticmethod
 	def get_instance():
 	#
@@ -274,52 +180,20 @@ Get the cache singleton.
 :since:  v0.1.00
 		"""
 
-		var_return = None
+		_return = None
 
 		with Cache.synchronized:
 		#
-			if (Cache.weakref_instance != None): var_return = Cache.weakref_instance()
+			if (Cache.weakref_instance != None): _return = Cache.weakref_instance()
 
-			if (var_return == None):
+			if (_return == None):
 			#
-				var_return = Cache()
-				Cache.weakref_instance = ref(var_return)
-
-				if (Cache.use_pyinotify):
-				#
-					if (Cache.watchmanager_instance == None): Cache.watchmanager_instance = WatchManager()
-
-					if (Cache.use_thread):
-					#
-						Cache.pyinotify_instance = ThreadedNotifier(Cache.watchmanager_instance, Cache.instance, timeout = 5)
-						Cache.pyinotify_instance.start()
-					#
-					else: Cache.pyinotify_instance = Notifier(Cache.watchmanager_instance, Cache.instance, timeout = 5)
-				#
+				_return = Cache()
+				Cache.weakref_instance = ref(_return)
 			#
 		#
 
-		return var_return
-	#
-
-	@staticmethod
-	def set_implementation(implementation = None):
-	#
-		"""
-Set the filesystem change implementation to use.
-
-:param implementation: Implementation identifier
-
-:since: v0.1.00
-		"""
-
-		global _mode
-
-		with Cache.synchronized:
-		#
-			if (implementation == Cache.USE_INOTIFY and _mode == "inotify"): Cache.use_pyinotify = True
-			else: Cache.use_pyinotify = False
-		#
+		return _return
 	#
 #
 

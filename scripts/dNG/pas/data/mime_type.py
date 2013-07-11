@@ -88,7 +88,7 @@ Returns the value with the specified key or $key if undefined.
 :since:  v0.1.01
 		"""
 
-		var_return = None
+		_return = None
 
 		if (extension != None):
 		#
@@ -96,24 +96,24 @@ Returns the value with the specified key or $key if undefined.
 
 			if (extension in self.extensions and self.extensions[extension] in self.mimetypes):
 			#
-				var_return = self.mimetypes[self.extensions[extension]].copy()
-				var_return['mimetype'] = self.extensions[extension]
+				_return = self.mimetypes[self.extensions[extension]].copy()
+				_return['mimetype'] = self.extensions[extension]
 			#
 			else:
 			#
 				mimetype = mimetypes.guess_type("file.{0}".format(extension), False)[0]
-				if (mimetype != None): var_return = { "mimetype": mimetype, "extension": extension, "type": "unknown" }
+				if (mimetype != None): _return = { "mimetype": mimetype, "extension": extension, "type": "unknown" }
 			#
 
-			if (mimetype != None and mimetype != var_return['mimetype']): var_return = None
+			if (mimetype != None and mimetype != _return['mimetype']): _return = None
 		#
 		elif (mimetype != None):
 		#
-			if (mimetype in self.mimetypes): var_return = self.mimetypes[mimetype]
-			elif (mimetypes.guess_extension(mimetype, False) != None): var_return = { "mimetype": mimetype, "type": "unknown" }
+			if (mimetype in self.mimetypes): _return = self.mimetypes[mimetype]
+			elif (mimetypes.guess_extension(mimetype, False) != None): _return = { "mimetype": mimetype, "type": "unknown" }
 		#
 
-		return var_return
+		return _return
 	#
 
 	def get_extensions(self, mimetype):
@@ -127,12 +127,12 @@ Returns the defined default language of the current task.
 
 		if (mimetype != None or mimetype in self.mimetypes):
 		#
-			var_return = (self.mimetypes[mimetype]['extensions'] if ("extensions" in self.mimetypes[mimetype]) else [ ])
-			if (type(var_return) != list): var_return = [ var_return ]
+			_return = (self.mimetypes[mimetype]['extensions'] if ("extensions" in self.mimetypes[mimetype]) else [ ])
+			if (type(_return) != list): _return = [ _return ]
 		#
-		else: var_return = None
+		else: _return = None
 
-		return var_return
+		return _return
 	#
 
 	def import_raw_json(self, json):
@@ -146,12 +146,12 @@ Import a given JSON encoded string as an array of settings.
 :since:  v0.1.01
 		"""
 
-		var_return = True
+		_return = True
 
 		json_parser = JsonParser()
 		data = json_parser.json2data(json)
 
-		if (data == None): var_return = False
+		if (data == None): _return = False
 		else:
 		#
 			self.extensions = { }
@@ -161,8 +161,8 @@ Import a given JSON encoded string as an array of settings.
 			#
 				if ("type" not in data[mimetype]):
 				#
-					var_type = mimetype.split("/", 1)[0]
-					data[mimetype]['type'] = ("unknown" if (var_type not in data or "type" not in data[var_type]) else data[var_type]['type'])
+					_type = mimetype.split("/", 1)[0]
+					data[mimetype]['type'] = ("unknown" if (_type not in data or "type" not in data[_type]) else data[_type]['type'])
 				#
 
 				self.mimetypes[mimetype] = data[mimetype]
@@ -183,7 +183,7 @@ Import a given JSON encoded string as an array of settings.
 			#
 		#
 
-		return var_return
+		return _return
 	#
 
 	def refresh(self):
@@ -230,22 +230,22 @@ Get the MimeType singleton for the given or default language.
 :since:  v0.1.01
 		"""
 
-		var_return = None
+		_return = None
 
 		with MimeType.synchronized:
 		#
-			if (MimeType.weakref_instance != None): var_return = MimeType.weakref_instance()
+			if (MimeType.weakref_instance != None): _return = MimeType.weakref_instance()
 
-			if (var_return == None):
+			if (_return == None):
 			#
-				var_return = MimeType()
-				MimeType.weakref_instance = ref(var_return)
+				_return = MimeType()
+				MimeType.weakref_instance = ref(_return)
 			#
 
-			var_return.refresh()
+			_return.refresh()
 		#
 
-		return var_return
+		return _return
 	#
 #
 

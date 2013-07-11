@@ -25,10 +25,8 @@ NOTE_END //n"""
 
 from math import floor
 
-try: import hashlib
-except ImportError: import md5 as hashlib
-
 from dNG.pas.data.binary import Binary
+from .md5 import Md5
 
 class Tmd5(object):
 #
@@ -49,7 +47,7 @@ Furthermore "bytemix" data can be applied to each part as a hash.
 	"""
 
 	@staticmethod
-	def encode(data, bytemix = ""):
+	def hash(data, bytemix = ""):
 	#
 		"""
 Generate the triple MD5 hash for the data given.
@@ -58,10 +56,10 @@ Generate the triple MD5 hash for the data given.
 :param bytemix: Bytemix to use for TMD5 (None for none)
 
 :return: (str) Triple MD5 string
-:since:  v0.1.00
+:since:  v0.1.01
 		"""
 
-		var_return = ""
+		_return = ""
 
 		bytemix = Binary.str(bytemix)
 		data = Binary.str(data)
@@ -94,22 +92,22 @@ it together to our result.
 			"""
 
 			part = ("".join(chr(ord(char) | ord(bytechar)) for char, bytechar in zip(data[:part_length][::-1], bytemix_expanded[:part_length])) if (bytemixing) else data[:part_length][::-1])
-			var_return = hashlib.md5(Binary.bytes(part)).hexdigest()
+			_return = Md5.hash(part)
 
 			data_remaining -= part_length
 			return_length += part_length
 
 			part = ("".join(chr(ord(char) | ord(bytechar)) for char, bytechar in zip(data[return_length:part_length + return_length][::-1], bytemix_expanded[return_length:part_length + return_length])) if (bytemixing) else data[return_length:part_length + return_length][::-1])
-			var_return += hashlib.md5(Binary.bytes(part)).hexdigest()
+			_return += Md5.hash(part)
 
 			data_remaining -= part_length
 			return_length += part_length
 
 			part = ("".join(chr(ord(char) | ord(bytechar)) for char, bytechar in zip(data[return_length:data_remaining + return_length][::-1], bytemix_expanded[return_length:data_remaining + return_length])) if (bytemixing) else data[return_length:data_remaining + return_length][::-1])
-			var_return += hashlib.md5(Binary.bytes(part)).hexdigest()
+			_return += Md5.hash(part)
 		#
 
-		return var_return
+		return _return
 	#
 #
 

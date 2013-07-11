@@ -41,20 +41,20 @@ streams.
              Mozilla Public License, v. 2.0
 	"""
 
-	def __init__(self, value, py_exception = None):
+	def __init__(self, value, _exception = None):
 	#
 		"""
 Constructor __init__(Exception)
 
 :param value: Exception message value
-:param py_exception: Inner exception
+:param _exception: Inner exception
 
 :since: v0.1.00
 		"""
 
 		Exception.__init__(self, value)
 
-		self.exc_cause = py_exception
+		self.exc_cause = _exception
 		"""
 Inner exception if given
 		"""
@@ -82,8 +82,8 @@ and print() to compute the "informal" or nicely printable string
 representation of an object.
 		"""
 
-		var_return = (repr(self) if (self.exc_traceback == None) else "{0} {1}: {2}".format(self.exc_type, self.exc_value, self.get_printable_trace()))
-		return (var_return if (self.exc_cause == None) else "{0} {1}".format(var_return, repr(self.exc_cause)))
+		_return = (repr(self) if (self.exc_traceback == None) else "{0} {1}: {2}".format(self.exc_type, self.exc_value, self.get_printable_trace()))
+		return (_return if (self.exc_cause == None) else "{0} {1}".format(_return, repr(self.exc_cause)))
 	#
 
 	def get_cause(self):

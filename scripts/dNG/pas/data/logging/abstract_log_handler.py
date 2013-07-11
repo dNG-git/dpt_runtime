@@ -99,14 +99,13 @@ Get the log level.
 		return self.levels.index(self.level)
 	#
 
-	def get_line(self, data):
+	def _get_line(self, data):
 	#
 		"""
 Get the formatted log message.
 
 :param data: Log data
 
-:access: protected
 :return: (str) Formatted log line
 :since:  v0.1.00
 		"""
@@ -128,9 +127,9 @@ Get the formatted log message.
 		#
 
 		if ("\n" in data or "\r" in data): data = "\"" + re.sub("[\n\r]", "\"; \"", data) + "\""
-		var_return = "{0} {1} {2}".format(self.ident, data, self.version)
+		_return = "{0} {1} {2}".format(self.ident, data, self.version)
 
-		return var_return
+		return _return
 	#
 
 	def set_level(self, level):

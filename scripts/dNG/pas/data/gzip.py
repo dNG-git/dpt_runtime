@@ -95,12 +95,12 @@ for at least part of the data in string.
 
 		if (self.header != None):
 		#
-			var_return = self.header + self.compressor.compress(data)[2:]
+			_return = self.header + self.compressor.compress(data)[2:]
 			self.header = None
 		#
-		else: var_return = self.compressor.compress(data)
+		else: _return = self.compressor.compress(data)
 
-		return var_return
+		return _return
 	#
 
 	def flush(self, mode = Z_FINISH):

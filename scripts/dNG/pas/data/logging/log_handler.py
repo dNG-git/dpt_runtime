@@ -32,11 +32,11 @@ import os
 from dNG.pas.data.settings import Settings
 from .abstract_log_handler import AbstractLogHandler
 
-API_JAVA = 1
+_API_JAVA = 1
 """
 Java based log handlers
 """
-API_PYTHON = 2
+_API_PYTHON = 2
 """
 Python log handlers
 """
@@ -48,7 +48,7 @@ try:
 	import logging
 
 	if (hasattr(logging, "logMultiprocessing")): logging.logMultiprocessing = False
-	_api_type = API_PYTHON
+	_api_type = _API_PYTHON
 #
 except ImportError: _api_type = None
 
@@ -61,7 +61,7 @@ if (_api_type == None):
 	from org.apache.log4j.Level import FATAL as CRITICAL
 	from org.apache.log4j.Level import OFF as NOTSET
 	from org.apache.log4j.Level import WARN as WARNING
-	_api_type = API_JAVA
+	_api_type = _API_JAVA
 #
 
 class LogHandler(AbstractLogHandler):
@@ -99,7 +99,7 @@ Constructor __init__(LogHandler)
 :since: v0.1.00
 		"""
 
-		global _api_type, API_JAVA
+		global _api_type, _API_JAVA
 
 		AbstractLogHandler.__init__(self)
 
@@ -144,7 +144,7 @@ Preserve the amount of files
 			elif (Settings.is_defined("pas_core_log_name") and (os.access(path.normpath("{0}/log/{1}".format(Settings.get("path_base"), Settings.get("pas_core_log_name"))), os.W_OK) or ((not os.access(path.normpath("{0}/log/{1}".format(Settings.get("path_base"), Settings.get("pas_core_log_name"))), os.F_OK)) and os.access(path.normpath("{0}/log".format(Settings.get("path_base"))), os.W_OK)))): self.log_file_pathname = path.normpath("{0}/log/{1}".format(Settings.get("path_base"), Settings.get("pas_core_log_name")))
 			else: self.log_file_pathname = path.normpath("{0}/pas.log".format(Settings.get("path_base")))
 
-			if (_api_type == API_JAVA):
+			if (_api_type == _API_JAVA):
 			#
 				self.log_handler = RotatingFileHandler(SimpleLayout(), self.log_file_pathname)
 				self.log_handler.setLevel(self.level)
@@ -178,9 +178,9 @@ Add the logger name given to the active log handler.
 :since:  v0.1.00
 		"""
 
-		global _api_type, API_JAVA
+		global _api_type, _API_JAVA
 
-		if (_api_type == API_JAVA): logging.getLogger(name).addAppender(self.log_handler)
+		if (_api_type == _API_JAVA): logging.getLogger(name).addAppender(self.log_handler)
 		else: AbstractLogHandler.add_logger(self, name)
 	#
 
@@ -194,7 +194,7 @@ Debug message method
 :since: v0.1.00
 		"""
 
-		if (self.level == DEBUG): self.write(DEBUG, data)
+		if (self.level == DEBUG): self._write(DEBUG, data)
 	#
 
 	def error(self, data):
@@ -207,7 +207,7 @@ Error message method
 :since: v0.1.00
 		"""
 
-		if (self.level != NOTSET): self.write(ERROR, data)
+		if (self.level != NOTSET): self._write(ERROR, data)
 	#
 
 	def info(self, data):
@@ -220,7 +220,7 @@ Info message method
 :since: v0.1.00
 		"""
 
-		if (self.level == DEBUG or self.level == INFO): self.write(INFO, data)
+		if (self.level == DEBUG or self.level == INFO): self._write(INFO, data)
 	#
 
 	def warning(self, data):
@@ -233,19 +233,18 @@ Warning message method
 :since: v0.1.00
 		"""
 
-		if (self.level != ERROR and self.level != NOTSET): self.write(WARNING, data)
+		if (self.level != ERROR and self.level != NOTSET): self._write(WARNING, data)
 	#
 
-	def write (self, level, data):
+	def _write(self, level, data):
 	#
 		"""
-"write ()" adds all messages to the logger instance.
+"_write()" adds all messages to the logger instance.
 
 :param level: Logging level
 :param data: Logging data
 
-:access: protected
-:since:  v0.1.00
+:since: v0.1.00
 		"""
 
 		exception = isinstance(data, Exception)
@@ -261,7 +260,7 @@ Warning message method
 		elif (level == INFO): message = "<info>      {0}".format(message)
 		elif (level == DEBUG): message = "<debug>     {0}".format(message)
 
-		message = "{0} {1}".format(message, self.get_line(data))
+		message = "{0} {1}".format(message, self._get_line(data))
 
 		if (level == CRITICAL): self.logger.critical(message)
 		elif (level == ERROR): self.logger.error(message)
@@ -280,20 +279,20 @@ Get the log_handler singleton.
 :since:  v0.1.00
 		"""
 
-		var_return = None
+		_return = None
 
 		with LogHandler.synchronized:
 		#
-			if (LogHandler.weakref_instance != None): var_return = LogHandler.weakref_instance()
+			if (LogHandler.weakref_instance != None): _return = LogHandler.weakref_instance()
 
-			if (var_return == None):
+			if (_return == None):
 			#
-				var_return = LogHandler()
-				LogHandler.weakref_instance = ref(var_return)
+				_return = LogHandler()
+				LogHandler.weakref_instance = ref(_return)
 			#
 		#
 
-		return var_return
+		return _return
 	#
 #
 

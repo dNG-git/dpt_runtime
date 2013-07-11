@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.data.TranslatableException
+dNG.pas.data.text.Md5
 """
 """n// NOTE
 ----------------------------------------------------------------------------
@@ -23,60 +23,38 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from .binary import Binary
-from .traced_exception import TracedException
-from .text.l10n import L10n
+try: import hashlib
+except ImportError: import md5 as hashlib
 
-class TranslatableException(TracedException):
+from dNG.pas.data.binary import Binary
+
+class Md5(object):
 #
 	"""
-"TranslatableException" gets a l10n message ID to translate the exception
-message to the selected language.
+Abstraction layer for the one-line MD5 hasing method.
 
 :author:     direct Netware Group
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.1.00
+:since:      v0.1.01
 :license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
              Mozilla Public License, v. 2.0
 	"""
 
-	def __init__(self, l10n_id, value = None, _exception = None):
+	@staticmethod
+	def hash(data):
 	#
 		"""
-Constructor __init__(TranslatableException)
+Generate the MD5 hash for the data given.
 
-:param l10n_id: L10n translatable key (prefixed with "errors_")
-:param value: Exception message value
-:param _exception: Inner exception
+:param data: Input string
 
-:since: v0.1.00
+:return: (str) Triple MD5 string
+:since:  v0.1.01
 		"""
 
-		self.l10n_message = L10n.get("errors_{0}".format(l10n_id), l10n_id)
-		"""
-Translated message
-		"""
-
-		if (value == None): value = self.l10n_message
-
-		TracedException.__init__(self, value, _exception)
-	#
-
-	def __format__(self, format_spec):
-	#
-		"""
-python.org: Convert a value to a "formatted" representation, as controlled by
-format_spec.
-
-:param format_spec: String format specification
-
-:since: v0.1.00
-		"""
-
-		if (format_spec == "l10n_message"): return Binary.str(self.l10n_message)
-		else: TracedException.__format__(self, format_spec)
+		return hashlib.md5(Binary.bytes(data)).hexdigest()
 	#
 #
 

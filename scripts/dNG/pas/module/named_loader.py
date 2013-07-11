@@ -25,7 +25,7 @@ NOTE_END //n"""
 
 from os import path
 from threading import RLock
-from weakref import ref
+from weakref import proxy, ref
 import re
 
 _mode = "base"
@@ -154,7 +154,7 @@ Sets the base directory for scanning and loading python files.
 	#
 
 	@staticmethod
-	def get_class(common_name):
+	def _get_class(common_name):
 	#
 		"""
 Get the class name for the given common name.
@@ -162,23 +162,22 @@ Get the class name for the given common name.
 :param common_name: Common name
 :param classprefix: A classname prefix
 
-:access: protected
 :return: (object) Loaded class
 :since:  v0.1.00
 		"""
 
-		var_return = None
+		_return = None
 
-		loader = NamedLoader.get_loader()
+		loader = NamedLoader._get_loader()
 
 		if (loader.is_registered(common_name)): ( package, classname ) = loader.get(common_name).rsplit(".", 1)
 		else: ( package, classname ) = common_name.rsplit(".", 1)
 
 		module_name = NamedLoader.RE_CAMEL_CASE_SPLITTER.sub("\\1_\\2", classname).lower()
-		module = NamedLoader.load_module("{0}.{1}".format(package, module_name))
+		module = NamedLoader._load_module("{0}.{1}".format(package, module_name))
 
-		if (hasattr(module, classname)): var_return = getattr(module, classname)
-		return var_return
+		if (hasattr(module, classname)): _return = getattr(module, classname)
+		return _return
 	#
 
 	@staticmethod
@@ -194,45 +193,44 @@ Returns a new instance based on its common name.
 :since:  v0.1.00
 		"""
 
-		var_return = None
+		_return = None
 
-		var_class = NamedLoader.get_class(common_name)
+		_class = NamedLoader._get_class(common_name)
 
-		if (var_class != None):
+		if (_class != None):
 		#
-			var_return = var_class.__new__(var_class)
-			var_return.__init__()
+			_return = _class.__new__(_class)
+			_return.__init__()
 		#
 		elif (required): raise RuntimeError("{0} is not defined".format(common_name), 38)
 
-		return var_return
+		return _return
 	#
 
 	@staticmethod
-	def get_loader():
+	def _get_loader():
 	#
 		"""
 Get the loader instance.
 
-:access: protected
 :return: (object) Loader instance
 :since:  v0.1.00
 		"""
 
-		var_return = None
+		_return = None
 
 		with NamedLoader.synchronized:
 		#
-			if (NamedLoader.weakref_instance != None): var_return = NamedLoader.weakref_instance()
+			if (NamedLoader.weakref_instance != None): _return = NamedLoader.weakref_instance()
 
-			if (var_return == None):
+			if (_return == None):
 			#
-				var_return = NamedLoader()
-				NamedLoader.weakref_instance = ref(var_return)
+				_return = NamedLoader()
+				NamedLoader.weakref_instance = ref(_return)
 			#
 		#
 
-		return var_return
+		return _return
 	#
 
 	@staticmethod
@@ -248,18 +246,18 @@ Returns a singleton based on its common name.
 :since:  v0.1.00
 		"""
 
-		var_return = None
+		_return = None
 
-		var_class = NamedLoader.get_class(common_name)
+		_class = NamedLoader._get_class(common_name)
 
-		if (var_class != None):
+		if (_class != None):
 		#
-			if (hasattr(var_class, "get_instance")): var_return = var_class.get_instance()
+			if (hasattr(_class, "get_instance")): _return = _class.get_instance()
 			elif (required): raise RuntimeError("{0} has not defined a singleton".format(common_name), 38)
 		#
 		elif (required): raise RuntimeError("{0} is not defined".format(common_name), 38)
 
-		return var_return
+		return _return
 	#
 
 	@staticmethod
@@ -274,11 +272,11 @@ Checks if a common name is defined or can be resolved to a class name.
 :since:  v0.1.00
 		"""
 
-		return (False if (NamedLoader.get_class(common_name) == None) else True)
+		return (False if (NamedLoader._get_class(common_name) == None) else True)
 	#
 
 	@staticmethod
-	def load_module(module):
+	def _load_module(module):
 	#
 		"""
 Get the class name for the given common name.
@@ -286,31 +284,30 @@ Get the class name for the given common name.
 :param common_name: Common name
 :param classprefix: A classname prefix
 
-:access: protected
 :return: (str) Class name
 :since:  v0.1.00
 		"""
 
-		var_return = None
+		_return = None
 
 		package = module.rsplit(".", 1)[0]
 
 		try:
 		#
-			if (package not in NamedLoader.module_list): NamedLoader.load_package(package)
-			var_return = NamedLoader.load_py_file(module)
-			if (var_return != None): NamedLoader.module_list.append(module)
+			if (package not in NamedLoader.module_list): NamedLoader._load_package(package)
+			_return = NamedLoader._load_py_file(module)
+			if (_return != None): NamedLoader.module_list.append(module)
 		#
 		except Exception as handled_exception:
 		#
 			if (NamedLoader.log_handler != None): NamedLoader.log_handler.error(handled_exception)
 		#
 
-		return var_return
+		return _return
 	#
 
 	@staticmethod
-	def load_package(package):
+	def _load_package(package):
 	#
 		"""
 Get the class name for the given common name.
@@ -318,28 +315,27 @@ Get the class name for the given common name.
 :param common_name: Common name
 :param classprefix: A classname prefix
 
-:access: protected
 :return: (str) Class name
 :since:  v0.1.00
 		"""
 
-		var_return = None
+		_return = None
 
 		try:
 		#
-			var_return = NamedLoader.load_py_file(package)
-			if (var_return != None): NamedLoader.module_list.append(package)
+			_return = NamedLoader._load_py_file(package)
+			if (_return != None): NamedLoader.module_list.append(package)
 		#
 		except Exception as handled_exception:
 		#
 			if (NamedLoader.log_handler != None): NamedLoader.log_handler.error(handled_exception)
 		#
 
-		return var_return
+		return _return
 	#
 
 	@staticmethod
-	def load_py_file(py_name):
+	def _load_py_file(name):
 	#
 		"""
 Get the class name for the given common name.
@@ -347,19 +343,18 @@ Get the class name for the given common name.
 :param common_name: Common name
 :param classprefix: A classname prefix
 
-:access: protected
 :return: (str) Class name
 :since:  v0.1.00
 		"""
 
 		global _mode
 
-		if (_mode == "lib"): return NamedLoader.load_py_file_lib(py_name)
-		else: return NamedLoader.load_py_file_base(py_name)
+		if (_mode == "lib"): return NamedLoader._load_py_file_lib(name)
+		else: return NamedLoader._load_py_file_base(name)
 	#
 
 	@staticmethod
-	def load_py_file_base(py_name):
+	def _load_py_file_base(name):
 	#
 		"""
 Get the class name for the given common name.
@@ -367,23 +362,22 @@ Get the class name for the given common name.
 :param common_name: Common name
 :param classprefix: A classname prefix
 
-:access: protected
 :return: (str) Class name
 :since:  v0.1.00
 		"""
 
-		var_return = None
+		_return = None
 
 		exception = None
-		( py_package_parent, py_file) = py_name.rsplit(".", 1)
-		py_path = py_package_parent.replace(".", path.sep)
+		( package_parent, _file) = name.rsplit(".", 1)
+		_path = package_parent.replace(".", path.sep)
 
 		imp.acquire_lock()
 
 		try:
 		#
-			( file_obj, file_path, py_description ) = imp.find_module(py_file, [ path.normpath("{0}/{1}".format(NamedLoader.get_loader().get_base_dir(), py_path)) ])
-			var_return = imp.load_module(py_name, file_obj, file_path, py_description)
+			( file_obj, file_path, description ) = imp.find_module(_file, [ path.normpath("{0}/{1}".format(NamedLoader._get_loader().get_base_dir(), _path)) ])
+			_return = imp.load_module(name, file_obj, file_path, description)
 			if (file_obj != None): file_obj.close()
 		#
 		except Exception as handled_exception: exception = handled_exception
@@ -392,15 +386,15 @@ Get the class name for the given common name.
 
 		if (exception != None):
 		#
-			var_return = None
+			_return = None
 			if (NamedLoader.log_handler != None): NamedLoader.log_handler.error(exception)
 		#
 
-		return var_return
+		return _return
 	#
 
 	@staticmethod
-	def load_py_file_lib(py_name):
+	def _load_py_file_lib(name):
 	#
 		"""
 Get the class name for the given common name.
@@ -408,21 +402,20 @@ Get the class name for the given common name.
 :param common_name: Common name
 :param classprefix: A classname prefix
 
-:access: protected
 :return: (str) Class name
 :since:  v0.1.00
 		"""
 
-		var_return = None
+		_return = None
 
 		exception = None
 
-		try: var_return = importlib.import_module(py_name)
+		try: _return = importlib.import_module(name)
 		except Exception as handled_exception: exception = handled_exception
 
 		if (exception != None and NamedLoader.log_handler != None): NamedLoader.log_handler.error(exception)
 
-		return var_return
+		return _return
 	#
 
 	@staticmethod
@@ -436,7 +429,7 @@ Sets the log_handler.
 :since: v0.1.00
 		"""
 
-		NamedLoader.log_handler = log_handler
+		NamedLoader.log_handler = proxy(log_handler)
 	#
 #
 

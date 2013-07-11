@@ -25,6 +25,7 @@ NOTE_END //n"""
 
 from os import path
 from threading import RLock
+from weakref import proxy
 import os
 
 from dNG.data.file import File
@@ -79,34 +80,6 @@ Constructor __init__(Settings)
 		self['path_lang'] = (Binary.str(os.environ['dNGpathLang']) if ("dNGpathLang" in os.environ) else path.normpath("{0}/lang".format(self['path_base'])))
 	#
 
-	def get_dict(self):
-	#
-		"""
-Get the underlying settings dict.
-
-:access: protected
-:return: (dict) Settings instance
-:since:  v0.1.00
-		"""
-
-		return self
-	#
-
-	def set_dict(self, settings):
-	#
-		"""
-Set the underlying settings dict.
-
-:param settings: New settings dict
-
-:access: protected
-:since:  v0.1.00
-		"""
-
-		self.clear()
-		self.update(settings)
-	#
-
 	@staticmethod
 	def is_defined(key):
 	#
@@ -136,7 +109,7 @@ Returns the value with the specified key or all settings.
 		"""
 
 		instance = Settings.get_instance()
-		return (instance.get_dict() if (key == None) else dict.get(instance, key, default))
+		return (instance if (key == None) else dict.get(instance, key, default))
 	#
 
 	@staticmethod
@@ -173,15 +146,15 @@ Import a given JSON encoded string as an dict of settings.
 :since:  v0.1.00
 		"""
 
-		var_return = True
+		_return = True
 
 		json_parser = JsonParser()
 		data = json_parser.json2data(json)
 
-		if (data == None): var_return = False
+		if (data == None): _return = False
 		else: Settings.get_instance().update(data)
 
-		return var_return
+		return _return
 	#
 
 	@staticmethod
@@ -238,7 +211,7 @@ Sets the value for the specified key.
 	#
 
 	@staticmethod
-	def set_cache(cache_instance):
+	def set_cache_instance(cache_instance):
 	#
 		"""
 Sets the cache instance.
@@ -248,8 +221,8 @@ Sets the cache instance.
 :since: v0.1.00
 		"""
 
-		if (Settings.log_handler != None): Settings.log_handler.debug("#echo(__FILEPATH__)# -settings.set_cache(cache_instance)- (#echo(__LINE__)#)")
-		Settings.cache_instance = cache_instance
+		if (Settings.log_handler != None): Settings.log_handler.debug("#echo(__FILEPATH__)# -settings.set_cache_instance(cache_instance)- (#echo(__LINE__)#)")
+		Settings.cache_instance = proxy(cache_instance)
 	#
 
 	@staticmethod
@@ -263,7 +236,7 @@ Sets the log_handler.
 :since: v0.1.00
 		"""
 
-		Settings.log_handler = log_handler
+		Settings.log_handler = proxy(log_handler)
 	#
 
 	@staticmethod
