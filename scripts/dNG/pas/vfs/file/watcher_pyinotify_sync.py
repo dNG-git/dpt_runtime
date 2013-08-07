@@ -31,7 +31,7 @@ from .watcher_pyinotify_callback import WatcherPyinotifyCallback
 class WatcherPyinotifySync(WatcherPyinotify):
 #
 	"""
-"file:///" watcher for change events.
+"file:///" watcher using pyinotify's (synchronous) Notifier.
 
 :author:     direct Netware Group
 :copyright:  direct Netware Group - All rights reserved
@@ -45,11 +45,12 @@ class WatcherPyinotifySync(WatcherPyinotify):
 	def check(self, _path):
 	#
 		"""
-Get the content from cache for the given file path and name.
+Checks a given path for changes if "is_synchronous()" is true.
 
 :param _path: Filesystem path
 
-:return: (mixed) Cached entry; None if no hit or changed
+:return: (bool) True if the given path URL has been changed since last check
+         and "is_synchronous()" is true.
 :since:  v0.1.01
 		"""
 
@@ -65,7 +66,7 @@ Get the content from cache for the given file path and name.
 	def _init_notifier(self):
 	#
 		"""
-Get the content from cache for the given file path and name.
+Initializes the pyinotify instance.
 
 :since: v0.1.01
 		"""
@@ -77,9 +78,9 @@ Get the content from cache for the given file path and name.
 	def get_instance():
 	#
 		"""
-Get the cache singleton.
+Get the WatcherPyinotifySync singleton.
 
-:return: (Cache) Object on success
+:return: (WatcherPyinotifySync) Object on success
 :since:  v0.1.00
 		"""
 
@@ -98,7 +99,7 @@ Get the cache singleton.
 Returns true if changes are only detected after "check()" has been
 called.
 
-:return: (bool) True if changes are detected automatically
+:return: (bool) True if changes are not detected automatically
 :since:  v0.1.01
 		"""
 

@@ -107,13 +107,12 @@ Watcher implementation to use
 	def check(self, url):
 	#
 		"""
-Get the content from cache for the given file path and name.
+Checks a given URL for changes if "is_synchronous()" is true.
 
-TODO: Check if this works for directories with mtime
+:param url: Resource URL
 
-:param _path: Filesystem path
-
-:return: (mixed) Cached entry; None if no hit or changed
+:return: (bool) True if the given resource URL has been changed since last
+         check and "is_synchronous()" is true.
 :since:  v0.1.01
 		"""
 
@@ -155,7 +154,7 @@ Return the local filesystem path for the given "file:///" URL.
 Returns true if changes are only detected after "check()" has been
 called.
 
-:return: (bool) True if changes are detected automatically
+:return: (bool) True if changes are not detected automatically
 :since:  v0.1.01
 		"""
 
@@ -165,13 +164,14 @@ called.
 	def is_watched(self, url, callback = None):
 	#
 		"""
-Returns true if the filesystem path is already watched. It will return false
-if a callback is given but not defined for the watched path.
+Returns true if the resource URL is already watched. It will return false
+if a callback is given but not defined for the watched URL.
 
-:param url: Filesystem URL
-:param callback: Callback to be checked for the watched filesystem path
+:param url: Resource URL
+:param callback: Callback to be checked for the watched resource URL
 
-:return: (bool) True if watched with the defined callback if applicable
+:return: (bool) True if watched with the defined callback or any if not
+         defined.
 :since:  v0.1.01
 		"""
 
@@ -184,9 +184,9 @@ if a callback is given but not defined for the watched path.
 	def register(self, url, callback):
 	#
 		"""
-Handles registration of filesystem watches and its callbacks.
+Handles registration of resource URL watches and its callbacks.
 
-:param url: Filesystem URL to be watched
+:param url: Resource URL to be watched
 
 :return: (bool) True on success
 :since:  v0.1.01
@@ -221,9 +221,9 @@ Set the filesystem watcher implementation to use.
 	def unregister(self, url, callback):
 	#
 		"""
-Handles unregistration of filesystem watches.
+Handles unregistration of resource URL watches.
 
-:param url: Filesystem URL watched
+:param url: Resource URL watched
 
 :return: (bool) True on success
 :since:  v0.1.01

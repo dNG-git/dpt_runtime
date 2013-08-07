@@ -32,7 +32,7 @@ from dNG.pas.vfs.abstract_watcher import AbstractWatcher
 class WatcherMtime(AbstractWatcher):
 #
 	"""
-"file:///" watcher for change events.
+"file:///" watcher using os.stat to detect changes.
 
 :author:     direct Netware Group
 :copyright:  direct Netware Group - All rights reserved
@@ -45,7 +45,7 @@ class WatcherMtime(AbstractWatcher):
 
 	instance = None
 	"""
-Cache weakref instance
+WatcherMtime weakref instance
 	"""
 	synchronized = RLock()
 	"""
@@ -66,18 +66,19 @@ Callbacks for watched files
 		"""
 		self.watched_paths = { }
 		"""
-pyinotify watch fds or dict with latest modified timestamps
+Dict with latest modified timestamps
 		"""
 	#
 
 	def check(self, _path):
 	#
 		"""
-Get the content from cache for the given file path and name.
+Checks a given path for changes if "is_synchronous()" is true.
 
 :param _path: Filesystem path
 
-:return: (mixed) Cached entry; None if no hit or changed
+:return: (bool) True if the given path URL has been changed since last check
+         and "is_synchronous()" is true.
 :since:  v0.1.01
 		"""
 
@@ -128,7 +129,8 @@ if a callback is given but not defined for the watched path.
 :param _path: Filesystem path
 :param callback: Callback to be checked for the watched filesystem path
 
-:return: (bool) True if watched with the defined callback if applicable
+:return: (bool) True if watched with the defined callback or any if not
+         defined.
 :since:  v0.1.01
 		"""
 
@@ -146,7 +148,7 @@ if a callback is given but not defined for the watched path.
 		"""
 Handles registration of filesystem watches and its callbacks.
 
-:param url: Filesystem URL to be watched
+:param _path: Filesystem path to be watched
 
 :return: (bool) True on success
 :since:  v0.1.01
@@ -204,9 +206,9 @@ Handles unregistration of filesystem watches.
 	def get_instance():
 	#
 		"""
-Get the cache singleton.
+Get the WatcherMtime singleton.
 
-:return: (Cache) Object on success
+:return: (WatcherMtime) Object on success
 :since:  v0.1.00
 		"""
 
@@ -225,7 +227,7 @@ Get the cache singleton.
 Returns true if changes are only detected after "check()" has been
 called.
 
-:return: (bool) True if changes are detected automatically
+:return: (bool) True if changes are not detected automatically
 :since:  v0.1.01
 		"""
 

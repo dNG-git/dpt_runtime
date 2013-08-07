@@ -61,7 +61,9 @@ pyinotify manager instance
 		"""
 Handles all inotify events.
 
-:param event: Inotify event
+:param event_type: Event type defined in AbstractWatcher
+:param _path: Filesystem path
+:param changed_value: Changed value (e.g. name of deleted or created file)
 
 :since: v0.1.01
 		"""
@@ -81,7 +83,7 @@ Handles all inotify events.
 		"""
 Handles "IN_ATTRIB" inotify events.
 
-:param event: Inotify event
+:param event: pyinotify event
 
 :since: v0.1.01
 		"""
@@ -94,7 +96,7 @@ Handles "IN_ATTRIB" inotify events.
 		"""
 Handles "IN_CLOSE_WRITE" inotify events.
 
-:param event: Inotify event
+:param event: pyinotify event
 
 :since: v0.1.01
 		"""
@@ -107,7 +109,7 @@ Handles "IN_CLOSE_WRITE" inotify events.
 		"""
 Handles "IN_CREATE" inotify events.
 
-:param event: Inotify event
+:param event: pyinotify event
 
 :since: v0.1.01
 		"""
@@ -120,7 +122,7 @@ Handles "IN_CREATE" inotify events.
 		"""
 Handles "IN_DELETE" inotify events.
 
-:param event: Inotify event
+:param event: pyinotify event
 
 :since: v0.1.01
 		"""
@@ -133,7 +135,7 @@ Handles "IN_DELETE" inotify events.
 		"""
 Handles "IN_DELETE_SELF" inotify events.
 
-:param event: Inotify event
+:param event: pyinotify event
 
 :since: v0.1.01
 		"""

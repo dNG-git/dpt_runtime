@@ -65,13 +65,13 @@ Constructor __init__(MimeType)
 :since: v0.1.01
 		"""
 
+		self.definitions = None
+		"""
+Mimetype definitions
+		"""
 		self.extensions = { }
 		"""
 Mimetype extension list
-		"""
-		self.mimetypes = None
-		"""
-Mimetype definitions
 		"""
 	#
 
@@ -94,9 +94,9 @@ Returns the value with the specified key or $key if undefined.
 		#
 			extension = (extension[1:].lower() if (extension[:1] == ".") else extension.lower())
 
-			if (extension in self.extensions and self.extensions[extension] in self.mimetypes):
+			if (extension in self.extensions and self.extensions[extension] in self.definitions):
 			#
-				_return = self.mimetypes[self.extensions[extension]].copy()
+				_return = self.definitions[self.extensions[extension]].copy()
 				_return['mimetype'] = self.extensions[extension]
 			#
 			else:
@@ -109,7 +109,7 @@ Returns the value with the specified key or $key if undefined.
 		#
 		elif (mimetype != None):
 		#
-			if (mimetype in self.mimetypes): _return = self.mimetypes[mimetype]
+			if (mimetype in self.definitions): _return = self.definitions[mimetype]
 			elif (mimetypes.guess_extension(mimetype, False) != None): _return = { "mimetype": mimetype, "type": "unknown" }
 		#
 
@@ -125,9 +125,9 @@ Returns the defined default language of the current task.
 :since:  v0.1.01
 		"""
 
-		if (mimetype != None or mimetype in self.mimetypes):
+		if (mimetype != None or mimetype in self.definitions):
 		#
-			_return = (self.mimetypes[mimetype]['extensions'] if ("extensions" in self.mimetypes[mimetype]) else [ ])
+			_return = (self.definitions[mimetype]['extensions'] if ("extensions" in self.definitions[mimetype]) else [ ])
 			if (type(_return) != list): _return = [ _return ]
 		#
 		else: _return = None
@@ -154,8 +154,8 @@ Import a given JSON encoded string as an array of settings.
 		if (data == None): _return = False
 		else:
 		#
+			self.definitions = { }
 			self.extensions = { }
-			self.mimetypes = { }
 
 			for mimetype in data:
 			#
@@ -165,7 +165,7 @@ Import a given JSON encoded string as an array of settings.
 					data[mimetype]['type'] = ("unknown" if (_type not in data or "type" not in data[_type]) else data[_type]['type'])
 				#
 
-				self.mimetypes[mimetype] = data[mimetype]
+				self.definitions[mimetype] = data[mimetype]
 
 				if ("extensions" in data[mimetype] and type(data[mimetype]['extensions']) == list):
 				#
@@ -215,7 +215,7 @@ Read all settings from the given file.
 			#
 			else: LogLine.info("{0} not found".format(file_pathname))
 		#
-		elif (self.mimetypes != None): file_content = None
+		elif (self.definitions != None): file_content = None
 
 		if (file_content != None and (not self.import_raw_json(file_content))): LogLine.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
 	#

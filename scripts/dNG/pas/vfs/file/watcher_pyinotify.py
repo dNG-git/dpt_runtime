@@ -32,7 +32,7 @@ from .watcher_pyinotify_callback import WatcherPyinotifyCallback
 class WatcherPyinotify(WatchManager):
 #
 	"""
-"file:///" watcher for change events.
+"file:///" watcher using pyinotify's ThreadedNotifier.
 
 :author:     direct Netware Group
 :copyright:  direct Netware Group - All rights reserved
@@ -45,7 +45,7 @@ class WatcherPyinotify(WatchManager):
 
 	instance = None
 	"""
-Cache weakref instance
+WatcherPyinotify weakref instance
 	"""
 	synchronized = RLock()
 	"""
@@ -81,11 +81,12 @@ pyinotify watch fds
 	def check(self, _path):
 	#
 		"""
-Get the content from cache for the given file path and name.
+Checks a given path for changes if "is_synchronous()" is true.
 
 :param _path: Filesystem path
 
-:return: (mixed) Cached entry; None if no hit or changed
+:return: (bool) True if the given path URL has been changed since last check
+         and "is_synchronous()" is true.
 :since:  v0.1.01
 		"""
 
@@ -114,7 +115,7 @@ Frees all watcher callbacks for garbage collection.
 	def _init_notifier(self):
 	#
 		"""
-Get the content from cache for the given file path and name.
+Initializes the pyinotify instance.
 
 :since: v0.1.01
 		"""
@@ -132,7 +133,8 @@ if a callback is given but not defined for the watched path.
 :param _path: Filesystem path
 :param callback: Callback to be checked for the watched filesystem path
 
-:return: (bool) True if watched with the defined callback if applicable
+:return: (bool) True if watched with the defined callback or any if not
+         defined.
 :since:  v0.1.01
 		"""
 
@@ -148,10 +150,9 @@ if a callback is given but not defined for the watched path.
 	def get_callbacks(self, _path):
 	#
 		"""
-Handles unregistration of filesystem watches.
+Returns all registered callbacks for the given path.
 
-:param params: Parameter specified
-:param last_return: The return value from the last hook called.
+:param _path: Filesystem path
 
 :since: v0.1.01
 		"""
@@ -171,7 +172,7 @@ Handles unregistration of filesystem watches.
 		"""
 Handles registration of filesystem watches and its callbacks.
 
-:param url: Filesystem URL to be watched
+:param _path: Filesystem path to be watched
 
 :return: (bool) True on success
 :since:  v0.1.01
@@ -236,9 +237,9 @@ Handles unregistration of filesystem watches.
 	def get_instance():
 	#
 		"""
-Get the cache singleton.
+Get the WatcherPyinotify singleton.
 
-:return: (Cache) Object on success
+:return: (WatcherPyinotify) Object on success
 :since:  v0.1.00
 		"""
 
@@ -257,7 +258,7 @@ Get the cache singleton.
 Returns true if changes are only detected after "check()" has been
 called.
 
-:return: (bool) True if changes are detected automatically
+:return: (bool) True if changes are not detected automatically
 :since:  v0.1.01
 		"""
 
