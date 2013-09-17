@@ -24,6 +24,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 NOTE_END //n"""
 
 from pyinotify import ProcessEvent
+from weakref import ref
 
 from dNG.pas.data.logging.log_line import LogLine
 from dNG.pas.vfs.abstract_watcher import AbstractWatcher
@@ -50,7 +51,7 @@ Constructor __init__(WatcherPyinotifyCallback)
 :since: v0.1.01
 		"""
 
-		self.manager = manager
+		self.manager_weakref = ref(manager)
 		"""
 pyinotify manager instance
 		"""
@@ -68,14 +69,19 @@ Handles all inotify events.
 :since: v0.1.01
 		"""
 
-		callbacks = self.manager.get_callbacks(_path)
-		url = "file:///{0}".format(_path)
+		manager = self.manager_weakref()
 
-		try:
+		if (manager):
 		#
-			for callback in callbacks: callback(event_type, url, changed_value)
+			callbacks = manager.get_callbacks(_path)
+			url = "file:///{0}".format(_path)
+
+			try:
+			#
+				for callback in callbacks: callback(event_type, url, changed_value)
+			#
+			except Exception as handled_exception: LogLine.error(handled_exception)
 		#
-		except Exception as handled_exception: LogLine.error(handled_exception)
 	#
 
 	def process_IN_ATTRIB(self, event):
@@ -140,8 +146,11 @@ Handles "IN_DELETE_SELF" inotify events.
 :since: v0.1.01
 		"""
 
+
+		manager = self.manager_weakref()
+		if (manager): manager.unregister(event.pathname, None)
+
 		self._process_callbacks(AbstractWatcher.EVENT_TYPE_DELETED, event.pathname)
-		self.unregister(self, event.pathname, None)
 	#
 #
 
