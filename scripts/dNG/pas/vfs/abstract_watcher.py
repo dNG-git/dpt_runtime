@@ -112,6 +112,7 @@ if a callback is given but not defined for the watched URL.
 Handles registration of resource URL watches and its callbacks.
 
 :param url: Resource URL to be watched
+:param callback: Callback for the path
 
 :return: (bool) True on success
 :since:  v0.1.01
@@ -123,9 +124,10 @@ Handles registration of resource URL watches and its callbacks.
 	def unregister(self, url, callback):
 	#
 		"""
-Handles unregistration of resource URL watches.
+Handles deregistration of resource URL watches.
 
 :param url: Resource URL watched
+:param callback: Callback for the path
 
 :return: (bool) True on success
 :since:  v0.1.01

@@ -148,7 +148,7 @@ Handles "IN_DELETE_SELF" inotify events.
 
 
 		manager = self.manager_weakref()
-		if (manager): manager.unregister(event.pathname, None)
+		if (manager): manager.unregister(event.pathname, None, True)
 
 		self._process_callbacks(AbstractWatcher.EVENT_TYPE_DELETED, event.pathname)
 	#

@@ -173,6 +173,7 @@ Returns all registered callbacks for the given path.
 Handles registration of filesystem watches and its callbacks.
 
 :param _path: Filesystem path to be watched
+:param callback: Callback for the path
 
 :return: (bool) True on success
 :since:  v0.1.01
@@ -200,12 +201,14 @@ Handles registration of filesystem watches and its callbacks.
 		return _return
 	#
 
-	def unregister(self, _path, callback):
+	def unregister(self, _path, callback, _deleted = False):
 	#
 		"""
-Handles unregistration of filesystem watches.
+Handles deregistration of filesystem watches.
 
 :param _path: Filesystem path watched
+:param callback: Callback for the path
+:param _deleted: File has been deleted
 
 :return: (bool) True on success
 :since:  v0.1.01
@@ -217,12 +220,12 @@ Handles unregistration of filesystem watches.
 		#
 			if (_path in self.watched_paths):
 			#
-				if (callback == None): self.watched_callbacks[_path] = [ ]
+				if (callback == None or _deleted): self.watched_callbacks[_path] = [ ]
 				elif (callback in self.watched_callbacks[_path]): self.watched_callbacks[_path].remove(callback)
 
 				if (len(self.watched_callbacks[_path]) < 1):
 				#
-					self.rm_watch(self.watched_paths[_path])
+					if (not _deleted): self.rm_watch(self.watched_paths[_path])
 					del(self.watched_callbacks[_path])
 					del(self.watched_paths[_path])
 				#

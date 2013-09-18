@@ -149,6 +149,7 @@ if a callback is given but not defined for the watched path.
 Handles registration of filesystem watches and its callbacks.
 
 :param _path: Filesystem path to be watched
+:param callback: Callback for the path
 
 :return: (bool) True on success
 :since:  v0.1.01
@@ -173,9 +174,10 @@ Handles registration of filesystem watches and its callbacks.
 	def unregister(self, _path, callback):
 	#
 		"""
-Handles unregistration of filesystem watches.
+Handles deregistration of filesystem watches.
 
 :param _path: Filesystem path watched
+:param callback: Callback for the path
 
 :return: (bool) True on success
 :since:  v0.1.01
