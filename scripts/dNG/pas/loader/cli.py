@@ -161,42 +161,20 @@ Executes registered callbacks for the active application.
 
 		self.arg_parser = None
 
-		for callback in Cli.callbacks_run:
-		#
-			try: callback(args)
-			except Exception as handled_exception: self.shutdown(handled_exception)
-		#
-
-		Cli.callbacks_run = [ ]
-
 		try:
 		#
+			for callback in Cli.callbacks_run: callback(args)
+			Cli.callbacks_run = [ ]
+
 			self.mainloop_event.set()
 			if (self.mainloop != None): self.mainloop()
-
-			active = True
-			main_thread = threading.current_thread()
-
-			while (active):
-			#
-				active = False
-
-				try:
-				#
-					for thread in threading.enumerate():
-					#
-						if (thread != None and main_thread != thread and thread.is_alive() and (not thread.daemon)): thread.join()
-					#
-				#
-				except KeyboardInterrupt as handled_exception: raise
-				except: active = True
-
-				if (active): time.sleep(1)
-			#
-
-			self.shutdown()
 		#
-		except KeyboardInterrupt: self.shutdown()
+		except BaseException as handled_exception:
+		#
+			if (not isinstance(handled_exception, KeyboardInterrupt)): self.error(handled_exception)
+		#
+
+		self.shutdown()
 	#
 
 	def set_mainloop(self, callback):
@@ -266,6 +244,34 @@ Cleanup unused objects
 		#
 
 		Cli.callbacks_shutdown = [ ]
+
+		"""
+Check if all threads are joined before exiting the main thread.
+		"""
+
+		is_recheck_needed = True
+		main_thread = threading.current_thread()
+
+		while (is_recheck_needed):
+		#
+			is_recheck_needed = False
+
+			for thread in threading.enumerate():
+			#
+				try:
+				#
+					if (thread != None and main_thread != thread and thread.is_alive() and (not thread.daemon)):
+					#
+						thread.join()
+						is_recheck_needed = True
+					#
+				#
+				except KeyboardInterrupt: pass
+				except BaseException as handled_exception: self.error(handled_exception)
+			#
+
+			if (is_recheck_needed): time.sleep(1)
+		#
 
 		if (_exception != None): raise _exception
 	#

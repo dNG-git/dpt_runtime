@@ -86,7 +86,7 @@ Checks a given path for changes if "is_synchronous()" is true.
 
 		with WatcherMtime.synchronized:
 		#
-			if (_path in self.watched_paths and self.watched_paths[_path] != os.stat(_path).st_mtime):
+			if (self.watched_paths != None and _path in self.watched_paths and self.watched_paths[_path] != os.stat(_path).st_mtime):
 			#
 				_return = True
 				url = "file:///{0}".format(_path)
@@ -112,10 +112,10 @@ Frees all watcher callbacks for garbage collection.
 
 		with WatcherMtime.synchronized:
 		#
-			if (len(self.watched_paths) > 0):
+			if (self.watched_paths != None and len(self.watched_paths) > 0):
 			#
-				self.watched_callbacks = { }
-				self.watched_paths = { }
+				self.watched_callbacks = None
+				self.watched_paths = None
 			#
 		#
 	#
@@ -136,7 +136,7 @@ if a callback is given but not defined for the watched path.
 
 		with WatcherMtime.synchronized:
 		#
-			_return = (_path in self.watched_paths)
+			_return = (self.watched_paths != None and _path in self.watched_paths)
 			if (_return and callback != None): _return = (callback in self.watched_callbacks[_path])
 		#
 
@@ -159,13 +159,16 @@ Handles registration of filesystem watches and its callbacks.
 
 		with WatcherMtime.synchronized:
 		#
-			if (_path not in self.watched_paths and os.access(_path, os.R_OK)):
+			if (self.watched_callbacks != None):
 			#
-				self.watched_paths[_path] = os.stat(_path).st_mtime
-				self.watched_callbacks[_path] = [ ]
-			#
+				if (_path not in self.watched_paths and os.access(_path, os.R_OK)):
+				#
+					self.watched_paths[_path] = os.stat(_path).st_mtime
+					self.watched_callbacks[_path] = [ ]
+				#
 
-			if (callback not in self.watched_callbacks[_path]): self.watched_callbacks[_path].append(callback)
+				if (callback not in self.watched_callbacks[_path]): self.watched_callbacks[_path].append(callback)
+			#
 		#
 
 		return _return
@@ -187,7 +190,7 @@ Handles deregistration of filesystem watches.
 
 		with WatcherMtime.synchronized:
 		#
-			if (_path in self.watched_paths):
+			if (self.watched_paths != None and _path in self.watched_paths):
 			#
 				if (callback == None): self.watched_callbacks[_path] = [ ]
 				elif (callback in self.watched_callbacks[_path]): self.watched_callbacks[_path].remove(callback)

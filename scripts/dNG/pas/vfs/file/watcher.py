@@ -94,7 +94,7 @@ Constructor __init__(Watcher)
 :since: v0.1.01
 		"""
 
-		self.implementation = False
+		self.implementation = 0
 		"""
 Watcher implementation to use
 		"""
@@ -118,8 +118,11 @@ Checks a given URL for changes if "is_synchronous()" is true.
 
 		_path = self._get_path(url)
 
-		if (_path == None or _path.strip() == ""): return False
-		else: return self.implementation.get_instance().check(_path)
+		with Watcher.synchronized:
+		#
+			if (self.implementation == None or _path == None or _path.strip() == ""): return False
+			else: return self.implementation.get_instance().check(_path)
+		#
 	#
 
 	def free(self):
@@ -130,7 +133,14 @@ Frees all watcher callbacks for garbage collection.
 :since: v0.1.01
 		"""
 
-		self.implementation.get_instance().free()
+		with Watcher.synchronized:
+		#
+			if (self.implementation != None):
+			#
+				self.implementation.get_instance().free()
+				self.implementation = None
+			#
+		#
 	#
 
 	def _get_path(self, url):
@@ -158,7 +168,10 @@ called.
 :since:  v0.1.01
 		"""
 
-		return self.implementation.is_synchronous()
+		with Watcher.synchronized:
+		#
+			return (False if (self.implementation == None) else self.implementation.is_synchronous())
+		#
 	#
 
 	def is_watched(self, url, callback = None):
@@ -177,8 +190,11 @@ if a callback is given but not defined for the watched URL.
 
 		_path = self._get_path(url)
 
-		if (_path == None or _path.strip() == ""): return False
-		else: return self.implementation.get_instance().is_watched(_path, callback)
+		with Watcher.synchronized:
+		#
+			if (self.implementation == None or _path == None or _path.strip() == ""): return False
+			else: return self.implementation.get_instance().is_watched(_path, callback)
+		#
 	#
 
 	def register(self, url, callback):
@@ -194,8 +210,11 @@ Handles registration of resource URL watches and its callbacks.
 
 		_path = self._get_path(url)
 
-		if (_path == None or _path.strip() == ""): return False
-		else: return self.implementation.get_instance().register(_path, callback)
+		with Watcher.synchronized:
+		#
+			if (self.implementation == None or _path == None or _path.strip() == ""): return False
+			else: return self.implementation.get_instance().register(_path, callback)
+		#
 	#
 
 	def set_implementation(self, implementation = None):
@@ -221,7 +240,7 @@ Set the filesystem watcher implementation to use.
 	def unregister(self, url, callback):
 	#
 		"""
-Handles unregistration of resource URL watches.
+Handles deregistration of resource URL watches.
 
 :param url: Resource URL watched
 
@@ -231,8 +250,11 @@ Handles unregistration of resource URL watches.
 
 		_path = self._get_path(url)
 
-		if (_path == None or _path.strip() == ""): return False
-		else: return self.implementation.get_instance().unregister(_path, callback)
+		with Watcher.synchronized:
+		#
+			if (self.implementation == None or _path == None or _path.strip() == ""): return False
+			else: return self.implementation.get_instance().unregister(_path, callback)
+		#
 	#
 #
 
