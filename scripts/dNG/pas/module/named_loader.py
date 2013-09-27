@@ -24,6 +24,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 NOTE_END //n"""
 
 from os import path
+from sys import modules as sys_modules
 from threading import RLock
 from weakref import proxy, ref
 import re
@@ -63,10 +64,6 @@ CamelCase RegExp
 	"""
 The log_handler is called whenever debug messages should be logged or errors
 happened.
-	"""
-	module_list = [ ]
-	"""
-List of modules loaded
 	"""
 	synchronized = RLock()
 	"""
@@ -294,9 +291,13 @@ Get the class name for the given common name.
 
 		try:
 		#
-			if (package not in NamedLoader.module_list): NamedLoader._load_package(package)
-			_return = NamedLoader._load_py_file(module)
-			if (_return != None): NamedLoader.module_list.append(module)
+			with NamedLoader.synchronized:
+			#
+				if (package not in sys_modules): NamedLoader._load_package(package)
+
+				if (module in sys_modules): _return = sys_modules[module]
+				else: _return = NamedLoader._load_py_file(module)
+			#
 		#
 		except Exception as handled_exception:
 		#
@@ -321,14 +322,17 @@ Get the class name for the given common name.
 
 		_return = None
 
-		try:
+		with NamedLoader.synchronized:
 		#
-			_return = NamedLoader._load_py_file(package)
-			if (_return != None): NamedLoader.module_list.append(package)
-		#
-		except Exception as handled_exception:
-		#
-			if (NamedLoader.log_handler != None): NamedLoader.log_handler.error(handled_exception)
+			try:
+			#
+				if (package in sys_modules): _return = sys_modules[package]
+				else: _return = NamedLoader._load_py_file(package)
+			#
+			except Exception as handled_exception:
+			#
+				if (NamedLoader.log_handler != None): NamedLoader.log_handler.error(handled_exception)
+			#
 		#
 
 		return _return

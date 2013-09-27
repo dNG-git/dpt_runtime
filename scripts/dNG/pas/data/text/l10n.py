@@ -102,9 +102,9 @@ Returns the language code of this instance.
 	def import_raw_json(self, json):
 	#
 		"""
-Import a given JSON encoded string as an array of settings.
+Import a given JSON encoded string as an dict of translated strings.
 
-:param json: JSON encoded array of settings
+:param json: JSON encoded dict of translations
 
 :return: (bool) True on success
 :since:  v0.1.00
@@ -124,9 +124,9 @@ Import a given JSON encoded string as an array of settings.
 	def read_file(self, file_pathname):
 	#
 		"""
-Read all settings from the given file.
+Read all translations from the given file.
 
-:param json: JSON encoded array of language strings
+:param file_pathname: File path and name
 
 :since: v0.1.00
 		"""
@@ -157,14 +157,17 @@ Read all settings from the given file.
 	def write_file(self, file_pathname, template_pathname):
 	#
 		"""
-Write all settings from the given file.
+Write all translations to the given file using the given template.
 
-:param json: JSON encoded array of settings
+:param file_pathname: File path and name of the translation file
+:param template_pathname: File path and name of the translation template
+       file
 
-:since: v0.1.00
+:return: (bool) True on success
+:since:  v0.1.00
 		"""
 
-		pass
+		return False
 	#
 
 	@staticmethod
@@ -220,7 +223,7 @@ Checks if a given key is a defined language string.
 	def get(key = None, default = None, lang = None):
 	#
 		"""
-Returns the value with the specified key or $key if undefined.
+Returns the value with the specified key or the default one if undefined.
 
 :param key: L10n key
 :param default: Default value if not translated
@@ -251,7 +254,7 @@ Returns the defined default language of the current task.
 	def get_instance(lang = None):
 	#
 		"""
-Get the l10n singleton for the given or default language.
+Get the L10n singleton for the given or default language.
 
 :param lang: Language code
 

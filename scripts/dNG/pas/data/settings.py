@@ -243,14 +243,17 @@ Sets the log_handler.
 	def write_file(file_pathname, template_pathname):
 	#
 		"""
-Write all settings from the given file.
+Write all settings to the given file using the given template.
 
-:param json: JSON encoded dict of settings
+:param file_pathname: File path and name of the settings file
+:param template_pathname: File path and name of the settings template
+       file
 
-:since: v0.1.00
+:return: (bool) True on success
+:since:  v0.1.00
 		"""
 
-		pass
+		return False
 	#
 #
 

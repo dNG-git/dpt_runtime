@@ -78,13 +78,13 @@ Mimetype extension list
 	def get(self, extension = None, mimetype = None):
 	#
 		"""
-Returns the value with the specified key or $key if undefined.
+Returns the mime-type definition. Either extension or mime-type can be
+looked up.
 
-:param key: L10n key
-:param default: Default value if not translated
-:param lang: Language code
+:param extension: Extension to look up
+:param mimetype: MimeType to look up
 
-:return: (str) Value
+:return: (dict) Mime-type definition
 :since:  v0.1.01
 		"""
 
@@ -102,7 +102,7 @@ Returns the value with the specified key or $key if undefined.
 			else:
 			#
 				mimetype = mimetypes.guess_type("file.{0}".format(extension), False)[0]
-				if (mimetype != None): _return = { "mimetype": mimetype, "extension": extension, "type": "unknown" }
+				if (mimetype != None): _return = { "mimetype": mimetype, "extension": extension, "class": "unknown" }
 			#
 
 			if (mimetype != None and mimetype != _return['mimetype']): _return = None
@@ -110,7 +110,7 @@ Returns the value with the specified key or $key if undefined.
 		elif (mimetype != None):
 		#
 			if (mimetype in self.definitions): _return = self.definitions[mimetype]
-			elif (mimetypes.guess_extension(mimetype, False) != None): _return = { "mimetype": mimetype, "type": "unknown" }
+			elif (mimetypes.guess_extension(mimetype, False) != None): _return = { "mimetype": mimetype, "class": "unknown" }
 		#
 
 		return _return
@@ -119,9 +119,11 @@ Returns the value with the specified key or $key if undefined.
 	def get_extensions(self, mimetype):
 	#
 		"""
-Returns the defined default language of the current task.
+Returns the list of extensions known for the given mime-type.
 
-:return: (str) Language code
+:param mimetype: Mime-type to return the extensions for.
+
+:return: (list) Extensions
 :since:  v0.1.01
 		"""
 
@@ -138,9 +140,9 @@ Returns the defined default language of the current task.
 	def import_raw_json(self, json):
 	#
 		"""
-Import a given JSON encoded string as an array of settings.
+Import a given JSON encoded string as an mime-type definition list.
 
-:param json: JSON encoded array of settings
+:param json: JSON encoded dict of definitions
 
 :return: (bool) True on success
 :since:  v0.1.01
@@ -159,10 +161,10 @@ Import a given JSON encoded string as an array of settings.
 
 			for mimetype in data:
 			#
-				if ("type" not in data[mimetype]):
+				if ("class" not in data[mimetype]):
 				#
-					_type = mimetype.split("/", 1)[0]
-					data[mimetype]['type'] = ("unknown" if (_type not in data or "type" not in data[_type]) else data[_type]['type'])
+					_class = mimetype.split("/", 1)[0]
+					data[mimetype]['class'] = (_class if (_class not in data or "class" not in data[_class]) else data[_class]['class'])
 				#
 
 				self.definitions[mimetype] = data[mimetype]
@@ -189,9 +191,7 @@ Import a given JSON encoded string as an array of settings.
 	def refresh(self):
 	#
 		"""
-Read all settings from the given file.
-
-:param json: JSON encoded array of language strings
+Refresh all mime-type definitions from the file.
 
 :since: v0.1.01
 		"""
@@ -224,7 +224,7 @@ Read all settings from the given file.
 	def get_instance():
 	#
 		"""
-Get the MimeType singleton for the given or default language.
+Get the MimeType singleton.
 
 :return: (MimeType) Object on success
 :since:  v0.1.01

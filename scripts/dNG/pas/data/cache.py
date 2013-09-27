@@ -174,7 +174,7 @@ Remove changed files from the cache.
 	def get_instance():
 	#
 		"""
-Get the cache singleton.
+Get the Cache singleton.
 
 :return: (Cache) Object on success
 :since:  v0.1.00

@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.vfs.file.watcher_pyinotify
+dNG.pas.vfs.file.WatcherPyinotifyCallback
 """
 """n// NOTE
 ----------------------------------------------------------------------------

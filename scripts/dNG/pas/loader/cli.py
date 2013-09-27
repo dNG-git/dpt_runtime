@@ -196,9 +196,9 @@ Register a callback for the application main loop.
 	def set_log_handler(self, log_handler):
 	#
 		"""
-Sets the log_handler.
+Sets the LogHandler.
 
-:param log_handler: log_handler to use
+:param log_handler: LogHandler to use
 
 :since: v0.1.00
 		"""
@@ -280,7 +280,7 @@ Check if all threads are joined before exiting the main thread.
 	def get_instance():
 	#
 		"""
-Get the cli singleton.
+Get the Cli singleton.
 
 :return: (Cli) Object on success
 :since:  v0.1.00

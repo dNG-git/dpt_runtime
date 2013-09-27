@@ -2,7 +2,7 @@
 ##j## BOF
 
 """
-dNG.pas.vfs.file.watcher
+dNG.pas.vfs.file.Watcher
 """
 """n// NOTE
 ----------------------------------------------------------------------------

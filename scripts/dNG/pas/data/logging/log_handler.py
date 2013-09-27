@@ -88,7 +88,7 @@ Lock used in multi thread environments.
 	"""
 	weakref_instance = None
 	"""
-log_handler weakref instance
+LogHandler weakref instance
 	"""
 
 	def __init__(self):
@@ -273,7 +273,7 @@ Warning message method
 	def get_instance():
 	#
 		"""
-Get the log_handler singleton.
+Get the LogHandler singleton.
 
 :return: (LogHandler) Object on success
 :since:  v0.1.00
