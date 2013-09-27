@@ -152,7 +152,7 @@ Remove changed files from the cache.
 :param url: Filesystem URL watched
 :param changed_value: Changed filesystem value
 
-:since:  v0.1.01
+:since: v0.1.01
 		"""
 
 		with Cache.synchronized:
