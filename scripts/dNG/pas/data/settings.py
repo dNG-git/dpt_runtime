@@ -56,7 +56,7 @@ Settings instance
 	"""
 	log_handler = None
 	"""
-The log_handler is called whenever debug messages should be logged or errors
+The LogHandler is called whenever debug messages should be logged or errors
 happened.
 	"""
 	synchronized = RLock()
@@ -216,7 +216,7 @@ Sets the value for the specified key.
 		"""
 Sets the cache instance.
 
-:param cache_instance: log_handler to use
+:param cache_instance: Cache instance to use
 
 :since: v0.1.00
 		"""
@@ -229,9 +229,9 @@ Sets the cache instance.
 	def set_log_handler(log_handler):
 	#
 		"""
-Sets the log_handler.
+Sets the LogHandler.
 
-:param log_handler: log_handler to use
+:param log_handler: LogHandler to use
 
 :since: v0.1.00
 		"""

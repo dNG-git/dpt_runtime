@@ -62,7 +62,7 @@ CamelCase RegExp
 
 	log_handler = None
 	"""
-The log_handler is called whenever debug messages should be logged or errors
+The LogHandler is called whenever debug messages should be logged or errors
 happened.
 	"""
 	synchronized = RLock()
@@ -426,9 +426,9 @@ Get the class name for the given common name.
 	def set_log_handler(log_handler):
 	#
 		"""
-Sets the log_handler.
+Sets the LogHandler.
 
-:param log_handler: log_handler to use
+:param log_handler: LogHandler to use
 
 :since: v0.1.00
 		"""

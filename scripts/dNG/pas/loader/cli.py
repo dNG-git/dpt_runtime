@@ -117,7 +117,7 @@ ArgumentParser instance
 		"""
 		self.log_handler = None
 		"""
-The log_handler is called whenever debug messages should be logged or errors
+The LogHandler is called whenever debug messages should be logged or errors
 happened.
 		"""
 		self.mainloop = None
