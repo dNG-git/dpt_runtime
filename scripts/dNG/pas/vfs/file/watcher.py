@@ -81,11 +81,6 @@ Synchronous pyinotify implementation
 Filesystem mtime implementation
 	"""
 
-	synchronized = RLock()
-	"""
-Lock used in multi thread environments.
-	"""
-
 	def __init__(self):
 	#
 		"""
@@ -94,9 +89,13 @@ Constructor __init__(Watcher)
 :since: v0.1.01
 		"""
 
-		self.implementation = 0
+		self.implementation = None
 		"""
-Watcher implementation to use
+Watcher implementation instance
+		"""
+		self.synchronized = RLock()
+		"""
+Lock used in multi thread environments.
 		"""
 
 		self.set_implementation()
@@ -118,7 +117,7 @@ Checks a given URL for changes if "is_synchronous()" is true.
 
 		_path = self._get_path(url)
 
-		with Watcher.synchronized:
+		with self.synchronized:
 		#
 			if (self.implementation == None or _path == None or _path.strip() == ""): return False
 			else: return self.implementation.get_instance().check(_path)
@@ -133,7 +132,7 @@ Frees all watcher callbacks for garbage collection.
 :since: v0.1.01
 		"""
 
-		with Watcher.synchronized:
+		with self.synchronized:
 		#
 			if (self.implementation != None):
 			#
@@ -168,7 +167,7 @@ called.
 :since:  v0.1.01
 		"""
 
-		with Watcher.synchronized:
+		with self.synchronized:
 		#
 			return (False if (self.implementation == None) else self.implementation.is_synchronous())
 		#
@@ -190,7 +189,7 @@ if a callback is given but not defined for the watched URL.
 
 		_path = self._get_path(url)
 
-		with Watcher.synchronized:
+		with self.synchronized:
 		#
 			if (self.implementation == None or _path == None or _path.strip() == ""): return False
 			else: return self.implementation.get_instance().is_watched(_path, callback)
@@ -210,7 +209,7 @@ Handles registration of resource URL watches and its callbacks.
 
 		_path = self._get_path(url)
 
-		with Watcher.synchronized:
+		with self.synchronized:
 		#
 			if (self.implementation == None or _path == None or _path.strip() == ""): return False
 			else: return self.implementation.get_instance().register(_path, callback)
@@ -229,12 +228,14 @@ Set the filesystem watcher implementation to use.
 
 		global _IMPLEMENTATION_INOTIFY, _IMPLEMENTATION_INOTIFY_SYNC, _IMPLEMENTATION_MTIME, _mode
 
-		with Watcher.synchronized:
+		with self.synchronized:
 		#
-			if (_mode == _IMPLEMENTATION_INOTIFY and (implementation == None or implementation == _IMPLEMENTATION_INOTIFY)): self.implementation = WatcherPyinotify
-			elif (_mode == _IMPLEMENTATION_INOTIFY and implementation == _IMPLEMENTATION_INOTIFY_SYNC): self.implementation = WatcherPyinotifySync
-			else: self.implementation = WatcherMtime
+			if (self.implementation != None): self.free()
 		#
+
+		if (_mode == _IMPLEMENTATION_INOTIFY and (implementation == None or implementation == _IMPLEMENTATION_INOTIFY)): self.implementation = WatcherPyinotify
+		elif (_mode == _IMPLEMENTATION_INOTIFY and implementation == _IMPLEMENTATION_INOTIFY_SYNC): self.implementation = WatcherPyinotifySync
+		else: self.implementation = WatcherMtime
 	#
 
 	def unregister(self, url, callback):
@@ -250,7 +251,7 @@ Handles deregistration of resource URL watches.
 
 		_path = self._get_path(url)
 
-		with Watcher.synchronized:
+		with self.synchronized:
 		#
 			if (self.implementation == None or _path == None or _path.strip() == ""): return False
 			else: return self.implementation.get_instance().unregister(_path, callback)

@@ -97,20 +97,20 @@ looked up.
 			if (extension in self.extensions and self.extensions[extension] in self.definitions):
 			#
 				_return = self.definitions[self.extensions[extension]].copy()
-				_return['mimetype'] = self.extensions[extension]
+				_return['type'] = self.extensions[extension]
 			#
 			else:
 			#
 				mimetype = mimetypes.guess_type("file.{0}".format(extension), False)[0]
-				if (mimetype != None): _return = { "mimetype": mimetype, "extension": extension, "class": "unknown" }
+				if (mimetype != None): _return = { "type": mimetype, "extension": extension, "class": "unknown" }
 			#
 
-			if (mimetype != None and mimetype != _return['mimetype']): _return = None
+			if (mimetype != None and mimetype != _return['type']): _return = None
 		#
 		elif (mimetype != None):
 		#
 			if (mimetype in self.definitions): _return = self.definitions[mimetype]
-			elif (mimetypes.guess_extension(mimetype, False) != None): _return = { "mimetype": mimetype, "class": "unknown" }
+			elif (mimetypes.guess_extension(mimetype, False) != None): _return = { "type": mimetype, "class": "unknown" }
 		#
 
 		return _return

@@ -23,7 +23,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from pyinotify import IN_ATTRIB, IN_CLOSE_WRITE, IN_CREATE, IN_DELETE, IN_DELETE_SELF, IN_MODIFY, ThreadedNotifier, WatchManager
+from pyinotify import IN_ATTRIB, IN_CLOSE_WRITE, IN_CREATE, IN_DELETE, IN_DELETE_SELF, IN_MODIFY, IN_MOVE_SELF, IN_MOVED_FROM, IN_MOVED_TO, ThreadedNotifier, WatchManager
 from threading import RLock
 from os import path
 
@@ -69,6 +69,10 @@ pyinotify instance
 		self.watched_callbacks = { }
 		"""
 Callbacks for watched files
+		"""
+		self.watched_path_files = { }
+		"""
+pyinotify watch fds
 		"""
 		self.watched_paths = { }
 		"""
@@ -138,10 +142,12 @@ if a callback is given but not defined for the watched path.
 :since:  v0.1.01
 		"""
 
+		_return = False
+
 		with WatcherPyinotify.synchronized:
 		#
-			_return = (_path in self.watched_paths)
-			if (_return and callback != None): _return = (callback in self.watched_callbacks[_path])
+			if (_path in self.watched_callbacks): _return = (True if (callback == None) else (callback in self.watched_callbacks[_path]))
+			elif (not path.isdir(_path)): _return = self.is_watched(path.split(_path)[0], callback)
 		#
 
 		return _return
@@ -162,6 +168,7 @@ Returns all registered callbacks for the given path.
 		with WatcherPyinotify.synchronized:
 		#
 			if (_path in self.watched_callbacks): _return = self.watched_callbacks[_path]
+			elif (not path.isdir(_path)): _return = self.get_callbacks(path.split(_path)[0])
 		#
 
 		return _return
@@ -183,19 +190,25 @@ Handles registration of filesystem watches and its callbacks.
 
 		with WatcherPyinotify.synchronized:
 		#
-			if (_path not in self.watched_paths):
-			#
-				inotify_result = self.add_watch(_path, ((IN_ATTRIB | IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY) if (path.isdir(_path)) else (IN_CLOSE_WRITE | IN_DELETE_SELF)))
+			if (path.isdir(_path)): directory_path = _path
+			else: directory_path = path.split(_path)[0]
 
-				if (inotify_result[_path] < 0): _return = False
-				else:
-				#
-					self.watched_paths.update(inotify_result)
-					self.watched_callbacks[_path] = [ ]
-				#
+			if (directory_path not in self.watched_paths):
+			#
+				inotify_result = self.add_watch(directory_path, (IN_ATTRIB | IN_CLOSE_WRITE | IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY | IN_MOVE_SELF | IN_MOVED_FROM | IN_MOVED_TO))
+
+				if (inotify_result[directory_path] < 0): _return = False
+				else: self.watched_paths.update(inotify_result)
 			#
 
-			if (_return and callback not in self.watched_callbacks[_path]): self.watched_callbacks[_path].append(callback)
+			if (_return):
+			#
+				if (directory_path not in self.watched_path_files): self.watched_path_files[directory_path] = [ _path ]
+				elif (_path not in self.watched_path_files[directory_path]): self.watched_path_files[directory_path].append(_path)
+
+				if (_path not in self.watched_callbacks): self.watched_callbacks[_path] = [ callback ]
+				elif (callback not in self.watched_callbacks[_path]): self.watched_callbacks[_path].append(callback)
+			#
 		#
 
 		return _return
@@ -218,16 +231,28 @@ Handles deregistration of filesystem watches.
 
 		with WatcherPyinotify.synchronized:
 		#
-			if (_path in self.watched_paths):
+			is_directory = path.isdir(_path)
+
+			if (is_directory): directory_path = _path
+			else: directory_path = path.split(_path)[0]
+
+			if (directory_path in self.watched_path_files and _path in self.watched_paths):
 			#
 				if (callback == None or _deleted): self.watched_callbacks[_path] = [ ]
 				elif (callback in self.watched_callbacks[_path]): self.watched_callbacks[_path].remove(callback)
 
-				if (len(self.watched_callbacks[_path]) < 1):
+				if (len(self.watched_callbacks[_path]) < 1): del(self.watched_callbacks[_path])
+
+				if (is_directory and _deleted):
 				#
-					if (not _deleted): self.rm_watch(self.watched_paths[_path])
-					del(self.watched_callbacks[_path])
-					del(self.watched_paths[_path])
+					for filepath in self.watched_path_files[directory_path]: self.unregister(filepath, None, True)
+				#
+
+				if (len(self.watched_path_files[directory_path]) < 1):
+				#
+					if (not _deleted): self.rm_watch(self.watched_paths[directory_path])
+					del(self.watched_path_files[directory_path])
+					del(self.watched_paths[directory_path])
 				#
 			#
 			else: _return = False

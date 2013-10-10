@@ -151,13 +151,14 @@ Sets the base directory for scanning and loading python files.
 	#
 
 	@staticmethod
-	def _get_class(common_name):
+	def get_class(common_name, autoload = True):
 	#
 		"""
 Get the class name for the given common name.
 
 :param common_name: Common name
-:param classprefix: A classname prefix
+:param autoload: True to load the class module automatically if not done
+                 already.
 
 :return: (object) Loaded class
 :since:  v0.1.00
@@ -170,10 +171,15 @@ Get the class name for the given common name.
 		if (loader.is_registered(common_name)): ( package, classname ) = loader.get(common_name).rsplit(".", 1)
 		else: ( package, classname ) = common_name.rsplit(".", 1)
 
-		module_name = NamedLoader.RE_CAMEL_CASE_SPLITTER.sub("\\1_\\2", classname).lower()
-		module = NamedLoader._load_module("{0}.{1}".format(package, module_name))
+		module_name = "{0}.{1}".format(package, NamedLoader.RE_CAMEL_CASE_SPLITTER.sub("\\1_\\2", classname).lower())
 
-		if (hasattr(module, classname)): _return = getattr(module, classname)
+		if (autoload): module = NamedLoader._load_module(module_name)
+		else:
+		#
+			with NamedLoader.synchronized: module = (sys_modules[module_name] if (module_name in sys_modules) else None)
+		#
+
+		if (module != None and hasattr(module, classname)): _return = getattr(module, classname)
 		return _return
 	#
 
@@ -185,6 +191,7 @@ Returns a new instance based on its common name.
 
 :param common_name: Common name
 :param required: True if errors should throw exceptions
+:param autoload: True to load the class automatically if not done already
 
 :return: (object) Requested object on success
 :since:  v0.1.00
@@ -192,7 +199,7 @@ Returns a new instance based on its common name.
 
 		_return = None
 
-		_class = NamedLoader._get_class(common_name)
+		_class = NamedLoader.get_class(common_name)
 
 		if (_class != None):
 		#
@@ -245,7 +252,7 @@ Returns a singleton based on its common name.
 
 		_return = None
 
-		_class = NamedLoader._get_class(common_name)
+		_class = NamedLoader.get_class(common_name)
 
 		if (_class != None):
 		#
@@ -258,18 +265,20 @@ Returns a singleton based on its common name.
 	#
 
 	@staticmethod
-	def is_defined(common_name):
+	def is_defined(common_name, autoload = True):
 	#
 		"""
 Checks if a common name is defined or can be resolved to a class name.
 
 :param common_name: Common name
+:param autoload: True to load the class module automatically if not done
+                 already.
 
 :return: (bool) True if defined or resolvable
 :since:  v0.1.00
 		"""
 
-		return (False if (NamedLoader._get_class(common_name) == None) else True)
+		return (False if (NamedLoader.get_class(common_name, autoload) == None) else True)
 	#
 
 	@staticmethod

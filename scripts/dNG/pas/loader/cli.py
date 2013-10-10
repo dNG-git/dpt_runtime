@@ -25,7 +25,6 @@ NOTE_END //n"""
 
 from weakref import ref
 import threading
-import time
 
 try: import signal
 except ImportError: pass
@@ -62,6 +61,7 @@ if (_mode == _IMPLEMENTATION_PYTHON):
 #
 
 from dNG.pas.data.traced_exception import TracedException
+from dNG.pas.runtime.thread import Thread
 
 class Cli(object):
 #
@@ -233,6 +233,8 @@ Executes registered callbacks before shutting down this application.
 
 		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -Cli.shutdown()- (#echo(__LINE__)#)")
 
+		Thread.set_inactive()
+
 		"""
 Cleanup unused objects
 		"""
@@ -240,39 +242,10 @@ Cleanup unused objects
 		for callback in Cli.callbacks_shutdown:
 		#
 			try: callback()
-			except Exception as handled_exception: self.error(handled_exception)
+			except BaseException as handled_exception: self.error(handled_exception)
 		#
 
 		Cli.callbacks_shutdown = [ ]
-
-		"""
-Check if all threads are joined before exiting the main thread.
-		"""
-
-		is_recheck_needed = True
-		main_thread = threading.current_thread()
-
-		while (is_recheck_needed):
-		#
-			is_recheck_needed = False
-
-			for thread in threading.enumerate():
-			#
-				try:
-				#
-					if (thread != None and main_thread != thread and thread.is_alive() and (not thread.daemon)):
-					#
-						thread.join()
-						is_recheck_needed = True
-					#
-				#
-				except KeyboardInterrupt: pass
-				except BaseException as handled_exception: self.error(handled_exception)
-			#
-
-			if (is_recheck_needed): time.sleep(1)
-		#
-
 		if (_exception != None): raise _exception
 	#
 

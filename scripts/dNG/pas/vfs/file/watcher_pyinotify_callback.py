@@ -71,7 +71,7 @@ Handles all inotify events.
 
 		manager = self.manager_weakref()
 
-		if (manager):
+		if (manager and manager.is_watched(_path)):
 		#
 			callbacks = manager.get_callbacks(_path)
 			url = "file:///{0}".format(_path)
@@ -146,11 +146,52 @@ Handles "IN_DELETE_SELF" inotify events.
 :since: v0.1.01
 		"""
 
+		manager = self.manager_weakref()
+		if (manager): manager.unregister(event.pathname, None, True)
+
+		self._process_callbacks(AbstractWatcher.EVENT_TYPE_DELETED, event.pathname)
+	#
+
+	def process_IN_MOVE_SELF(self, event):
+	#
+		"""
+Handles "IN_MOVE_SELF" inotify events.
+
+:param event: pyinotify event
+
+:since: v0.1.01
+		"""
 
 		manager = self.manager_weakref()
 		if (manager): manager.unregister(event.pathname, None, True)
 
 		self._process_callbacks(AbstractWatcher.EVENT_TYPE_DELETED, event.pathname)
+	#
+
+	def process_IN_MOVED_FROM(self, event):
+	#
+		"""
+Handles "IN_MOVED_TO" inotify events.
+
+:param event: pyinotify event
+
+:since: v0.1.01
+		"""
+
+		self._process_callbacks(AbstractWatcher.EVENT_TYPE_DELETED, event.path, event.name)
+	#
+
+	def process_IN_MOVED_TO(self, event):
+	#
+		"""
+Handles "IN_MOVED_TO" inotify events.
+
+:param event: pyinotify event
+
+:since: v0.1.01
+		"""
+
+		self._process_callbacks(AbstractWatcher.EVENT_TYPE_CREATED, event.path, event.name)
 	#
 #
 
