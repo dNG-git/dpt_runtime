@@ -24,12 +24,12 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 NOTE_END //n"""
 
 from os import path
-from threading import RLock
 from time import strftime
 from weakref import ref
 import os
 
 from dNG.pas.data.settings import Settings
+from dNG.pas.runtime.instance_lock import InstanceLock
 from .abstract_log_handler import AbstractLogHandler
 
 _API_JAVA = 1
@@ -82,13 +82,13 @@ class LogHandler(AbstractLogHandler):
 	"""
 Append log file handlers only once
 	"""
-	synchronized = RLock()
-	"""
-Lock used in multi thread environments.
-	"""
 	weakref_instance = None
 	"""
 LogHandler weakref instance
+	"""
+	weakref_lock = InstanceLock()
+	"""
+Thread safety weakref lock
 	"""
 
 	def __init__(self):
@@ -247,7 +247,7 @@ Warning message method
 :since: v0.1.00
 		"""
 
-		exception = isinstance(data, Exception)
+		exception = isinstance(data, BaseException)
 		message = strftime(self.log_format_datetime)
 
 		if (exception):
@@ -281,7 +281,7 @@ Get the LogHandler singleton.
 
 		_return = None
 
-		with LogHandler.synchronized:
+		with LogHandler.weakref_lock:
 		#
 			if (LogHandler.weakref_instance != None): _return = LogHandler.weakref_instance()
 

@@ -23,12 +23,11 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from threading import RLock
-
 try: from urllib.parse import urlsplit
 except ImportError: from urlparse import urlsplit
 
 from dNG.pas.data.logging.log_line import LogLine
+from dNG.pas.runtime.thread_lock import ThreadLock
 from dNG.pas.vfs.abstract_watcher import AbstractWatcher
 
 _IMPLEMENTATION_INOTIFY = 1
@@ -93,9 +92,9 @@ Constructor __init__(Watcher)
 		"""
 Watcher implementation instance
 		"""
-		self.synchronized = RLock()
+		self.lock = ThreadLock()
 		"""
-Lock used in multi thread environments.
+Thread safety lock
 		"""
 
 		self.set_implementation()
@@ -117,7 +116,7 @@ Checks a given URL for changes if "is_synchronous()" is true.
 
 		_path = self._get_path(url)
 
-		with self.synchronized:
+		with self.lock:
 		#
 			if (self.implementation == None or _path == None or _path.strip() == ""): return False
 			else: return self.implementation.get_instance().check(_path)
@@ -132,7 +131,7 @@ Frees all watcher callbacks for garbage collection.
 :since: v0.1.01
 		"""
 
-		with self.synchronized:
+		with self.lock:
 		#
 			if (self.implementation != None):
 			#
@@ -167,7 +166,7 @@ called.
 :since:  v0.1.01
 		"""
 
-		with self.synchronized:
+		with self.lock:
 		#
 			return (False if (self.implementation == None) else self.implementation.is_synchronous())
 		#
@@ -189,7 +188,7 @@ if a callback is given but not defined for the watched URL.
 
 		_path = self._get_path(url)
 
-		with self.synchronized:
+		with self.lock:
 		#
 			if (self.implementation == None or _path == None or _path.strip() == ""): return False
 			else: return self.implementation.get_instance().is_watched(_path, callback)
@@ -209,7 +208,7 @@ Handles registration of resource URL watches and its callbacks.
 
 		_path = self._get_path(url)
 
-		with self.synchronized:
+		with self.lock:
 		#
 			if (self.implementation == None or _path == None or _path.strip() == ""): return False
 			else: return self.implementation.get_instance().register(_path, callback)
@@ -228,7 +227,7 @@ Set the filesystem watcher implementation to use.
 
 		global _IMPLEMENTATION_INOTIFY, _IMPLEMENTATION_INOTIFY_SYNC, _IMPLEMENTATION_MTIME, _mode
 
-		with self.synchronized:
+		with self.lock:
 		#
 			if (self.implementation != None): self.free()
 		#
@@ -251,7 +250,7 @@ Handles deregistration of resource URL watches.
 
 		_path = self._get_path(url)
 
-		with self.synchronized:
+		with self.lock:
 		#
 			if (self.implementation == None or _path == None or _path.strip() == ""): return False
 			else: return self.implementation.get_instance().unregister(_path, callback)

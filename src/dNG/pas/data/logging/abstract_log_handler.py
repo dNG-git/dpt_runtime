@@ -111,14 +111,14 @@ Get the formatted log message.
 		"""
 
 		if (isinstance(data, TracedException)): data = str(data)
-		elif (isinstance(data, Exception)):
+		elif (isinstance(data, BaseException)):
 		#
 			try:
 			# Try to extract exception - might result in the wrong one
 				( exc_type, exc_value, exc_traceback ) = sys.exc_info()
 				data = "{0} {1}".format(repr(data), "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
 			#
-			except: data = repr(data)
+			except Exception: data = repr(data)
 		#
 		else:
 		#

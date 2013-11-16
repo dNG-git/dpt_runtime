@@ -238,7 +238,7 @@ Check and convert to float.
 		#
 			if (data != None): data = float(data)
 		#
-		except: data = None
+		except ValueError: data = None
 
 		return data
 	#
@@ -259,7 +259,7 @@ Check and convert to int.
 		#
 			if (data != None): data = int(data)
 		#
-		except: data = None
+		except ValueError: data = None
 
 		return data
 	#

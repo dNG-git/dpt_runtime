@@ -26,10 +26,10 @@ NOTE_END //n"""
 import sys
 import traceback
 
-class TracedException(Exception):
+class TracedException(RuntimeError):
 #
 	"""
-The extended "Exception" is used to redirect exceptions to output
+The extended "RuntimeError" is used to redirect exceptions to output
 streams.
 
 :author:     direct Netware Group
@@ -44,7 +44,7 @@ streams.
 	def __init__(self, value, _exception = None):
 	#
 		"""
-Constructor __init__(Exception)
+Constructor __init__(TracedException)
 
 :param value: Exception message value
 :param _exception: Inner exception
@@ -52,7 +52,7 @@ Constructor __init__(Exception)
 :since: v0.1.00
 		"""
 
-		Exception.__init__(self, value)
+		RuntimeError.__init__(self, value)
 
 		self.exc_cause = _exception
 		"""
@@ -72,6 +72,13 @@ Exception traceback
 		"""
 
 		( self.exc_type, self.exc_value, self.exc_traceback ) = sys.exc_info()
+
+		if (self.exc_traceback == None):
+		#
+			self.exc_type = self.__class__
+			self.exc_value = self
+			self.exc_traceback = None
+		#
 	#
 
 	def __str__(self):
@@ -82,7 +89,7 @@ and print() to compute the "informal" or nicely printable string
 representation of an object.
 		"""
 
-		_return = (repr(self) if (self.exc_traceback == None) else "{0} {1}: {2}".format(self.exc_type, self.exc_value, self.get_printable_trace()))
+		_return = RuntimeError.__str__(self)
 		return (_return if (self.exc_cause == None) else "{0} {1}".format(_return, repr(self.exc_cause)))
 	#
 
@@ -107,8 +114,7 @@ Returns the stack trace.
 :since:  v0.1.00
 		"""
 
-		try: return "".join(traceback.format_exception(self.exc_type, self.exc_value, self.exc_traceback))
-		except: return "Traceback failed"
+		return "".join(traceback.format_exception(self.exc_type, self.exc_value, self.exc_traceback))
 	#
 
 	def print_stack_trace(self, out_stream = None):
@@ -121,11 +127,12 @@ Prints the stack trace to the given output stream or stderr.
 :since: v0.1.00
 		"""
 
-		traceback.print_exception(self.exc_type, self.exc_value, self.exc_traceback, file = (out_stream if (out_stream != None) else sys.stderr))
+		if (out_stream == None): out_stream = sys.stderr
+		out_stream.write(self.get_printable_trace())
 	#
 
 	@staticmethod
-	def print_current_stack_trace (out_stream = None):
+	def print_current_stack_trace(out_stream = None):
 	#
 		"""
 Prints the stack trace to the given output stream or stderr.
@@ -136,7 +143,12 @@ Prints the stack trace to the given output stream or stderr.
 		"""
 
 		( exc_type, exc_value, exc_traceback ) = sys.exc_info()
-		traceback.print_exception(exc_type, exc_value, exc_traceback, file = (out_stream if (out_stream != None) else sys.stderr))
+
+		if (exc_traceback == None): printable_trace = ("Exception undefined: {0}".format(traceback.format_stack()))
+		else: printable_trace = "".join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+
+		if (out_stream == None): out_stream = sys.stderr
+		out_stream.write(printable_trace)
 	#
 #
 

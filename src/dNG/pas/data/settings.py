@@ -31,6 +31,7 @@ import os
 from dNG.data.file import File
 from dNG.data.json_parser import JsonParser
 from .binary import Binary
+from .traced_exception import TracedException
 
 class Settings(dict):
 #
@@ -54,14 +55,14 @@ Cache instance
 	"""
 Settings instance
 	"""
+	lock = RLock()
+	"""
+Thread safety lock
+	"""
 	log_handler = None
 	"""
 The LogHandler is called whenever debug messages should be logged or errors
 happened.
-	"""
-	synchronized = RLock()
-	"""
-Lock used in multi thread environments.
 	"""
 
 	def __init__(self):
@@ -122,7 +123,7 @@ Get the settings singleton.
 :since:  v0.1.00
 		"""
 
-		with Settings.synchronized:
+		with Settings.lock:
 		#
 			if (Settings.instance == None):
 			#
@@ -135,7 +136,7 @@ Get the settings singleton.
 	#
 
 	@staticmethod
-	def import_raw_json(json):
+	def import_json(json):
 	#
 		"""
 Import a given JSON encoded string as an dict of settings.
@@ -149,10 +150,10 @@ Import a given JSON encoded string as an dict of settings.
 		_return = True
 
 		json_parser = JsonParser()
-		data = json_parser.json2data(json)
+		json_data = json_parser.json2data(json)
 
-		if (data == None): _return = False
-		else: Settings.get_instance().update(data)
+		if (json_data == None): _return = False
+		else: Settings.get_instance().update(json_data)
 
 		return _return
 	#
@@ -163,7 +164,7 @@ Import a given JSON encoded string as an dict of settings.
 		"""
 Read all settings from the given file.
 
-:param json: JSON encoded dict of settings
+:param file_pathname: File path and name of the settings file
 :param required: True if missing files should throw exceptions
 
 :since: v0.1.00
@@ -184,14 +185,14 @@ Read all settings from the given file.
 				file_content = file_content.replace("\r", "")
 				if (Settings.cache_instance != None): Settings.cache_instance.set_file(file_pathname, file_content)
 			#
-			elif (required): raise RuntimeError("{0} not found".format(file_pathname), 2)
+			elif (required): raise TracedException("{0} not found".format(file_pathname))
 			elif (Settings.log_handler != None): Settings.log_handler.debug("{0} not found".format(file_pathname))
 		#
 
-		if (file_content != None and (not Settings.import_raw_json(file_content))):
+		if (file_content != None and (not Settings.import_json(file_content))):
 		#
-			if (required): raise RuntimeError("{0} is not a valid JSON encoded settings file".format(file_pathname), 61)
-			elif (Settings.log_handler != None): Settings.log_handler.warning("{0} is not a valid JSON encoded settings file".format(file_pathname))
+			if (required): raise TracedException("{0} is not a valid JSON encoded settings file".format(file_pathname))
+			if (Settings.log_handler != None): Settings.log_handler.warning("{0} is not a valid JSON encoded settings file".format(file_pathname))
 		#
 	#
 

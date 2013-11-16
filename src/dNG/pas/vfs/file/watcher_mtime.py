@@ -23,10 +23,14 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from threading import RLock
 import os
 
+try: from urllib.parse import quote
+except ImportError: from urllib import quote
+
 from dNG.pas.data.logging.log_line import LogLine
+from dNG.pas.runtime.instance_lock import InstanceLock
+from dNG.pas.runtime.thread_lock import ThreadLock
 from dNG.pas.vfs.abstract_watcher import AbstractWatcher
 
 class WatcherMtime(AbstractWatcher):
@@ -45,11 +49,11 @@ class WatcherMtime(AbstractWatcher):
 
 	instance = None
 	"""
-WatcherMtime weakref instance
+WatcherMtime instance
 	"""
-	synchronized = RLock()
+	instance_lock = InstanceLock()
 	"""
-Lock used in multi thread environments.
+Thread safety instance lock
 	"""
 
 	def __init__(self):
@@ -60,6 +64,10 @@ Constructor __init__(Watcher)
 :since: v0.1.01
 		"""
 
+		self.lock = ThreadLock()
+		"""
+	Thread safety lock
+		"""
 		self.watched_callbacks = { }
 		"""
 Callbacks for watched files
@@ -84,12 +92,12 @@ Checks a given path for changes if "is_synchronous()" is true.
 
 		_return = False
 
-		with WatcherMtime.synchronized:
+		with self.lock:
 		#
 			if (self.watched_paths != None and _path in self.watched_paths and self.watched_paths[_path] != os.stat(_path).st_mtime):
 			#
 				_return = True
-				url = "file:///{0}".format(_path)
+				url = "file:///{0}".format(quote(_path, "/"))
 
 				try:
 				#
@@ -110,7 +118,7 @@ Frees all watcher callbacks for garbage collection.
 :since: v0.1.01
 		"""
 
-		with WatcherMtime.synchronized:
+		with self.lock:
 		#
 			if (self.watched_paths != None and len(self.watched_paths) > 0):
 			#
@@ -134,7 +142,7 @@ if a callback is given but not defined for the watched path.
 :since:  v0.1.01
 		"""
 
-		with WatcherMtime.synchronized:
+		with self.lock:
 		#
 			_return = (self.watched_paths != None and _path in self.watched_paths)
 			if (_return and callback != None): _return = (callback in self.watched_callbacks[_path])
@@ -157,7 +165,7 @@ Handles registration of filesystem watches and its callbacks.
 
 		_return = True
 
-		with WatcherMtime.synchronized:
+		with self.lock:
 		#
 			if (self.watched_callbacks != None):
 			#
@@ -188,7 +196,7 @@ Handles deregistration of filesystem watches.
 
 		_return = True
 
-		with WatcherMtime.synchronized:
+		with self.lock:
 		#
 			if (self.watched_paths != None and _path in self.watched_paths):
 			#
@@ -217,7 +225,7 @@ Get the WatcherMtime singleton.
 :since:  v0.1.00
 		"""
 
-		with WatcherMtime.synchronized:
+		with WatcherMtime.instance_lock:
 		#
 			if (WatcherMtime.instance == None): WatcherMtime.instance = WatcherMtime()
 		#
@@ -248,7 +256,7 @@ Stops all watchers.
 :since: v0.1.01
 		"""
 
-		with WatcherMtime.synchronized:
+		with WatcherMtime.instance_lock:
 		#
 			if (WatcherMtime.instance != None): WatcherMtime.instance = None
 		#

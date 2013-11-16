@@ -24,9 +24,10 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 NOTE_END //n"""
 
 from pyinotify import IN_ATTRIB, IN_CLOSE_WRITE, IN_CREATE, IN_DELETE, IN_DELETE_SELF, IN_MODIFY, IN_MOVE_SELF, IN_MOVED_FROM, IN_MOVED_TO, ThreadedNotifier, WatchManager
-from threading import RLock
 from os import path
 
+from dNG.pas.runtime.instance_lock import InstanceLock
+from dNG.pas.runtime.thread_lock import ThreadLock
 from .watcher_pyinotify_callback import WatcherPyinotifyCallback
 
 class WatcherPyinotify(WatchManager):
@@ -47,9 +48,9 @@ class WatcherPyinotify(WatchManager):
 	"""
 WatcherPyinotify weakref instance
 	"""
-	synchronized = RLock()
+	instance_lock = InstanceLock()
 	"""
-Lock used in multi thread environments.
+Thread safety instance lock
 	"""
 
 	def __init__(self):
@@ -62,6 +63,10 @@ Constructor __init__(WatcherPyinotify)
 
 		WatchManager.__init__(self)
 
+		self.lock = ThreadLock()
+		"""
+	Thread safety lock
+		"""
 		self.pyinotify_instance = None
 		"""
 pyinotify instance
@@ -105,7 +110,7 @@ Frees all watcher callbacks for garbage collection.
 :since: v0.1.01
 		"""
 
-		with WatcherPyinotify.synchronized:
+		with self.lock:
 		#
 			if (len(self.watched_paths) > 0):
 			#
@@ -144,7 +149,7 @@ if a callback is given but not defined for the watched path.
 
 		_return = False
 
-		with WatcherPyinotify.synchronized:
+		with self.lock:
 		#
 			if (_path in self.watched_callbacks): _return = (True if (callback == None) else (callback in self.watched_callbacks[_path]))
 			elif (not path.isdir(_path)): _return = self.is_watched(path.split(_path)[0], callback)
@@ -165,7 +170,7 @@ Returns all registered callbacks for the given path.
 
 		_return = [ ]
 
-		with WatcherPyinotify.synchronized:
+		with self.lock:
 		#
 			if (_path in self.watched_callbacks): _return = self.watched_callbacks[_path]
 			elif (not path.isdir(_path)): _return = self.get_callbacks(path.split(_path)[0])
@@ -188,7 +193,7 @@ Handles registration of filesystem watches and its callbacks.
 
 		_return = True
 
-		with WatcherPyinotify.synchronized:
+		with self.lock:
 		#
 			if (path.isdir(_path)): directory_path = _path
 			else: directory_path = path.split(_path)[0]
@@ -229,7 +234,7 @@ Handles deregistration of filesystem watches.
 
 		_return = True
 
-		with WatcherPyinotify.synchronized:
+		with self.lock:
 		#
 			is_directory = path.isdir(_path)
 
@@ -271,7 +276,7 @@ Get the WatcherPyinotify singleton.
 :since:  v0.1.00
 		"""
 
-		with WatcherPyinotify.synchronized:
+		with WatcherPyinotify.instance_lock:
 		#
 			if (WatcherPyinotify.instance == None): WatcherPyinotify.instance = WatcherPyinotify()
 		#
@@ -302,7 +307,7 @@ Stops all watchers.
 :since: v0.1.01
 		"""
 
-		with WatcherPyinotify.synchronized:
+		with WatcherPyinotify.instance_lock:
 		#
 			if (WatcherPyinotify.instance != None):
 			#

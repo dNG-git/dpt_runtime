@@ -23,14 +23,11 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from os import path
-from threading import RLock
 from weakref import ref
 import mimetypes
 
-from dNG.data.file import File
-from dNG.data.json_parser import JsonParser
-from dNG.pas.module.named_loader import NamedLoader
+from dNG.pas.data.cached_json_file import CachedJsonFile
+from dNG.pas.runtime.instance_lock import InstanceLock
 from .settings import Settings
 from .logging.log_line import LogLine
 
@@ -48,13 +45,13 @@ Provides MimeType related methods on top of Python basic ones.
              Mozilla Public License, v. 2.0
 	"""
 
-	synchronized = RLock()
-	"""
-Lock used in multi thread environments.
-	"""
 	weakref_instance = None
 	"""
 MimeType weakref instance
+	"""
+	weakref_lock = InstanceLock()
+	"""
+Thread safety weakref lock
 	"""
 
 	def __init__(self):
@@ -96,8 +93,8 @@ looked up.
 
 			if (extension in self.extensions and self.extensions[extension] in self.definitions):
 			#
-				_return = self.definitions[self.extensions[extension]].copy()
-				_return['type'] = self.extensions[extension]
+				_return = self.definitions[self.extensions[extension]]
+				if ("type" not in _return): _return['type'] = self.extensions[extension]
 			#
 			else:
 			#
@@ -109,7 +106,11 @@ looked up.
 		#
 		elif (mimetype != None):
 		#
-			if (mimetype in self.definitions): _return = self.definitions[mimetype]
+			if (mimetype in self.definitions):
+			#
+				_return = self.definitions[mimetype]
+				if ("type" not in _return): _return['type'] = mimetype
+			#
 			elif (mimetypes.guess_extension(mimetype, False) != None): _return = { "type": mimetype, "class": "unknown" }
 		#
 
@@ -137,57 +138,6 @@ Returns the list of extensions known for the given mime-type.
 		return _return
 	#
 
-	def import_raw_json(self, json):
-	#
-		"""
-Import a given JSON encoded string as an mime-type definition list.
-
-:param json: JSON encoded dict of definitions
-
-:return: (bool) True on success
-:since:  v0.1.01
-		"""
-
-		_return = True
-
-		json_parser = JsonParser()
-		data = json_parser.json2data(json)
-
-		if (data == None): _return = False
-		else:
-		#
-			self.definitions = { }
-			self.extensions = { }
-
-			for mimetype in data:
-			#
-				if ("class" not in data[mimetype]):
-				#
-					_class = mimetype.split("/", 1)[0]
-					data[mimetype]['class'] = (_class if (_class not in data or "class" not in data[_class]) else data[_class]['class'])
-				#
-
-				self.definitions[mimetype] = data[mimetype]
-
-				if ("extensions" in data[mimetype] and type(data[mimetype]['extensions']) == list):
-				#
-					for extension in data[mimetype]['extensions']:
-					#
-						if (extension not in self.extensions): self.extensions[extension] = mimetype
-						else: LogLine.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[extension]))
-					#
-				# 
-				elif ("extension" in data[mimetype]):
-				#
-					if (data[mimetype]['extension'] not in self.extensions): self.extensions[data[mimetype]['extension']] = mimetype
-					else: LogLine.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[data[mimetype]['extension']]))
-				#
-			#
-		#
-
-		return _return
-	#
-
 	def refresh(self):
 	#
 		"""
@@ -196,28 +146,52 @@ Refresh all mime-type definitions from the file.
 :since: v0.1.01
 		"""
 
-		cache_instance = NamedLoader.get_singleton("dNG.pas.data.Cache", False)
+		json_data = CachedJsonFile.read("{0}/settings/core_mimetypes.json".format(Settings.get("path_data")))
 
-		file_pathname = path.normpath("{0}/settings/core_mimetypes.json".format(Settings.get("path_data")))
-		file_content = (None if (cache_instance == None) else cache_instance.get_file(file_pathname))
-
-		if (file_content == None):
+		if (type(json_data) == dict):
 		#
-			file_object = File()
+			aliases = { }
+			self.definitions = { }
+			self.extensions = { }
 
-			if (file_object.open(file_pathname, True, "r")):
+			for mimetype in json_data:
 			#
-				file_content = file_object.read()
-				file_object.close()
+				if ("type" in json_data[mimetype]): aliases[mimetype] = json_data[mimetype]['type']
+				else:
+				#
+					if ("class" not in json_data[mimetype]):
+					#
+						_class = mimetype.split("/", 1)[0]
+						json_data[mimetype]['class'] = (_class if (_class not in json_data or "class" not in json_data[_class]) else json_data[_class]['class'])
+					#
 
-				file_content = file_content.replace("\r", "")
-				if (cache_instance != None): cache_instance.set_file(file_pathname, file_content)
+					self.definitions[mimetype] = json_data[mimetype]
+
+					if ("extensions" in json_data[mimetype] and type(json_data[mimetype]['extensions']) == list):
+					#
+						for extension in json_data[mimetype]['extensions']:
+						#
+							if (extension not in self.extensions): self.extensions[extension] = mimetype
+							else: LogLine.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[extension]))
+						#
+					# 
+					elif ("extension" in json_data[mimetype]):
+					#
+						if (json_data[mimetype]['extension'] not in self.extensions): self.extensions[json_data[mimetype]['extension']] = mimetype
+						else: LogLine.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[json_data[mimetype]['extension']]))
+					#
+				#
 			#
-			else: LogLine.info("{0} not found".format(file_pathname))
+
+			for mimetype in aliases:
+			#
+				if (mimetype not in self.definitions and aliases[mimetype] in self.definitions):
+				#
+					self.definitions[mimetype] = self.definitions[aliases[mimetype]]
+					self.definitions[mimetype]['type'] = aliases[mimetype]
+				#
+			#
 		#
-		elif (self.definitions != None): file_content = None
-
-		if (file_content != None and (not self.import_raw_json(file_content))): LogLine.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
 	#
 
 	@staticmethod
@@ -232,7 +206,7 @@ Get the MimeType singleton.
 
 		_return = None
 
-		with MimeType.synchronized:
+		with MimeType.weakref_lock:
 		#
 			if (MimeType.weakref_instance != None): _return = MimeType.weakref_instance()
 

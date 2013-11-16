@@ -26,6 +26,7 @@ NOTE_END //n"""
 from struct import pack
 from zlib import compressobj, crc32, Z_FINISH
 
+from dNG.pas.data.traced_exception import TracedException
 from .binary import Binary
 
 class Gzip(object):
@@ -114,8 +115,8 @@ remaining compressed output is returned.
 :since: v0.1.01
 		"""
 
-		if (mode != Z_FINISH): raise RuntimeError("Gzip flush only supports Z_FINISH", 1)
-		return self.compressor.flush(Z_FINISH) + pack("<2I", self.crc32 & 0xffffffff, int(self.size % 4294967296))
+		if (mode != Z_FINISH): raise TracedException("Gzip flush only supports Z_FINISH")
+		return (Binary.BYTES_TYPE() if (self.crc32 == None) else self.compressor.flush(Z_FINISH) + pack("<2I", self.crc32 & 0xffffffff, int(self.size % 4294967296)))
 	#
 #
 

@@ -84,7 +84,7 @@ Get the WatcherPyinotifySync singleton.
 :since:  v0.1.00
 		"""
 
-		with WatcherPyinotifySync.synchronized:
+		with WatcherPyinotifySync.lock:
 		#
 			if (WatcherPyinotifySync.instance == None): WatcherPyinotifySync.instance = WatcherPyinotifySync()
 		#
@@ -115,7 +115,7 @@ Stops all watchers.
 :since: v0.1.01
 		"""
 
-		with WatcherPyinotifySync.synchronized:
+		with WatcherPyinotifySync.lock:
 		#
 			if (WatcherPyinotifySync.instance != None): WatcherPyinotifySync.instance = None
 		#

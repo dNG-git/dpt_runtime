@@ -23,9 +23,9 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from threading import RLock
 from weakref import ref
 
+from dNG.pas.runtime.instance_lock import InstanceLock
 from dNG.pas.vfs.file.watcher import Watcher
 
 class Cache(dict, Watcher):
@@ -46,9 +46,9 @@ The cache singleton provides caching mechanisms.
 	"""
 Cache weakref instance
 	"""
-	weakref_synchronized = RLock()
+	weakref_lock = InstanceLock()
 	"""
-Lock used in multi thread environments.
+Thread safety weakref lock
 	"""
 
 	def __init__(self):
@@ -89,7 +89,7 @@ Get the content from cache for the given file path and name.
 
 		_return = None
 
-		with self.synchronized:
+		with self.lock:
 		#
 			if (self.is_synchronous()): self.check("file:///{0}".format(file_pathname))
 
@@ -115,7 +115,7 @@ Fill the cache for the given file path and name with the given cache entry.
 :since: v0.1.00
 		"""
 
-		with self.synchronized:
+		with self.lock:
 		#
 			if (file_pathname not in self):
 			#
@@ -160,7 +160,7 @@ Remove changed files from the cache.
 :since: v0.1.01
 		"""
 
-		with self.synchronized:
+		with self.lock:
 		#
 			file_pathname = url[8:]
 
@@ -187,7 +187,7 @@ Get the Cache singleton.
 
 		_return = None
 
-		with Cache.weakref_synchronized:
+		with Cache.weakref_lock:
 		#
 			if (Cache.weakref_instance != None): _return = Cache.weakref_instance()
 

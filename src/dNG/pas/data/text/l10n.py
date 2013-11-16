@@ -23,16 +23,13 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from os import path
-from threading import local, RLock
+from threading import local
 import re
 
-from dNG.data.file import File
-from dNG.data.json_parser import JsonParser
 from dNG.pas.data.binary import Binary
+from dNG.pas.data.cached_json_file import CachedJsonFile
 from dNG.pas.data.settings import Settings
-from dNG.pas.data.logging.log_line import LogLine
-from dNG.pas.module.named_loader import NamedLoader
+from dNG.pas.runtime.instance_lock import InstanceLock
 
 class L10n(dict):
 #
@@ -56,13 +53,13 @@ Default application language
 	"""
 L10n instances
 	"""
+	instances_lock = InstanceLock()
+	"""
+Thread safety instances lock
+	"""
 	local = local()
 	"""
 Local data handle
-	"""
-	synchronized = RLock()
-	"""
-Lock used in multi thread environments.
 	"""
 
 	def __init__(self, lang):
@@ -99,28 +96,6 @@ Returns the language code of this instance.
 		return self.lang
 	#
 
-	def import_raw_json(self, json):
-	#
-		"""
-Import a given JSON encoded string as an dict of translated strings.
-
-:param json: JSON encoded dict of translations
-
-:return: (bool) True on success
-:since:  v0.1.00
-		"""
-
-		_return = True
-
-		json_parser = JsonParser()
-		data = json_parser.json2data(json)
-
-		if (data == None): _return = False
-		else: self.update(data)
-
-		return _return
-	#
-
 	def read_file(self, file_pathname):
 	#
 		"""
@@ -131,27 +106,8 @@ Read all translations from the given file.
 :since: v0.1.00
 		"""
 
-		cache_instance = NamedLoader.get_singleton("dNG.pas.data.Cache", False)
-
-		file_pathname = path.normpath(file_pathname)
-		file_content = (None if (cache_instance == None) else cache_instance.get_file(file_pathname))
-
-		if (file_content == None):
-		#
-			file_object = File()
-
-			if (file_object.open(file_pathname, True, "r")):
-			#
-				file_content = file_object.read()
-				file_object.close()
-
-				file_content = file_content.replace("\r", "")
-				if (cache_instance != None): cache_instance.set_file(file_pathname, file_content)
-			#
-			else: LogLine.info("{0} not found".format(file_pathname))
-		#
-
-		if (file_content != None and (not self.import_raw_json(file_content))): LogLine.warning("{0} is not a valid JSON encoded language file".format(file_pathname))
+		json_data = CachedJsonFile.read(file_pathname)
+		if (type(json_data) == dict): self.update(json_data)
 	#
 
 	def write_file(self, file_pathname, template_pathname):
@@ -214,7 +170,7 @@ Checks if a given key is a defined language string.
 		"""
 
 		try: instance = L10n.get_instance(lang)
-		except: instance = { }
+		except Exception: instance = { }
 
 		return (key in instance)
 	#
@@ -262,13 +218,13 @@ Get the L10n singleton for the given or default language.
 :since:  v0.1.00
 		"""
 
-		with L10n.synchronized:
+		with L10n.instances_lock:
 		#
 			if (lang == None): lang = L10n.get_default_lang()
 			elif (L10n.default_lang == None): L10n.default_lang = lang
 
-			if (lang == None): raise RuntimeError("Language not defined and default language is undefined.", 22)
-			elif (lang not in L10n.instances): L10n.instances[lang] = L10n(lang)
+			if (lang == None): raise RuntimeError("Language not defined and default language is undefined.")
+			if (lang not in L10n.instances): L10n.instances[lang] = L10n(lang)
 		#
 
 		return L10n.instances[lang]

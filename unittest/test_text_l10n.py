@@ -47,9 +47,9 @@ One key tests everything :)
 	#
 #
 
-if __name__ == "__main__":
+if (__name__ == "__main__"):
 #
-	sys.path.append(path.normpath("../scripts"))
+	sys.path.append(path.normpath("../src"))
 	unittest.main()
 #
 

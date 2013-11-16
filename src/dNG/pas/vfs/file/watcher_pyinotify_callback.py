@@ -26,6 +26,9 @@ NOTE_END //n"""
 from pyinotify import ProcessEvent
 from weakref import ref
 
+try: from urllib.parse import quote
+except ImportError: from urllib import quote
+
 from dNG.pas.data.logging.log_line import LogLine
 from dNG.pas.vfs.abstract_watcher import AbstractWatcher
 
@@ -74,7 +77,7 @@ Handles all inotify events.
 		if (manager and manager.is_watched(_path)):
 		#
 			callbacks = manager.get_callbacks(_path)
-			url = "file:///{0}".format(_path)
+			url = "file:///{0}".format(quote(_path, "/"))
 
 			try:
 			#

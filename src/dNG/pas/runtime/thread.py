@@ -23,11 +23,11 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-import threading
+from threading import Thread as PyThread
 
 from dNG.pas.data.logging.log_line import LogLine
 
-class Thread(threading.Thread):
+class Thread(PyThread):
 #
 	"""
 "Thread" represents a deactivatable Thread implementation.
@@ -45,10 +45,6 @@ class Thread(threading.Thread):
 	"""
 True if new non-daemon threads are allowed to be started.
 	"""
-	synchronized = threading.RLock()
-	"""
-Lock used in multi thread environments.
-	"""
 
 	def start(self):
 	#
@@ -58,11 +54,8 @@ python.org: Start the thread's activity.
 :since: v0.1.01
 		"""
 
-		with Thread.synchronized:
-		#
-			if (self.daemon or Thread._active): threading.Thread.start(self)
-			else: LogLine.debug("pas.core.Thread prevented new non-daemon thread")
-		#
+		if (self.daemon or Thread._active): PyThread.start(self)
+		else: LogLine.debug("pas.core.Thread prevented new non-daemon thread")
 	#
 
 	@staticmethod
@@ -74,7 +67,7 @@ Prevents new non-daemon threads to be started.
 :since: v0.1.00
 		"""
 
-		with Thread.synchronized: Thread._active = False
+		Thread._active = False
 	#
 #
 

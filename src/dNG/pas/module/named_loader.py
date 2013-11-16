@@ -25,7 +25,6 @@ NOTE_END //n"""
 
 from os import path
 from sys import modules as sys_modules
-from threading import RLock
 from weakref import proxy, ref
 import re
 
@@ -39,6 +38,8 @@ try:
 except ImportError: import imp
 
 from dNG.pas.data.settings import Settings
+from dNG.pas.data.traced_exception import TracedException
+from dNG.pas.runtime.thread_lock import ThreadLock
 
 class NamedLoader(object):
 #
@@ -60,14 +61,14 @@ common name.
 CamelCase RegExp
 	"""
 
+	lock = ThreadLock()
+	"""
+Thread safety lock
+	"""
 	log_handler = None
 	"""
 The LogHandler is called whenever debug messages should be logged or errors
 happened.
-	"""
-	synchronized = RLock()
-	"""
-Lock used in multi thread environments.
 	"""
 	weakref_instance = None
 	"""
@@ -176,7 +177,7 @@ Get the class name for the given common name.
 		if (autoload): module = NamedLoader._load_module(module_name)
 		else:
 		#
-			with NamedLoader.synchronized: module = (sys_modules[module_name] if (module_name in sys_modules) else None)
+			with NamedLoader.lock: module = (sys_modules[module_name] if (module_name in sys_modules) else None)
 		#
 
 		if (module != None and hasattr(module, classname)): _return = getattr(module, classname)
@@ -201,13 +202,14 @@ Returns a new instance based on its common name.
 
 		_class = NamedLoader.get_class(common_name)
 
-		if (_class != None):
+		if (_class == None): _return = None
+		else:
 		#
 			_return = _class.__new__(_class)
 			_return.__init__()
 		#
-		elif (required): raise RuntimeError("{0} is not defined".format(common_name), 38)
 
+		if (_return == None and required): raise TracedException("{0} is not defined".format(common_name))
 		return _return
 	#
 
@@ -223,7 +225,7 @@ Get the loader instance.
 
 		_return = None
 
-		with NamedLoader.synchronized:
+		with NamedLoader.lock:
 		#
 			if (NamedLoader.weakref_instance != None): _return = NamedLoader.weakref_instance()
 
@@ -250,18 +252,12 @@ Returns a singleton based on its common name.
 :since:  v0.1.00
 		"""
 
-		_return = None
-
 		_class = NamedLoader.get_class(common_name)
 
-		if (_class != None):
-		#
-			if (hasattr(_class, "get_instance")): _return = _class.get_instance()
-			elif (required): raise RuntimeError("{0} has not defined a singleton".format(common_name), 38)
-		#
-		elif (required): raise RuntimeError("{0} is not defined".format(common_name), 38)
+		if (_class == None and required): raise TracedException("{0} is not defined".format(common_name))
+		if ((not hasattr(_class, "get_instance")) and required): raise TracedException("{0} has not defined a singleton".format(common_name))
 
-		return _return
+		return _class.get_instance()
 	#
 
 	@staticmethod
@@ -300,7 +296,7 @@ Get the class name for the given common name.
 
 		try:
 		#
-			with NamedLoader.synchronized:
+			with NamedLoader.lock:
 			#
 				if (package not in sys_modules): NamedLoader._load_package(package)
 
@@ -331,7 +327,7 @@ Get the class name for the given common name.
 
 		_return = None
 
-		with NamedLoader.synchronized:
+		with NamedLoader.lock:
 		#
 			try:
 			#

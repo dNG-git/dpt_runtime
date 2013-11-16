@@ -31,7 +31,7 @@ try:
 	_PY_UNICODE = str.decode
 	_PY_UNICODE_TYPE = unicode
 #
-except:
+except NameError:
 #
 	_PY_BYTES = str.encode
 	_PY_BYTES_TYPE = bytes

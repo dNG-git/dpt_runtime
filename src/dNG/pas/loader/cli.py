@@ -169,12 +169,8 @@ Executes registered callbacks for the active application.
 			self.mainloop_event.set()
 			if (self.mainloop != None): self.mainloop()
 		#
-		except BaseException as handled_exception:
-		#
-			if (not isinstance(handled_exception, KeyboardInterrupt)): self.error(handled_exception)
-		#
-
-		self.shutdown()
+		except Exception as handled_exception: self.error(handled_exception)
+		finally: self.shutdown()
 	#
 
 	def set_mainloop(self, callback):
@@ -189,8 +185,8 @@ Register a callback for the application main loop.
 
 		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -Cli.set_mainloop(callback)- (#echo(__LINE__)#)")
 
-		if (self.mainloop == None): self.mainloop = callback
-		else: raise RuntimeError("Main loop already registered")
+		if (self.mainloop != None): raise TracedException("Main loop already registered")
+		self.mainloop = callback
 	#
 
 	def set_log_handler(self, log_handler):
@@ -242,7 +238,7 @@ Cleanup unused objects
 		for callback in Cli.callbacks_shutdown:
 		#
 			try: callback()
-			except BaseException as handled_exception: self.error(handled_exception)
+			except Exception as handled_exception: self.error(handled_exception)
 		#
 
 		Cli.callbacks_shutdown = [ ]
@@ -336,6 +332,7 @@ Callback function for OS signals.
 #
 
 if (hasattr(signal, "SIGABRT")): signal.signal(signal.SIGABRT, direct_cls_signal)
+if (hasattr(signal, "SIGINT")): signal.signal(signal.SIGINT, direct_cls_signal)
 if (hasattr(signal, "SIGTERM")): signal.signal(signal.SIGTERM, direct_cls_signal)
 if (hasattr(signal, "SIGQUIT")): signal.signal(signal.SIGQUIT, direct_cls_signal)
 

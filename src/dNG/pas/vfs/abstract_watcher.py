@@ -23,6 +23,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+from dNG.pas.data.traced_exception import TracedException
+
 class AbstractWatcher(object):
 #
 	"""
@@ -62,7 +64,7 @@ Checks a given URL for changes if "is_synchronous()" is true.
 :since:  v0.1.01
 		"""
 
-		raise RuntimeError("Not implemented", 38)
+		raise TracedException("Not implemented")
 	#
 
 	def free(self):
@@ -73,7 +75,7 @@ Frees all watcher callbacks for garbage collection.
 :since: v0.1.01
 		"""
 
-		raise RuntimeError("Not implemented", 38)
+		raise TracedException("Not implemented")
 	#
 
 	def is_synchronous(self):
@@ -103,7 +105,7 @@ if a callback is given but not defined for the watched URL.
 :since:  v0.1.01
 		"""
 
-		raise RuntimeError("Not implemented", 38)
+		raise TracedException("Not implemented")
 	#
 
 	def register(self, url, callback):
@@ -118,7 +120,7 @@ Handles registration of resource URL watches and its callbacks.
 :since:  v0.1.01
 		"""
 
-		raise RuntimeError("Not implemented", 38)
+		raise TracedException("Not implemented")
 	#
 
 	def unregister(self, url, callback):
@@ -133,7 +135,7 @@ Handles deregistration of resource URL watches.
 :since:  v0.1.01
 		"""
 
-		raise RuntimeError("Not implemented", 38)
+		raise TracedException("Not implemented")
 	#
 
 	@staticmethod

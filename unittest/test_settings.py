@@ -40,10 +40,10 @@ class TestSettings(unittest.TestCase):
 		self.assertEqual(path_base, self.settings.get("path_base"))
 		self.assertEqual("{0}/data".format(path_base), self.settings.get("path_data"))
 		self.assertEqual("{0}/lang".format(path_base), self.settings.get("path_lang"))
-		self.assertEqual("{0}/scripts".format(path_base), self.settings.get("path_system"))
+		self.assertEqual("{0}/src".format(path_base), self.settings.get("path_system"))
 	#
 
-	def test_import_raw_json(self):
+	def test_import_json(self):
 	#
 		"""
 Valid JSON
@@ -56,7 +56,7 @@ Valid JSON
 }
 		"""
 
-		self.assertTrue(Settings.import_raw_json(json))
+		self.assertTrue(Settings.import_json(json))
 		self.assertEqual("world", self.settings.get("hello"))
 		self.assertEqual("that", self.settings.get("more_complex")[1])
 		self.assertEqual(1, self.settings.get("more_complex")[2])
@@ -66,7 +66,7 @@ Invalid JSON
 		"""
 
 		json = "{ 'hello': 'world' }"
-		self.assertFalse(Settings.import_raw_json(json))
+		self.assertFalse(Settings.import_json(json))
 	#
 
 	def test_read_file(self):
@@ -85,9 +85,9 @@ Invalid JSON
 	#
 #
 
-if __name__ == "__main__":
+if (__name__ == "__main__"):
 #
-	sys.path.append(path.normpath("../scripts"))
+	sys.path.append(path.normpath("../src"))
 	unittest.main()
 #
 

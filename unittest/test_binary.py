@@ -35,7 +35,7 @@ try:
 	_PY_UNICODE = str.decode
 	_PY_UNICODE_TYPE = unicode
 #
-except:
+except NameError:
 #
 	_PY_BYTES = str.encode
 	_PY_BYTES_TYPE = bytes
@@ -60,9 +60,9 @@ class TestBinary(unittest.TestCase):
 	#
 #
 
-if __name__ == "__main__":
+if (__name__ == "__main__"):
 #
-	sys.path.append(path.normpath("../scripts"))
+	sys.path.append(path.normpath("../src"))
 	unittest.main()
 #
 
