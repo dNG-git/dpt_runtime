@@ -94,12 +94,14 @@ for at least part of the data in string.
 		self.crc32 = (crc32(data) if (self.crc32 == None) else crc32(data, self.crc32))
 		self.size += len(data)
 
-		if (self.header != None):
+		compressed_data = self.compressor.compress(data)
+
+		if (self.header == None): _return = compressed_data
+		else:
 		#
-			_return = self.header + self.compressor.compress(data)[2:]
+			_return = self.header + compressed_data[2:]
 			self.header = None
 		#
-		else: _return = self.compressor.compress(data)
 
 		return _return
 	#
