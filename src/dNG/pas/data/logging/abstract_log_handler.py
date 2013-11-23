@@ -110,7 +110,7 @@ Get the formatted log message.
 :since:  v0.1.00
 		"""
 
-		if (isinstance(data, TracedException)): data = str(data)
+		if (isinstance(data, TracedException)): data = data.get_printable_trace()
 		elif (isinstance(data, BaseException)):
 		#
 			try:

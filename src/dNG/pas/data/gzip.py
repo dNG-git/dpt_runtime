@@ -24,7 +24,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 NOTE_END //n"""
 
 from struct import pack
-from zlib import compressobj, crc32, Z_FINISH
+from zlib import compress, compressobj, crc32, MAX_WBITS, Z_FINISH
 
 from dNG.pas.data.traced_exception import TracedException
 from .binary import Binary
@@ -52,7 +52,7 @@ Constructor __init__(Gzip)
 :since: v0.1.01
 		"""
 
-		self.compressor = compressobj(level)
+		self.compressor = None
 		"""
 Deflate compressor instance
 		"""
@@ -64,17 +64,24 @@ CRC32 from previous run
 		"""
 Gzip header
 		"""
-		self.size = 0
+		self.size = None
 		"""
 Total size of compressed data
 		"""
 
-		if (level == 9): deflate_flag = 2
-		elif (level == 1): deflate_flag = 4
-		else: deflate_flag = 0
+		# Use the zlib magic +16 to generate the GZip header and trailer on flush() if supported
+		try: self.compressor = compressobj(level, wbits = 16 + MAX_WBITS)
+		except TypeError:
+		#
+			self.compressor = compressobj(level)
 
-		self.header = pack("<8s2B", Binary.bytes("\x1f\x8b" + ("\x00" if (level == 0) else "\x08") + "\x00\x00\x00\x00\x00"), deflate_flag, 255)
+			if (level == 9): deflate_flag = 2
+			elif (level == 1): deflate_flag = 4
+			else: deflate_flag = 0
 
+			self.header = pack("<8s2B", Binary.bytes("\x1f\x8b" + ("\x00" if (level == 0) else "\x08") + "\x00\x00\x00\x00\x00"), deflate_flag, 255)
+			self.size = 0
+		#
 	#
 
 	def compress(self, string):
@@ -91,15 +98,19 @@ for at least part of the data in string.
 
 		data = Binary.bytes(string)
 
-		self.crc32 = (crc32(data) if (self.crc32 == None) else crc32(data, self.crc32))
-		self.size += len(data)
+		if (self.size == None): compressed_data = self.compressor.compress(data)
+		else:
+		#
+			self.crc32 = (crc32(data) if (self.crc32 == None) else crc32(data, self.crc32))
+			self.size += len(data)
 
-		compressed_data = self.compressor.compress(data)
+			compressed_data = (self.compressor.compress(data) if (self.header == None) else self.compressor.compress(data)[2:])
+		#
 
 		if (self.header == None): _return = compressed_data
 		else:
 		#
-			_return = self.header + compressed_data[2:]
+			_return = self.header + compressed_data
 			self.header = None
 		#
 
@@ -118,7 +129,17 @@ remaining compressed output is returned.
 		"""
 
 		if (mode != Z_FINISH): raise TracedException("Gzip flush only supports Z_FINISH")
-		return (Binary.BYTES_TYPE() if (self.crc32 == None) else self.compressor.flush(Z_FINISH) + pack("<2I", self.crc32 & 0xffffffff, int(self.size % 4294967296)))
+
+		if (self.size == None): _return = self.compressor.flush(Z_FINISH)
+		else:
+		#
+			_return = (Binary.BYTES_TYPE() if (self.size < 1) else (self.compressor.flush(Z_FINISH)[:-4] + pack("<2I", self.crc32 & 0xffffffff, int(self.size % 4294967296))))
+
+			self.crc32 = None
+			self.size = 0
+		#
+
+		return _return
 	#
 #
 

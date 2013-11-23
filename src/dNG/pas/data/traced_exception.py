@@ -90,7 +90,7 @@ representation of an object.
 		"""
 
 		_return = RuntimeError.__str__(self)
-		return (_return if (self.exc_cause == None) else "{0} {1}".format(_return, repr(self.exc_cause)))
+		return (_return if (self.exc_cause == None) else "{0}\n{1}".format(_return, repr(self.exc_cause)))
 	#
 
 	def get_cause(self):
