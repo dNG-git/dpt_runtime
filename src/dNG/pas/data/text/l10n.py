@@ -74,6 +74,10 @@ Constructor __init__(L10n)
 
 		dict.__init__(self)
 
+		self.cached_files = [ ]
+		"""
+List of files already read
+		"""
 		self.lang = lang
 		"""
 L10n language code
@@ -96,6 +100,20 @@ Returns the language code of this instance.
 		return self.lang
 	#
 
+	def is_cached(self, file_pathname):
+	#
+		"""
+Returns true if the file has already been read.
+
+:param file_pathname: File path and name
+
+:return: (bool) True if cached
+:since:  v0.1.00
+		"""
+
+		return (file_pathname in self.cached_files)
+	#
+
 	def read_file(self, file_pathname):
 	#
 		"""
@@ -107,7 +125,12 @@ Read all translations from the given file.
 		"""
 
 		json_data = CachedJsonFile.read(file_pathname)
-		if (type(json_data) == dict): self.update(json_data)
+
+		if (type(json_data) == dict):
+		#
+			if (file_pathname not in self.cached_files): self.cached_files.append(file_pathname)
+			self.update(json_data)
+		#
 	#
 
 	def write_file(self, file_pathname, template_pathname):
@@ -153,7 +176,8 @@ Load the given language section.
 			#
 		#
 
-		instance.read_file("{0}/{1}/{2}.json".format(Settings.get("path_lang"), instance.get_lang(), file_pathname))
+		file_pathname = "{0}/{1}/{2}.json".format(Settings.get("path_lang"), instance.get_lang(), file_pathname)
+		if (not instance.is_cached(file_pathname)): instance.read_file(file_pathname)
 	#
 
 	@staticmethod

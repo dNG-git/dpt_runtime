@@ -5,6 +5,8 @@
  "core_no": "No",
  "core_yes": "Yes",
 
+ "core_timezone_gmt": "GMT",
+
  "core_title_error": "Error message",
  "core_title_error_critical": "Critical error message",
  "core_title_error_details": "Additional error information",

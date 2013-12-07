@@ -185,7 +185,7 @@ Get the class name for the given common name.
 	#
 
 	@staticmethod
-	def get_instance(common_name, required = True):
+	def get_instance(common_name, required = True, **kwargs):
 	#
 		"""
 Returns a new instance based on its common name.
@@ -205,8 +205,8 @@ Returns a new instance based on its common name.
 		if (_class == None): _return = None
 		else:
 		#
-			_return = _class.__new__(_class)
-			_return.__init__()
+			_return = _class.__new__(_class, **kwargs)
+			_return.__init__(**kwargs)
 		#
 
 		if (_return == None and required): raise TracedException("{0} is not defined".format(common_name))
@@ -240,7 +240,7 @@ Get the loader instance.
 	#
 
 	@staticmethod
-	def get_singleton(common_name, required = True):
+	def get_singleton(common_name, required = True, **kwargs):
 	#
 		"""
 Returns a singleton based on its common name.
@@ -257,7 +257,7 @@ Returns a singleton based on its common name.
 		if (_class == None and required): raise TracedException("{0} is not defined".format(common_name))
 		if ((not hasattr(_class, "get_instance")) and required): raise TracedException("{0} has not defined a singleton".format(common_name))
 
-		return _class.get_instance()
+		return _class.get_instance(**kwargs)
 	#
 
 	@staticmethod
