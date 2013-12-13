@@ -99,19 +99,21 @@ looked up.
 			else:
 			#
 				mimetype = mimetypes.guess_type("file.{0}".format(extension), False)[0]
-				if (mimetype != None): _return = { "type": mimetype, "extension": extension, "class": "unknown" }
+				if (mimetype != None): _return = { "type": mimetype, "extension": extension, "class": mimetype.split("/")[0] }
 			#
 
 			if (mimetype != None and mimetype != _return['type']): _return = None
 		#
 		elif (mimetype != None):
 		#
+			mimetype = mimetype.lower()
+
 			if (mimetype in self.definitions):
 			#
 				_return = self.definitions[mimetype]
 				if ("type" not in _return): _return['type'] = mimetype
 			#
-			elif (mimetypes.guess_extension(mimetype, False) != None): _return = { "type": mimetype, "class": "unknown" }
+			elif (mimetypes.guess_extension(mimetype, False) != None): _return = { "type": mimetype, "class": mimetype.split("/")[0] }
 		#
 
 		return _return
