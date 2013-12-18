@@ -7,6 +7,9 @@
 
  "core_timezone_gmt": "GMT",
 
+ "core_unknown": "unbekannt",
+ "core_unknown_entity": "Unbekannt",
+
  "core_title_error": "Fehlermeldung",
  "core_title_error_critical": "Kritische Fehlermeldung",
  "core_title_error_details": "Weitere Informationen zur Fehlermeldung",
@@ -20,6 +23,6 @@
  "errors_core_unsupported_command": "Die Anwendung wurde mit einem unbekannten Kommando aufgerufen.",
 
  "lang_charset": "UTF-8",
- "lang_iso": "de-DE",
- "lang_iso_domain": "de"
+ "lang_iso_domain": "de",
+ "lang_rfc_region": "de-DE"
 }

@@ -96,10 +96,12 @@ Watcher implementation instance
 		"""
 Thread safety lock
 		"""
+		self.watcher_instance = None
+		"""
+Watcher implementation instance
+		"""
 
 		self.set_implementation()
-
-		LogLine.debug("pas.vfs.file.Watcher mode is {0}".format("synchronous" if (self.is_synchronous()) else "asynchronous"))
 	#
 
 	def check(self, url):
@@ -118,8 +120,23 @@ Checks a given URL for changes if "is_synchronous()" is true.
 
 		with self.lock:
 		#
-			if (self.implementation == None or _path == None or _path.strip() == ""): return False
-			else: return self.implementation.get_instance().check(_path)
+			if (self.watcher_instance == None or _path == None or _path.strip() == ""): return False
+			else: return self.watcher_instance.get_instance().check(_path)
+		#
+	#
+
+	def disable(self):
+	#
+		"""
+Disables this watcher and frees all callbacks for garbage collection.
+
+:since: v0.1.01
+		"""
+
+		with self.lock:
+		#
+			self.free()
+			self.implementation = None
 		#
 	#
 
@@ -133,10 +150,10 @@ Frees all watcher callbacks for garbage collection.
 
 		with self.lock:
 		#
-			if (self.implementation != None):
+			if (self.watcher_instance != None):
 			#
-				self.implementation.get_instance().free()
-				self.implementation = None
+				self.watcher_instance.get_instance().free()
+				self.watcher_instance = None
 			#
 		#
 	#
@@ -156,6 +173,24 @@ Return the local filesystem path for the given "file:///" URL.
 		return (url_elements.path[1:] if (url_elements.scheme == "file") else None)
 	#
 
+	def _init_watcher_instance(self):
+	#
+		"""
+Initializes the watcher instance.
+
+:since: v0.1.01
+		"""
+
+		if (self.implementation != None and self.watcher_instance == None):
+		#
+			if (self.implementation == _IMPLEMENTATION_INOTIFY): self.watcher_instance = WatcherPyinotify
+			elif (self.implementation == _IMPLEMENTATION_INOTIFY): self.watcher_instance = WatcherPyinotifySync
+			else: self.watcher_instance = WatcherMtime
+
+			LogLine.debug("pas.vfs.file.Watcher mode is {0}".format("synchronous" if (self.is_synchronous()) else "asynchronous"))
+		#
+	#
+
 	def is_synchronous(self):
 	#
 		"""
@@ -168,7 +203,8 @@ called.
 
 		with self.lock:
 		#
-			return (False if (self.implementation == None) else self.implementation.is_synchronous())
+			self._init_watcher_instance()
+			return (False if (self.watcher_instance == None) else self.watcher_instance.is_synchronous())
 		#
 	#
 
@@ -190,8 +226,8 @@ if a callback is given but not defined for the watched URL.
 
 		with self.lock:
 		#
-			if (self.implementation == None or _path == None or _path.strip() == ""): return False
-			else: return self.implementation.get_instance().is_watched(_path, callback)
+			if (self.watcher_instance == None or _path == None or _path.strip() == ""): return False
+			else: return self.watcher_instance.get_instance().is_watched(_path, callback)
 		#
 	#
 
@@ -210,8 +246,10 @@ Handles registration of resource URL watches and its callbacks.
 
 		with self.lock:
 		#
-			if (self.implementation == None or _path == None or _path.strip() == ""): return False
-			else: return self.implementation.get_instance().register(_path, callback)
+			self._init_watcher_instance()
+
+			if (self.watcher_instance == None or _path == None or _path.strip() == ""): return False
+			else: return self.watcher_instance.get_instance().register(_path, callback)
 		#
 	#
 
@@ -229,12 +267,12 @@ Set the filesystem watcher implementation to use.
 
 		with self.lock:
 		#
-			if (self.implementation != None): self.free()
+			if (self.watcher_instance != None): self.free()
 		#
 
-		if (_mode == _IMPLEMENTATION_INOTIFY and (implementation == None or implementation == _IMPLEMENTATION_INOTIFY)): self.implementation = WatcherPyinotify
-		elif (_mode == _IMPLEMENTATION_INOTIFY and implementation == _IMPLEMENTATION_INOTIFY_SYNC): self.implementation = WatcherPyinotifySync
-		else: self.implementation = WatcherMtime
+		if (_mode == _IMPLEMENTATION_INOTIFY and (implementation == None or implementation == _IMPLEMENTATION_INOTIFY)): self.implementation = _IMPLEMENTATION_INOTIFY
+		elif (_mode == _IMPLEMENTATION_INOTIFY and implementation == _IMPLEMENTATION_INOTIFY_SYNC): self.implementation = _IMPLEMENTATION_INOTIFY_SYNC
+		else: self.implementation = _IMPLEMENTATION_MTIME
 	#
 
 	def unregister(self, url, callback):

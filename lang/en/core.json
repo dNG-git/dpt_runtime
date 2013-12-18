@@ -7,6 +7,9 @@
 
  "core_timezone_gmt": "GMT",
 
+ "core_unknown": "unknown",
+ "core_unknown_entity": "Unknown",
+
  "core_title_error": "Error message",
  "core_title_error_critical": "Critical error message",
  "core_title_error_details": "Additional error information",
@@ -20,6 +23,6 @@
  "errors_core_unsupported_command": "The application has been accessed using an unknown command.",
 
  "lang_charset": "UTF-8",
- "lang_iso": "en-US",
- "lang_iso_domain": "en"
+ "lang_iso_domain": "en",
+ "lang_rfc_region": "en-US"
 }

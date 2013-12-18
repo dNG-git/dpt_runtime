@@ -43,7 +43,7 @@ class TestL10n(unittest.TestCase):
 One key tests everything :)
 		"""
 
-		self.assertEqual("de-DE", self.de.get("lang_iso"))
+		self.assertEqual("de-DE", self.de.get("lang_rfc_region"))
 	#
 #
 

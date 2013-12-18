@@ -67,6 +67,17 @@ Checks a given URL for changes if "is_synchronous()" is true.
 		raise TracedException("Not implemented")
 	#
 
+	def disable(self):
+	#
+		"""
+Disables this watcher and frees all callbacks for garbage collection.
+
+:since: v0.1.01
+		"""
+
+		raise TracedException("Not implemented")
+	#
+
 	def free(self):
 	#
 		"""
