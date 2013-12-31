@@ -58,11 +58,11 @@ Constructor __init__(TracedException)
 		"""
 Inner exception if given
 		"""
-		self.exc_type = None
+		self.exc_type = self.__class__
 		"""
 Exception type
 		"""
-		self.exc_value = None
+		self.exc_value = self
 		"""
 Exception value
 		"""
@@ -71,14 +71,19 @@ Exception value
 Exception traceback
 		"""
 
-		( self.exc_type, self.exc_value, self.exc_traceback ) = sys.exc_info()
+		exc_type = None
+		exc_value = None
 
-		if (self.exc_traceback == None):
+		if (hasattr(self, "__traceback__")): exc_traceback = self.__traceback__
+		else: ( exc_type, exc_value, exc_traceback ) = sys.exc_info()
+
+		if (exc_value != None):
 		#
-			self.exc_type = self.__class__
-			self.exc_value = self
-			self.exc_traceback = None
+			self.exc_type = exc_type
+			self.exc_value = exc_value
 		#
+
+		if (exc_traceback != None): self.exc_traceback = exc_traceback
 	#
 
 	def __str__(self):

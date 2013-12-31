@@ -30,8 +30,9 @@ import os
 
 from dNG.data.file import File
 from dNG.data.json_parser import JsonParser
+from dNG.pas.runtime.io_exception import IOException
+from dNG.pas.runtime.value_exception import ValueException
 from .binary import Binary
-from .traced_exception import TracedException
 
 class Settings(dict):
 #
@@ -123,12 +124,16 @@ Get the settings singleton.
 :since:  v0.1.00
 		"""
 
-		with Settings.lock:
+		if (Settings.instance == None):
 		#
-			if (Settings.instance == None):
+			# Instance could be created in another thread so check again
+			with Settings.lock:
 			#
-				Settings.instance = Settings()
-				Settings.read_file("{0}/settings/core.json".format(Settings.instance['path_data']))
+				if (Settings.instance == None):
+				#
+					Settings.instance = Settings()
+					Settings.read_file("{0}/settings/core.json".format(Settings.instance['path_data']))
+				#
 			#
 		#
 
@@ -185,13 +190,13 @@ Read all settings from the given file.
 				file_content = file_content.replace("\r", "")
 				if (Settings.cache_instance != None): Settings.cache_instance.set_file(file_pathname, file_content)
 			#
-			elif (required): raise TracedException("{0} not found".format(file_pathname))
+			elif (required): raise IOException("{0} not found".format(file_pathname))
 			elif (Settings.log_handler != None): Settings.log_handler.debug("{0} not found".format(file_pathname))
 		#
 
 		if (file_content != None and (not Settings.import_json(file_content))):
 		#
-			if (required): raise TracedException("{0} is not a valid JSON encoded settings file".format(file_pathname))
+			if (required): raise ValueException("{0} is not a valid JSON encoded settings file".format(file_pathname))
 			if (Settings.log_handler != None): Settings.log_handler.warning("{0} is not a valid JSON encoded settings file".format(file_pathname))
 		#
 	#

@@ -62,6 +62,7 @@ if (_mode == _IMPLEMENTATION_PYTHON):
 
 from dNG.pas.data.traced_exception import TracedException
 from dNG.pas.runtime.thread import Thread
+from dNG.pas.runtime.value_exception import ValueException
 
 class Cli(object):
 #
@@ -185,7 +186,7 @@ Register a callback for the application main loop.
 
 		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -Cli.set_mainloop(callback)- (#echo(__LINE__)#)")
 
-		if (self.mainloop != None): raise TracedException("Main loop already registered")
+		if (self.mainloop != None): raise ValueException("Main loop already registered")
 		self.mainloop = callback
 	#
 

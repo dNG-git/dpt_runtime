@@ -263,6 +263,29 @@ Check and convert to int.
 
 		return data
 	#
+
+	@staticmethod
+	def filter_unique_list(_list):
+	#
+		"""
+Returns a list where each entry is unique.
+
+:return: (list) Unique list of entries given
+:since:  v0.1.01
+		"""
+
+		_return = [ ]
+
+		if (isinstance(_list, list)):
+		#
+			for value in _list:
+			#
+				if (value not in _return): _return.append(value)
+			#
+		#
+
+		return _return
+	#
 #
 
 ##j## EOF

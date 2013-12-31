@@ -290,8 +290,8 @@ Handles deregistration of resource URL watches.
 
 		with self.lock:
 		#
-			if (self.implementation == None or _path == None or _path.strip() == ""): return False
-			else: return self.implementation.get_instance().unregister(_path, callback)
+			if (self.watcher_instance == None or _path == None or _path.strip() == ""): return False
+			else: return self.watcher_instance.get_instance().unregister(_path, callback)
 		#
 	#
 #

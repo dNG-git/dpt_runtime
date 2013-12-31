@@ -25,21 +25,22 @@ NOTE_END //n"""
 
 from os import path
 from sys import modules as sys_modules
-from weakref import proxy, ref
+from weakref import proxy
 import re
 
-_mode = "base"
+_mode = "imp"
 
 try:
 
-	import importlib
-	_mode = "lib"
+	from importlib import import_module
+	_mode = "importlib"
 
 except ImportError: import imp
 
 from dNG.pas.data.settings import Settings
-from dNG.pas.data.traced_exception import TracedException
+from dNG.pas.runtime.io_exception import IOException
 from dNG.pas.runtime.thread_lock import ThreadLock
+from dNG.pas.runtime.type_exception import TypeException
 
 class NamedLoader(object):
 #
@@ -61,6 +62,10 @@ common name.
 CamelCase RegExp
 	"""
 
+	instance = None
+	"""
+"NamedLoader" weakref instance
+	"""
 	lock = ThreadLock()
 	"""
 Thread safety lock
@@ -69,10 +74,6 @@ Thread safety lock
 	"""
 The LogHandler is called whenever debug messages should be logged or errors
 happened.
-	"""
-	weakref_instance = None
-	"""
-"NamedLoader" weakref instance
 	"""
 
 	def __init__(self):
@@ -161,7 +162,7 @@ Get the class name for the given common name.
 :param autoload: True to load the class module automatically if not done
                  already.
 
-:return: (object) Loaded class
+:return: (object) Loaded class; None on error
 :since:  v0.1.00
 		"""
 
@@ -175,13 +176,9 @@ Get the class name for the given common name.
 		module_name = "{0}.{1}".format(package, NamedLoader.RE_CAMEL_CASE_SPLITTER.sub("\\1_\\2", classname).lower())
 
 		if (autoload): module = NamedLoader._load_module(module_name)
-		else:
-		#
-			with NamedLoader.lock: module = (sys_modules[module_name] if (module_name in sys_modules) else None)
-		#
+		else: module = NamedLoader._get_module(module_name)
 
-		if (module != None and hasattr(module, classname)): _return = getattr(module, classname)
-		return _return
+		return (None if (module == None) else getattr(module, classname, None))
 	#
 
 	@staticmethod
@@ -209,7 +206,7 @@ Returns a new instance based on its common name.
 			_return.__init__(**kwargs)
 		#
 
-		if (_return == None and required): raise TracedException("{0} is not defined".format(common_name))
+		if (_return == None and required): raise IOException("{0} is not defined".format(common_name))
 		return _return
 	#
 
@@ -223,20 +220,16 @@ Get the loader instance.
 :since:  v0.1.00
 		"""
 
-		_return = None
-
-		with NamedLoader.lock:
+		if (NamedLoader.instance == None):
 		#
-			if (NamedLoader.weakref_instance != None): _return = NamedLoader.weakref_instance()
-
-			if (_return == None):
+			# Instance could be created in another thread so check again
+			with NamedLoader.lock:
 			#
-				_return = NamedLoader()
-				NamedLoader.weakref_instance = ref(_return)
+				if (NamedLoader.instance == None): NamedLoader.instance = NamedLoader()
 			#
 		#
 
-		return _return
+		return NamedLoader.instance
 	#
 
 	@staticmethod
@@ -254,8 +247,8 @@ Returns a singleton based on its common name.
 
 		_class = NamedLoader.get_class(common_name)
 
-		if (_class == None and required): raise TracedException("{0} is not defined".format(common_name))
-		if ((not hasattr(_class, "get_instance")) and required): raise TracedException("{0} has not defined a singleton".format(common_name))
+		if (_class == None and required): raise IOException("{0} is not defined".format(common_name))
+		if ((not hasattr(_class, "get_instance")) and required): raise TypeException("{0} has not defined a singleton".format(common_name))
 
 		return _class.get_instance(**kwargs)
 	#
@@ -278,100 +271,114 @@ Checks if a common name is defined or can be resolved to a class name.
 	#
 
 	@staticmethod
-	def _load_module(module):
+	def _get_module(name):
 	#
 		"""
-Get the class name for the given common name.
+Return the inititalized Python module defined by the given name.
 
-:param common_name: Common name
-:param classprefix: A classname prefix
+:param name: Python module name
 
-:return: (str) Class name
+:return: (object) Python module; None if unknown
 :since:  v0.1.00
 		"""
 
-		_return = None
+		_return = sys_modules.get(name, None)
 
-		package = module.rsplit(".", 1)[0]
-
-		try:
+		if (_return != None and hasattr(_return, "__initializing__")):
 		#
-			with NamedLoader.lock:
+			if (getattr(_return, "__initializing__", True)):
 			#
-				if (package not in sys_modules): NamedLoader._load_package(package)
-
-				if (module in sys_modules): _return = sys_modules[module]
-				else: _return = NamedLoader._load_py_file(module)
-			#
-		#
-		except Exception as handled_exception:
-		#
-			if (NamedLoader.log_handler != None): NamedLoader.log_handler.error(handled_exception)
+				with NamedLoader.lock: _return = sys_modules.get(name, None)
+			# 
 		#
 
 		return _return
 	#
 
 	@staticmethod
-	def _load_package(package):
+	def _load_module(name):
 	#
 		"""
-Get the class name for the given common name.
+Load the Python module defined by the given name.
 
-:param common_name: Common name
-:param classprefix: A classname prefix
+:param name: Python module name
 
-:return: (str) Class name
+:return: (object) Python module; None if unknown
 :since:  v0.1.00
 		"""
 
 		_return = None
 
-		with NamedLoader.lock:
-		#
-			try:
-			#
-				if (package in sys_modules): _return = sys_modules[package]
-				else: _return = NamedLoader._load_py_file(package)
-			#
-			except Exception as handled_exception:
-			#
-				if (NamedLoader.log_handler != None): NamedLoader.log_handler.error(handled_exception)
-			#
-		#
+		package = name.rsplit(".", 1)[0]
 
-		return _return
+		NamedLoader._load_package(package)
+		return NamedLoader._load_py_file(name)
+	#
+
+	@staticmethod
+	def _load_package(name):
+	#
+		"""
+Load the Python package defined by the given name.
+
+:param name: Python module name
+
+:return: (object) Python package; None if unknown
+:since:  v0.1.00
+		"""
+
+		return NamedLoader._load_py_file(name)
 	#
 
 	@staticmethod
 	def _load_py_file(name):
 	#
 		"""
-Get the class name for the given common name.
+Load the Python file defined by the given name.
 
-:param common_name: Common name
-:param classprefix: A classname prefix
+:param name: Python file name
 
-:return: (str) Class name
+:return: (object) Python file; None if unknown
 :since:  v0.1.00
 		"""
 
 		global _mode
+		_return = NamedLoader._get_module(name)
 
-		if (_mode == "lib"): return NamedLoader._load_py_file_lib(name)
-		else: return NamedLoader._load_py_file_base(name)
+		if (_return == None):
+		#
+			# Instance could be created in another thread so check again
+			with NamedLoader.lock:
+			#
+				_return = sys_modules.get(name, None)
+
+				if (_return == None):
+				#
+					try:
+					#
+						if (_mode == "importlib"): _return = NamedLoader._load_py_file_importlib(name)
+						else: _return = NamedLoader._load_py_file_imp(name)
+					#
+					except Exception as handled_exception:
+					#
+						if (NamedLoader.log_handler != None): NamedLoader.log_handler.error(handled_exception)
+					#
+				#
+			#
+		#
+
+		return _return
 	#
 
 	@staticmethod
-	def _load_py_file_base(name):
+	def _load_py_file_imp(name):
 	#
 		"""
-Get the class name for the given common name.
+Load the Python file with "imp" defined by the given name.
 
-:param common_name: Common name
-:param classprefix: A classname prefix
+:param name: Python file name
 
-:return: (str) Class name
+:return: (object) Python file; None if unknown
 :since:  v0.1.00
 		"""
 
@@ -403,15 +410,14 @@ Get the class name for the given common name.
 	#
 
 	@staticmethod
-	def _load_py_file_lib(name):
+	def _load_py_file_importlib(name):
 	#
 		"""
-Get the class name for the given common name.
+Load the Python package with "importlib" defined by the given name.
 
-:param common_name: Common name
-:param classprefix: A classname prefix
+:param name: Python module name
 
-:return: (str) Class name
+:return: (object) Python package; None if unknown
 :since:  v0.1.00
 		"""
 
@@ -419,7 +425,7 @@ Get the class name for the given common name.
 
 		exception = None
 
-		try: _return = importlib.import_module(name)
+		try: _return = import_module(name)
 		except Exception as handled_exception: exception = handled_exception
 
 		if (exception != None and NamedLoader.log_handler != None): NamedLoader.log_handler.error(exception)

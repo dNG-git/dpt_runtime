@@ -25,7 +25,6 @@ NOTE_END //n"""
 
 from weakref import ref
 
-from dNG.pas.runtime.instance_lock import InstanceLock
 from dNG.pas.vfs.file.watcher import Watcher
 
 class Cache(dict, Watcher):
@@ -45,10 +44,6 @@ The cache singleton provides caching mechanisms.
 	weakref_instance = None
 	"""
 Cache weakref instance
-	"""
-	weakref_lock = InstanceLock()
-	"""
-Thread safety weakref lock
 	"""
 
 	def __init__(self):
@@ -185,17 +180,12 @@ Get the Cache singleton.
 :since:  v0.1.00
 		"""
 
-		_return = None
+		_return = (None if (Cache.weakref_instance == None) else Cache.weakref_instance())
 
-		with Cache.weakref_lock:
+		if (_return == None):
 		#
-			if (Cache.weakref_instance != None): _return = Cache.weakref_instance()
-
-			if (_return == None):
-			#
-				_return = Cache()
-				Cache.weakref_instance = ref(_return)
-			#
+			_return = Cache()
+			Cache.weakref_instance = ref(_return)
 		#
 
 		return _return

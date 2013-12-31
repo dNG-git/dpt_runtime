@@ -30,6 +30,7 @@ from dNG.pas.data.binary import Binary
 from dNG.pas.data.cached_json_file import CachedJsonFile
 from dNG.pas.data.settings import Settings
 from dNG.pas.runtime.instance_lock import InstanceLock
+from dNG.pas.runtime.value_exception import ValueException
 
 class L10n(dict):
 #
@@ -74,9 +75,9 @@ Constructor __init__(L10n)
 
 		dict.__init__(self)
 
-		self.cached_files = [ ]
+		self.files = [ ]
 		"""
-List of files already read
+L10n files initialized
 		"""
 		self.lang = lang
 		"""
@@ -100,20 +101,6 @@ Returns the language code of this instance.
 		return self.lang
 	#
 
-	def is_cached(self, file_pathname):
-	#
-		"""
-Returns true if the file has already been read.
-
-:param file_pathname: File path and name
-
-:return: (bool) True if cached
-:since:  v0.1.00
-		"""
-
-		return (file_pathname in self.cached_files)
-	#
-
 	def read_file(self, file_pathname):
 	#
 		"""
@@ -124,12 +111,10 @@ Read all translations from the given file.
 :since: v0.1.00
 		"""
 
-		json_data = CachedJsonFile.read(file_pathname)
-
-		if (type(json_data) == dict):
+		if (file_pathname not in self.files or CachedJsonFile.is_changed(file_pathname)):
 		#
-			if (file_pathname not in self.cached_files): self.cached_files.append(file_pathname)
-			self.update(json_data)
+			json_data = CachedJsonFile.read(file_pathname)
+			if (type(json_data) == dict): self.update(json_data)
 		#
 	#
 
@@ -177,7 +162,7 @@ Load the given language section.
 		#
 
 		file_pathname = "{0}/{1}/{2}.json".format(Settings.get("path_lang"), instance.get_lang(), file_pathname)
-		if (not instance.is_cached(file_pathname)): instance.read_file(file_pathname)
+		instance.read_file(file_pathname)
 	#
 
 	@staticmethod
@@ -242,13 +227,18 @@ Get the L10n singleton for the given or default language.
 :since:  v0.1.00
 		"""
 
-		with L10n.instances_lock:
-		#
-			if (lang == None): lang = L10n.get_default_lang()
-			elif (L10n.default_lang == None): L10n.default_lang = lang
+		if (lang == None): lang = L10n.get_default_lang()
+		elif (L10n.default_lang == None): L10n.default_lang = lang
 
-			if (lang == None): raise RuntimeError("Language not defined and default language is undefined.")
-			if (lang not in L10n.instances): L10n.instances[lang] = L10n(lang)
+		if (lang == None): raise ValueException("Language not defined and default language is undefined.")
+
+		if (lang not in L10n.instances):
+		#
+			# Instance could be created in another thread so check again
+			with L10n.instances_lock:
+			#
+				if (lang not in L10n.instances): L10n.instances[lang] = L10n(lang)
+			#
 		#
 
 		return L10n.instances[lang]

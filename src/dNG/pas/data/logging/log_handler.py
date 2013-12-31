@@ -140,9 +140,21 @@ Preserve the amount of files
 
 		if (not LogHandler.appender_defined):
 		#
-			if (Settings.is_defined("pas_core_log_pathname") and os.access(path.normpath(Settings.get("pas_core_log_pathname")), os.W_OK)): self.log_file_pathname = path.normpath(Settings.get("pas_core_log_pathname"))
-			elif (Settings.is_defined("pas_core_log_name") and (os.access(path.normpath("{0}/log/{1}".format(Settings.get("path_base"), Settings.get("pas_core_log_name"))), os.W_OK) or ((not os.access(path.normpath("{0}/log/{1}".format(Settings.get("path_base"), Settings.get("pas_core_log_name"))), os.F_OK)) and os.access(path.normpath("{0}/log".format(Settings.get("path_base"))), os.W_OK)))): self.log_file_pathname = path.normpath("{0}/log/{1}".format(Settings.get("path_base"), Settings.get("pas_core_log_name")))
-			else: self.log_file_pathname = path.normpath("{0}/pas.log".format(Settings.get("path_base")))
+			log_file_pathname = Settings.get("pas_core_log_pathname")
+
+			if (Settings.is_defined("pas_core_log_pathname")):
+			#
+				log_file_pathname = path.normpath(log_file_pathname)
+				if (os.access(log_file_pathname, os.W_OK) or ((not os.access(log_file_pathname, os.F_OK)) and os.access(path.split(log_file_pathname)[0], os.W_OK))): self.log_file_pathname = log_file_pathname
+			#
+
+			if (self.log_file_pathname == None and Settings.is_defined("pas_core_log_name")):
+			#
+				log_file_pathname = path.normpath("{0}/log/{1}".format(Settings.get("path_base"), Settings.get("pas_core_log_name")))
+				if (os.access(log_file_pathname, os.W_OK) or ((not os.access(log_file_pathname, os.F_OK)) and os.access(path.normpath("{0}/log".format(Settings.get("path_base"))), os.W_OK))): self.log_file_pathname = log_file_pathname
+			#
+
+			if (self.log_file_pathname == None): self.log_file_pathname = path.normpath("{0}/pas.log".format(Settings.get("path_base")))
 
 			if (_api_type == _API_JAVA):
 			#

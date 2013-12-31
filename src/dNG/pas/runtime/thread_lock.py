@@ -27,7 +27,7 @@ from threading import Event, RLock
 from time import time
 
 from dNG.pas.data.settings import Settings
-from dNG.pas.data.traced_exception import TracedException
+from dNG.pas.runtime.io_exception import IOException
 
 class ThreadLock(object):
 #
@@ -97,7 +97,7 @@ Acquire a lock.
 
 		try:
 		#
-			if (not self.lock.acquire(timeout = self.timeout)): raise TracedException("Timeout occurred while acquiring lock")
+			if (not self.lock.acquire(timeout = self.timeout)): raise IOException("Timeout occurred while acquiring lock")
 		#
 		except TypeError:
 		#
@@ -125,7 +125,7 @@ Acquire a lock.
 					else: timeout -= (time() - _time)
 				#
 
-				if (timeout <= 0): raise TracedException("Timeout occurred while acquiring lock")
+				if (timeout <= 0): raise IOException("Timeout occurred while acquiring lock")
 			#
 		#
 	#

@@ -24,9 +24,9 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 NOTE_END //n"""
 
 from struct import pack
-from zlib import compress, compressobj, crc32, MAX_WBITS, Z_FINISH
+from zlib import compressobj, crc32, MAX_WBITS, Z_FINISH
 
-from dNG.pas.data.traced_exception import TracedException
+from dNG.pas.runtime.io_exception import IOException
 from .binary import Binary
 
 class Gzip(object):
@@ -128,7 +128,7 @@ remaining compressed output is returned.
 :since: v0.1.01
 		"""
 
-		if (mode != Z_FINISH): raise TracedException("Gzip flush only supports Z_FINISH")
+		if (mode != Z_FINISH): raise IOException("Gzip flush only supports Z_FINISH")
 
 		if (self.size == None): _return = self.compressor.flush(Z_FINISH)
 		else:

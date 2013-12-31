@@ -28,7 +28,7 @@ from os import path
 from dNG.data.file import File
 from dNG.pas.data.logging.log_line import LogLine
 from dNG.pas.module.named_loader import NamedLoader
-from .traced_exception import TracedException
+from dNG.pas.runtime.io_exception import IOException
 
 class CachedFile(object):
 #
@@ -45,16 +45,42 @@ class CachedFile(object):
 	"""
 
 	@staticmethod
+	def is_changed(file_pathname):
+	#
+		"""
+Returns false if the file is cached and not modified.
+
+:param file_pathname: File path and name
+
+:return: (bool) True if not cached or modified
+:since:  v0.1.01
+		"""
+
+		_return = False
+
+		cache_instance = NamedLoader.get_singleton("dNG.pas.data.Cache", False)
+		file_pathname = path.normpath(file_pathname)
+
+		if (cache_instance == None): _return = True
+		else:
+		#
+			file_content = cache_instance.get_file(file_pathname)
+			if (file_content == None): _return = True
+		#
+
+		return _return
+	#
+
+	@staticmethod
 	def read(file_pathname, required = False):
 	#
 		"""
-Read and parse data from the given file or from cache.
+Read data from the given file or from cache.
 
-:param file_pathname: File path and name of the JSON file
-:param required: True if missing files or parser errors should throw
-                 exceptions
+:param file_pathname: File path and name
+:param required: True if missing files should throw an exception
 
-:return: (mixed) Parsed JSON data; None on error
+:return: (mixed) File data; None on error
 :since:  v0.1.01
 		"""
 
@@ -76,7 +102,7 @@ Read and parse data from the given file or from cache.
 				_return = _return.replace("\r", "")
 				if (cache_instance != None): cache_instance.set_file(file_pathname, _return)
 			#
-			elif (required): raise TracedException("{0} not found".format(file_pathname))
+			elif (required): raise IOException("{0} not found".format(file_pathname))
 			else: LogLine.debug("{0} not found".format(file_pathname))
 		#
 
