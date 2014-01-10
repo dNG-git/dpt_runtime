@@ -347,7 +347,7 @@ Load the Python file defined by the given name.
 
 		if (_return == None):
 		#
-			# Instance could be created in another thread so check again
+			# Module could be imported in another thread so check again
 			with NamedLoader.lock:
 			#
 				_return = sys_modules.get(name, None)
