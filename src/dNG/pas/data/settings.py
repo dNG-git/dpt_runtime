@@ -98,12 +98,12 @@ Checks if a given key is a defined setting.
 	#
 
 	@staticmethod
-	def get(key = None, default = None):
+	def get(key, default = None):
 	#
 		"""
-Returns the value with the specified key or all settings.
+Returns the value with the specified key.
 
-:param key: Settings key or NULL to receive all settings.
+:param key: Settings key
 :param default: Default value if not set
 
 :return: (mixed) Value
@@ -111,7 +111,20 @@ Returns the value with the specified key or all settings.
 		"""
 
 		instance = Settings.get_instance()
-		return (instance if (key == None) else dict.get(instance, key, default))
+		return dict.get(instance, key, default)
+	#
+
+	@staticmethod
+	def get_dict():
+	#
+		"""
+Returns all settings currently defined as a dict.
+
+:return: (dict) Settings dict
+:since:  v0.1.00
+		"""
+
+		return Settings.get_instance()
 	#
 
 	@staticmethod
