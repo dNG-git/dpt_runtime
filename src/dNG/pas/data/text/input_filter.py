@@ -78,7 +78,7 @@ characters.
 
 			data = Binary.str(data)
 		#
-		else: data = None
+		else: data = ""
 
 		return data
 	#
@@ -184,7 +184,7 @@ address if it is.
 			#
 		#
 
-		return (data if (is_valid) else None)
+		return (data if (is_valid) else "")
 	#
 
 	@staticmethod
@@ -230,7 +230,7 @@ Check and convert to float.
 
 :param data: Input string
 
-:return: (float) Filtered output float
+:return: (float) Filtered output float; None on error
 :since:  v0.1.00
 		"""
 
@@ -251,7 +251,7 @@ Check and convert to int.
 
 :param data: Input string
 
-:return: (int) Filtered output integer
+:return: (int) Filtered output integer; None on error
 :since:  v0.1.00
 		"""
 
