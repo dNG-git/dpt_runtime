@@ -23,6 +23,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=import-error,no-name-in-module
+
 import os
 
 try: from urllib.parse import quote
@@ -90,6 +92,8 @@ Checks a given path for changes if "is_synchronous()" is true.
 :since:  v0.1.01
 		"""
 
+		# pylint: disable=broad-except
+
 		_return = False
 
 		with self.lock:
@@ -126,6 +130,19 @@ Frees all watcher callbacks for garbage collection.
 				self.watched_paths = None
 			#
 		#
+	#
+
+	def is_synchronous(self):
+	#
+		"""
+Returns true if changes are only detected after "check()" has been
+called.
+
+:return: (bool) True if changes are not detected automatically
+:since:  v0.1.01
+		"""
+
+		return True
 	#
 
 	def is_watched(self, _path, callback = None):
@@ -231,20 +248,6 @@ Get the WatcherMtime singleton.
 		#
 
 		return WatcherMtime.instance
-	#
-
-	@staticmethod
-	def is_synchronous():
-	#
-		"""
-Returns true if changes are only detected after "check()" has been
-called.
-
-:return: (bool) True if changes are not detected automatically
-:since:  v0.1.01
-		"""
-
-		return True
 	#
 
 	@staticmethod

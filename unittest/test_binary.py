@@ -50,7 +50,7 @@ class TestBinary(unittest.TestCase):
 #
 	def test_formats(self):
 	#
-		global _PY_BYTES, _PY_BYTES_TYPE, _PY_STR, _PY_UNICODE, _PY_UNICODE_TYPE
+		# global: _PY_BYTES, _PY_BYTES_TYPE, _PY_STR, _PY_UNICODE, _PY_UNICODE_TYPE
 
 		self.assertEqual(_PY_BYTES_TYPE, type(Binary.bytes("data")))
 		self.assertEqual(str, type(Binary.raw_str("data")))

@@ -96,7 +96,7 @@ Get the log level.
 :since:  v0.1.00
 		"""
 
-		return self.levels.index(self.level)
+		return [ k for k, v in self.levels.items() if self.level == v ][0]
 	#
 
 	def _get_line(self, data):
@@ -109,6 +109,8 @@ Get the formatted log message.
 :return: (str) Formatted log line
 :since:  v0.1.00
 		"""
+
+		# pylint: disable=broad-except
 
 		if (isinstance(data, TracedException)): data = data.get_printable_trace()
 		elif (isinstance(data, BaseException)):

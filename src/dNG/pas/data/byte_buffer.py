@@ -45,6 +45,8 @@ safe.
              Mozilla Public License, v. 2.0
 	"""
 
+	# pylint: disable=invalid-name
+
 	def __init__(self):
 	#
 		"""

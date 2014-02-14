@@ -23,6 +23,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=invalid-name,no-member,undefined-variable
+
 try:
 #
 	_PY_BYTES = unicode.encode
@@ -70,7 +72,8 @@ Returns the bytes representing the (maybe encoded) input data.
 :since:  v0.1.00
 	"""
 
-		global _PY_BYTES, _PY_BYTES_TYPE
+		# global: _PY_BYTES, _PY_BYTES_TYPE
+
 		if (str != _PY_BYTES_TYPE and type(data) == str): data = _PY_BYTES(data, "raw_unicode_escape")
 		return data
 	#
@@ -87,7 +90,7 @@ Returns the string representing the (maybe encoded) input data.
 :since:  v0.1.00
 		"""
 
-		global _PY_STR, _PY_BYTES_TYPE, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_BYTES_TYPE, _PY_UNICODE_TYPE
 
 		_type = type(data)
 		if (_type != str and (_type == _PY_BYTES_TYPE or _type == _PY_UNICODE_TYPE)): data = _PY_STR(data, "raw_unicode_escape")
@@ -107,7 +110,7 @@ Returns the string representing the (maybe UTF-8 encoded) input data.
 :since:  v0.1.00
 		"""
 
-		global _PY_STR, _PY_BYTES_TYPE, _PY_UNICODE_TYPE
+		# global: _PY_STR, _PY_BYTES_TYPE, _PY_UNICODE_TYPE
 
 		_type = type(data)
 		if (_type != str and (_type == _PY_BYTES_TYPE or _type == _PY_UNICODE_TYPE)): data = _PY_STR(data, "utf-8")
@@ -127,7 +130,7 @@ Returns the unicode data representing the (maybe encoded) input data.
 :since:  v0.1.00
 		"""
 
-		global _PY_BYTES, _PY_BYTES_TYPE, _PY_UNICODE, _PY_UNICODE_TYPE
+		# global: _PY_BYTES, _PY_BYTES_TYPE, _PY_UNICODE, _PY_UNICODE_TYPE
 
 		_type = type(data)
 
@@ -149,7 +152,8 @@ Returns the bytes representing the (maybe UTF-8 encoded) input data.
 :since:  v0.1.00
 	"""
 
-		global _PY_BYTES, _PY_BYTES_TYPE
+		# global: _PY_BYTES, _PY_BYTES_TYPE
+
 		if (str != _PY_BYTES_TYPE and type(data) == str): data = _PY_BYTES(data, "utf-8")
 		return data
 	#

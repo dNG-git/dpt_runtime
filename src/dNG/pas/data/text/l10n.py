@@ -178,6 +178,8 @@ Checks if a given key is a defined language string.
 :since:  v0.1.00
 		"""
 
+		# pylint: disable=broad-except
+
 		try: instance = L10n.get_instance(lang)
 		except Exception: instance = { }
 

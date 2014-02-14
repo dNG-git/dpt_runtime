@@ -23,6 +23,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=import-error,undefined-variable
+
 from os import path
 from time import strftime
 from weakref import ref
@@ -91,6 +93,8 @@ LogHandler weakref instance
 Thread safety weakref lock
 	"""
 
+	# pylint: disable=maybe-no-member
+
 	def __init__(self):
 	#
 		"""
@@ -99,7 +103,7 @@ Constructor __init__(LogHandler)
 :since: v0.1.00
 		"""
 
-		global _api_type, _API_JAVA
+		# global: _api_type, _API_JAVA
 
 		AbstractLogHandler.__init__(self)
 
@@ -190,7 +194,7 @@ Add the logger name given to the active log handler.
 :since:  v0.1.00
 		"""
 
-		global _api_type, _API_JAVA
+		# global: _api_type, _API_JAVA
 
 		if (_api_type == _API_JAVA): logging.getLogger(name).addAppender(self.log_handler)
 		else: AbstractLogHandler.add_logger(self, name)

@@ -84,6 +84,8 @@ Read data from the given file or from cache.
 :since:  v0.1.01
 		"""
 
+		# pylint: disable=maybe-no-member
+
 		_return = None
 
 		cache_instance = NamedLoader.get_singleton("dNG.pas.data.Cache", False)

@@ -23,17 +23,28 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=import-error
+
 from os import path
 from sys import modules as sys_modules
 from weakref import proxy
 import re
 
-_mode = "imp"
+_MODE_IMP = 1
+"""
+Use "imp" based methods for import
+"""
+_MODE_IMPORT_MODULE = 2
+"""
+Use "import_module" for import
+"""
+
+_mode = _MODE_IMP
 
 try:
 
 	from importlib import import_module
-	_mode = "importlib"
+	_mode = _MODE_IMPORT_MODULE
 
 except ImportError: import imp
 
@@ -84,7 +95,7 @@ Constructor __init__(NamedLoader)
 :since: v0.1.00
 		"""
 
-		self.base_dir = None
+		self.base_dir = Settings.get("pas_global_modules_base_dir", None)
 		"""
 Base directory we search for python files.
 		"""
@@ -92,8 +103,6 @@ Base directory we search for python files.
 		"""
 Underlying configuration array
 		"""
-
-		if (Settings.is_defined("pas_modules")): self.import_module_config(Settings.get("pas_modules"))
 	#
 
 	def get(self, common_name):
@@ -165,8 +174,6 @@ Get the class name for the given common name.
 :return: (object) Loaded class; None on error
 :since:  v0.1.00
 		"""
-
-		_return = None
 
 		loader = NamedLoader._get_loader()
 
@@ -289,7 +296,7 @@ Return the inititalized Python module defined by the given name.
 			if (getattr(_return, "__initializing__", True)):
 			#
 				with NamedLoader.lock: _return = sys_modules.get(name, None)
-			# 
+			#
 		#
 
 		return _return
@@ -306,8 +313,6 @@ Load the Python module defined by the given name.
 :return: (object) Python module; None if unknown
 :since:  v0.1.00
 		"""
-
-		_return = None
 
 		package = name.rsplit(".", 1)[0]
 
@@ -342,7 +347,8 @@ Load the Python file defined by the given name.
 :since:  v0.1.00
 		"""
 
-		global _mode
+		# global: _mode, _MODE_IMPORT_MODULE
+		# pylint: disable=broad-except
 		_return = NamedLoader._get_module(name)
 
 		if (_return == None):
@@ -356,7 +362,7 @@ Load the Python file defined by the given name.
 				#
 					try:
 					#
-						if (_mode == "importlib"): _return = NamedLoader._load_py_file_importlib(name)
+						if (_mode == _MODE_IMPORT_MODULE): _return = NamedLoader._load_py_file_importlib(name)
 						else: _return = NamedLoader._load_py_file_imp(name)
 					#
 					except Exception as handled_exception:
@@ -381,6 +387,8 @@ Load the Python file with "imp" defined by the given name.
 :return: (object) Python file; None if unknown
 :since:  v0.1.00
 		"""
+
+		# pylint: disable=broad-except
 
 		_return = None
 
@@ -420,6 +428,8 @@ Load the Python package with "importlib" defined by the given name.
 :return: (object) Python package; None if unknown
 :since:  v0.1.00
 		"""
+
+		# pylint: disable=broad-except
 
 		_return = None
 

@@ -51,7 +51,7 @@ Constructor __init__(NotImplementedException)
 :since: v0.1.01
 		"""
 
-		NotImplementedException.__init__(self, value, _exception)
+		TypeException.__init__(self, value, _exception)
 	#
 #
 

@@ -176,7 +176,7 @@ Refresh all mime-type definitions from the file.
 							if (extension not in self.extensions): self.extensions[extension] = mimetype
 							else: LogLine.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[extension]))
 						#
-					# 
+					#
 					elif ("extension" in json_data[mimetype]):
 					#
 						if (json_data[mimetype]['extension'] not in self.extensions): self.extensions[json_data[mimetype]['extension']] = mimetype

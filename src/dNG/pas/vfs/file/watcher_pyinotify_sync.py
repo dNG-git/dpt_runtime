@@ -23,6 +23,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=import-error
+
 from pyinotify import Notifier
 
 from .watcher_pyinotify import WatcherPyinotify
@@ -74,26 +76,7 @@ Initializes the pyinotify instance.
 		self.pyinotify_instance = Notifier(self, WatcherPyinotifyCallback(self), timeout = 5)
 	#
 
-	@staticmethod
-	def get_instance():
-	#
-		"""
-Get the WatcherPyinotifySync singleton.
-
-:return: (WatcherPyinotifySync) Object on success
-:since:  v0.1.00
-		"""
-
-		with WatcherPyinotifySync.lock:
-		#
-			if (WatcherPyinotifySync.instance == None): WatcherPyinotifySync.instance = WatcherPyinotifySync()
-		#
-
-		return WatcherPyinotifySync.instance
-	#
-
-	@staticmethod
-	def is_synchronous():
+	def is_synchronous(self):
 	#
 		"""
 Returns true if changes are only detected after "check()" has been
@@ -107,6 +90,24 @@ called.
 	#
 
 	@staticmethod
+	def get_instance():
+	#
+		"""
+Get the WatcherPyinotifySync singleton.
+
+:return: (WatcherPyinotifySync) Object on success
+:since:  v0.1.00
+		"""
+
+		with WatcherPyinotifySync.instance_lock:
+		#
+			if (WatcherPyinotifySync.instance == None): WatcherPyinotifySync.instance = WatcherPyinotifySync()
+		#
+
+		return WatcherPyinotifySync.instance
+	#
+
+	@staticmethod
 	def stop():
 	#
 		"""
@@ -115,7 +116,7 @@ Stops all watchers.
 :since: v0.1.01
 		"""
 
-		with WatcherPyinotifySync.lock:
+		with WatcherPyinotifySync.instance_lock:
 		#
 			if (WatcherPyinotifySync.instance != None): WatcherPyinotifySync.instance = None
 		#

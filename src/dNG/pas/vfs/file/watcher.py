@@ -23,6 +23,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=import-error
+
 try: from urllib.parse import urlsplit
 except ImportError: from urlparse import urlsplit
 
@@ -263,7 +265,7 @@ Set the filesystem watcher implementation to use.
 :since: v0.1.01
 		"""
 
-		global _IMPLEMENTATION_INOTIFY, _IMPLEMENTATION_INOTIFY_SYNC, _IMPLEMENTATION_MTIME, _mode
+		# global: _IMPLEMENTATION_INOTIFY, _IMPLEMENTATION_INOTIFY_SYNC, _IMPLEMENTATION_MTIME, _mode
 
 		with self.lock:
 		#

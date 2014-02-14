@@ -23,6 +23,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=import-error,unused-argument
+
 from pyinotify import IN_ATTRIB, IN_CLOSE_WRITE, IN_CREATE, IN_DELETE, IN_DELETE_SELF, IN_MODIFY, IN_MOVE_SELF, IN_MOVED_FROM, IN_MOVED_TO, ThreadedNotifier, WatchManager
 from os import path
 
@@ -133,6 +135,19 @@ Initializes the pyinotify instance.
 		self.pyinotify_instance.start()
 	#
 
+	def is_synchronous(self):
+	#
+		"""
+Returns true if changes are only detected after "check()" has been
+called.
+
+:return: (bool) True if changes are not detected automatically
+:since:  v0.1.01
+		"""
+
+		return False
+	#
+
 	def is_watched(self, _path, callback = None):
 	#
 		"""
@@ -191,6 +206,8 @@ Handles registration of filesystem watches and its callbacks.
 :since:  v0.1.01
 		"""
 
+		# pylint: disable=no-member
+
 		_return = True
 
 		with self.lock:
@@ -231,6 +248,8 @@ Handles deregistration of filesystem watches.
 :return: (bool) True on success
 :since:  v0.1.01
 		"""
+
+		# pylint: disable=no-member
 
 		_return = True
 
@@ -282,20 +301,6 @@ Get the WatcherPyinotify singleton.
 		#
 
 		return WatcherPyinotify.instance
-	#
-
-	@staticmethod
-	def is_synchronous():
-	#
-		"""
-Returns true if changes are only detected after "check()" has been
-called.
-
-:return: (bool) True if changes are not detected automatically
-:since:  v0.1.01
-		"""
-
-		return False
 	#
 
 	@staticmethod

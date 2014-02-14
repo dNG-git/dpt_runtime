@@ -188,6 +188,8 @@ Read all settings from the given file.
 :since: v0.1.00
 		"""
 
+		# pylint: disable=maybe-no-member
+
 		file_pathname = path.normpath(file_pathname)
 		file_content = (None if (Settings.cache_instance == None) else Settings.cache_instance.get_file(file_pathname))
 

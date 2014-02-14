@@ -23,6 +23,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=import-error,no-name-in-module
+
 from pyinotify import ProcessEvent
 from weakref import ref
 
@@ -45,6 +47,8 @@ Processes pyinotify events and calls defined callbacks.
 :license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
              Mozilla Public License, v. 2.0
 	"""
+
+	# pylint: disable=invalid-name
 
 	def __init__(self, manager):
 	#
@@ -71,6 +75,8 @@ Handles all inotify events.
 
 :since: v0.1.01
 		"""
+
+		# pylint: disable=broad-except
 
 		manager = self.manager_weakref()
 

@@ -130,7 +130,7 @@ Acquire a lock.
 		#
 	#
 
-	def get_timeout(self, timeout):
+	def get_timeout(self):
 	#
 		"""
 Returns the lock timeout in seconds.

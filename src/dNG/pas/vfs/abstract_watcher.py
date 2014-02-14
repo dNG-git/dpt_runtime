@@ -23,6 +23,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=unused-argument
+
 from dNG.pas.runtime.not_implemented_exception import NotImplementedException
 
 class AbstractWatcher(object):

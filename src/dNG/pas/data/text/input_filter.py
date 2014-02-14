@@ -191,7 +191,7 @@ address if it is.
 	def filter_file_path(data, uprefs_allowed = False):
 	#
 		"""
-File paths should never contain target definitions like directory 
+File paths should never contain target definitions like directory
 traversals. We will filter them using "filterFilePath()".
 
 :param data: Input path

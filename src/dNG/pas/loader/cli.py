@@ -23,6 +23,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=import-error,unused-import
+
 from weakref import ref
 import threading
 
@@ -155,6 +157,8 @@ Executes registered callbacks for the active application.
 :since: v0.1.00
 		"""
 
+		# pylint: disable=broad-except
+
 		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -Cli.run()- (#echo(__LINE__)#)")
 
 		if (self.arg_parser != None and hasattr(self.arg_parser, "parse_args")): args = self.arg_parser.parse_args()
@@ -228,6 +232,8 @@ Executes registered callbacks before shutting down this application.
 :since: v0.1.00
 		"""
 
+		# pylint: disable=broad-except,raising-bad-type
+
 		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -Cli.shutdown()- (#echo(__LINE__)#)")
 
 		Thread.set_inactive()
@@ -269,7 +275,7 @@ Returns the current Python engine (one of "java", "mono" and "py").
 :since:  v0.1.00
 		"""
 
-		global _mode
+		# global: _mode
 		return _mode
 	#
 
@@ -327,6 +333,8 @@ Callback function for OS signals.
 
 :since: v0.1.00
 	"""
+
+	# pylint: disable=protected-access
 
 	instance = Cli.get_instance()
 	if (instance != None): instance._signal(os_signal, stack_frame)
