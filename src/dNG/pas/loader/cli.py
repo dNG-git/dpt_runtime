@@ -80,6 +80,8 @@ class Cli(object):
              Mozilla Public License, v. 2.0
 	"""
 
+	# pylint: disable=unused-argument
+
 	IMPLEMENTATION_JAVA = _IMPLEMENTATION_JAVA
 	"""
 Java based Python implementation

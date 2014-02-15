@@ -23,7 +23,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-# pylint: disable=import-error
+# pylint: disable=import-error,no-name-in-module
 
 try: from urllib.parse import urlsplit
 except ImportError: from urlparse import urlsplit

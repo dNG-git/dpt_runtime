@@ -41,6 +41,8 @@ The cache singleton provides caching mechanisms.
              Mozilla Public License, v. 2.0
 	"""
 
+	# pylint: disable=unused-argument
+
 	weakref_instance = None
 	"""
 Cache weakref instance

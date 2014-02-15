@@ -95,6 +95,8 @@ Acquire a lock.
 :since: v0.1.01
 		"""
 
+		# pylint: disable=unexpected-keyword-arg
+
 		try:
 		#
 			if (not self.lock.acquire(timeout = self.timeout)): raise IOException("Timeout occurred while acquiring lock")
