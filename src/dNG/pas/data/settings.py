@@ -49,7 +49,7 @@ The settings singleton provides methods on top of an dict.
              Mozilla Public License, v. 2.0
 	"""
 
-	RE_EXTENDED_JSON_COMMENT_LINE = re.compile("^[ \t]*#.*$", re.M)
+	RE_EXTENDED_JSON_COMMENT_LINE = re.compile("^\\s*#.*$", re.M)
 	"""
 Comments in (invalid) JSON setting files are replaced before getting parsed.
 	"""
@@ -210,7 +210,6 @@ Read all settings from the given file.
 
 				file_content = file_content.replace("\r", "")
 				file_content = Settings.RE_EXTENDED_JSON_COMMENT_LINE.sub("", file_content)
-				print(file_content)
 				if (Settings.cache_instance != None): Settings.cache_instance.set_file(file_pathname, file_content)
 			#
 			elif (required): raise IOException("{0} not found".format(file_pathname))
