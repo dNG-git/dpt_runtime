@@ -58,6 +58,8 @@ Constructor __init__(WatcherPyinotifyCallback)
 :since: v0.1.01
 		"""
 
+		ProcessEvent.__init__(self)
+
 		self.manager_weakref = ref(manager)
 		"""
 pyinotify manager instance

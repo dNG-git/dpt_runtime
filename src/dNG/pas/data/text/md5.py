@@ -25,8 +25,7 @@ NOTE_END //n"""
 
 # pylint: disable=import-error
 
-try: import hashlib
-except ImportError: import md5 as hashlib
+import hashlib
 
 from dNG.pas.data.binary import Binary
 

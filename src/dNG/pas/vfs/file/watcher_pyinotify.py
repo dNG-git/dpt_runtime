@@ -23,10 +23,13 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-# pylint: disable=import-error,unused-argument
+# pylint: disable=import-error,no-name-in-module,unused-argument
 
-from pyinotify import IN_ATTRIB, IN_CLOSE_WRITE, IN_CREATE, IN_DELETE, IN_DELETE_SELF, IN_MODIFY, IN_MOVE_SELF, IN_MOVED_FROM, IN_MOVED_TO, ThreadedNotifier, WatchManager
+from pyinotify import ThreadedNotifier, WatchManager
 from os import path
+
+try: from pyinotify import IN_ATTRIB, IN_CLOSE_WRITE, IN_CREATE, IN_DELETE, IN_DELETE_SELF, IN_MODIFY, IN_MOVE_SELF, IN_MOVED_FROM, IN_MOVED_TO
+except ImportError: from pyinotify.EventsCodes import IN_ATTRIB, IN_CLOSE_WRITE, IN_CREATE, IN_DELETE, IN_DELETE_SELF, IN_MODIFY, IN_MOVE_SELF, IN_MOVED_FROM, IN_MOVED_TO
 
 from dNG.pas.runtime.instance_lock import InstanceLock
 from dNG.pas.runtime.thread_lock import ThreadLock

@@ -26,16 +26,18 @@ NOTE_END //n"""
 from math import floor
 
 from dNG.pas.data.binary import Binary
+from dNG.pas.runtime.type_exception import TypeException
 from .md5 import Md5
 
 class Tmd5(object):
 #
 	"""
-To increase security we are using two additional steps for MD5. All strings
-will be divided into three parts and reverted to make attacks based on
-pre-encoded dictionary words against our triple MD5 strings harder.
+To increase security while using an hardware efficient algorithm for power
+constraint devices two additional steps are used for MD5 hashing.
 
-Furthermore "bytemix" data can be applied to each part as a hash.
+All strings will be divided into three parts and reverted to make attacks
+based on pre-calculated rainbox tables harder. Furthermore two salt strings
+are used for hashing.
 
 :author:     direct Netware Group
 :copyright:  direct Netware Group - All rights reserved
@@ -47,13 +49,14 @@ Furthermore "bytemix" data can be applied to each part as a hash.
 	"""
 
 	@staticmethod
-	def hash(data, bytemix = ""):
+	def _align_string(source, target):
 	#
 		"""
-Generate the triple MD5 hash for the data given.
+Align the target string to the source string. It will be trimmed or
+repeated and returned.
 
-:param data: Input string
-:param bytemix: Bytemix to use for TMD5 (None for none)
+:param source: Source string
+:param target: Target string
 
 :return: (str) Triple MD5 string
 :since:  v0.1.01
@@ -61,53 +64,102 @@ Generate the triple MD5 hash for the data given.
 
 		_return = ""
 
-		bytemix = Binary.str(bytemix)
-		data = Binary.str(data)
-		data_length = (len(data) if (type(data) == str) else 0)
+		source_length = len(source)
+		target_length = len(target)
 
-		if (type(bytemix) == str and data_length > 0):
+		if (source_length > 0 and target_length > 0):
 		#
-			bytemix_length = len(bytemix)
-			bytemixing = False
+			if (target_length > source_length): _return = target[target_length - source_length:]
+			else:
+			#
+				while (len(_return) < source_length): _return += (target if (len(_return) + target_length <= source_length) else target[:source_length - len(_return)])
+			#
+		#
+
+		return _return
+	#
+
+	@staticmethod
+	def hash(data, salt = ""):
+	#
+		"""
+Generate the triple MD5 hash for the data given.
+
+:param data: Input string
+:param salt: Salt used during hashing
+
+:return: (str) Triple MD5 string
+:since:  v0.1.01
+		"""
+
+		_return = ""
+
+		data = Binary.str(data)
+		if (type(data) != str): raise TypeException("Data must be of type str")
+
+		data_length = len(data)
+
+		salt = Binary.str(salt)
+		if (type(salt) != str): raise TypeException("Salt must be of type str")
+
+		if (data_length > 0):
+		#
+			salt = Tmd5._align_string(data, salt)
+
 			data_remaining = data_length
+			is_salt_used = (len(salt) > 0)
 			part_length = int(floor(data_length / 3))
 			return_length = 0
-
-			if (bytemix_length > 0):
-			#
-				bytemixing = True
-
-				if (bytemix_length > data_length): bytemix_expanded = bytemix[bytemix_length - data_length:]
-				else:
-				#
-					bytemix_expanded = ""
-					while (len(bytemix_expanded) < data_length): bytemix_expanded += (bytemix if (len(bytemix_expanded) + bytemix_length <= data_length) else bytemix[:data_length - len(bytemix_expanded)])
-				#
-			#
-			else: bytemix_expanded = ""
 
 			"""
 We will now divide the string into three parts, revert each of them and put
 it together to our result.
 			"""
 
-			part = ("".join(chr(ord(char) | ord(bytechar)) for char, bytechar in zip(data[:part_length][::-1], bytemix_expanded[:part_length])) if (bytemixing) else data[:part_length][::-1])
+			part = ("".join(chr(ord(char) ^ ord(saltchar)) for char, saltchar in zip(data[:part_length][::-1], salt[:part_length])) if (is_salt_used) else data[:part_length][::-1])
 			_return = Md5.hash(part)
 
 			data_remaining -= part_length
 			return_length += part_length
 
-			part = ("".join(chr(ord(char) | ord(bytechar)) for char, bytechar in zip(data[return_length:part_length + return_length][::-1], bytemix_expanded[return_length:part_length + return_length])) if (bytemixing) else data[return_length:part_length + return_length][::-1])
+			part = ("".join(chr(ord(char) ^ ord(saltchar)) for char, saltchar in zip(data[return_length:part_length + return_length][::-1], salt[return_length:part_length + return_length])) if (is_salt_used) else data[return_length:part_length + return_length][::-1])
 			_return += Md5.hash(part)
 
 			data_remaining -= part_length
 			return_length += part_length
 
-			part = ("".join(chr(ord(char) | ord(bytechar)) for char, bytechar in zip(data[return_length:data_remaining + return_length][::-1], bytemix_expanded[return_length:data_remaining + return_length])) if (bytemixing) else data[return_length:data_remaining + return_length][::-1])
+			part = ("".join(chr(ord(char) ^ ord(saltchar)) for char, saltchar in zip(data[return_length:data_remaining + return_length][::-1], salt[return_length:data_remaining + return_length])) if (is_salt_used) else data[return_length:data_remaining + return_length][::-1])
 			_return += Md5.hash(part)
 		#
 
 		return _return
+	#
+
+	@staticmethod
+	def password_hash(data, salt, pepper):
+	#
+		"""
+Generate a password triple MD5 hash based on the data, salt and pepper
+given.
+
+:param data: Input string
+:param salt: Salt used during hashing
+:param pepper: Pepper used for unique hashing for this password
+
+:return: (str) Triple MD5 string
+:since:  v0.1.01
+		"""
+
+		salt = Binary.str(salt)
+		if (type(salt) != str): raise TypeException("Salt must be of type str")
+
+		pepper = Binary.str(pepper)
+		if (type(pepper) != str): raise TypeException("Pepper must be of type str")
+
+		pepper = Tmd5._align_string(salt, pepper)
+		if (len(pepper) > 0): salt = "".join(chr(ord(saltchar) ^ ord(pepperchar)) for saltchar, pepperchar in zip(salt, pepper))
+
+		return Tmd5.hash(data, salt)
 	#
 #
 
