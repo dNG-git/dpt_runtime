@@ -23,7 +23,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-from dNG.data.json_parser import JsonParser
+from dNG.data.json_resource import JsonResource
 from dNG.pas.data.logging.log_line import LogLine
 from dNG.pas.runtime.value_exception import ValueException
 from .cached_file import CachedFile
@@ -62,8 +62,8 @@ Read and parse data from the given file or from cache.
 
 		if (file_content != None):
 		#
-			json_parser = JsonParser()
-			_return = json_parser.json2data(file_content)
+			json_resource = JsonResource()
+			_return = json_resource.json_to_data(file_content)
 
 			if (_return == None):
 			#

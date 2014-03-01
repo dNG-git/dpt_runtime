@@ -61,9 +61,7 @@ Checks a given URL for changes if "is_synchronous()" is true.
 
 :param url: Resource URL
 
-:return: (bool) True if the given resource URL has been changed since last
-         check and "is_synchronous()" is true.
-:since:  v0.1.01
+:since: v0.1.01
 		"""
 
 		raise NotImplementedException()
@@ -136,6 +134,17 @@ Handles registration of resource URL watches and its callbacks.
 		raise NotImplementedException()
 	#
 
+	def stop(self):
+	#
+		"""
+Stops all watchers.
+
+:since: v0.1.01
+		"""
+
+		pass
+	#
+
 	def unregister(self, url, callback):
 	#
 		"""
@@ -149,18 +158,6 @@ Handles deregistration of resource URL watches.
 		"""
 
 		raise NotImplementedException()
-	#
-
-	@staticmethod
-	def stop():
-	#
-		"""
-Stops all watchers.
-
-:since: v0.1.01
-		"""
-
-		pass
 	#
 #
 

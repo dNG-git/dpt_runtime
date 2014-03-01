@@ -29,7 +29,7 @@ import unittest
 
 from dNG.pas.data.settings import Settings
 
-class TestSettings(unittest.TestCase):
+class TestDataSettings(unittest.TestCase):
 #
 	def setUp(self): self.settings = Settings.get_instance()
 

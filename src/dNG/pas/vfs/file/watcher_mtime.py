@@ -186,9 +186,9 @@ Handles registration of filesystem watches and its callbacks.
 		#
 			if (self.watched_callbacks != None):
 			#
-				if (_path not in self.watched_paths and os.access(_path, os.R_OK)):
+				if (_path not in self.watched_paths):
 				#
-					self.watched_paths[_path] = os.stat(_path).st_mtime
+					self.watched_paths[_path] = (os.stat(_path).st_mtime if (os.access(_path, os.R_OK)) else -1)
 					self.watched_callbacks[_path] = [ ]
 				#
 
@@ -197,6 +197,22 @@ Handles registration of filesystem watches and its callbacks.
 		#
 
 		return _return
+	#
+
+	def stop(self):
+	#
+		"""
+Stops all watchers.
+
+:since: v0.1.01
+		"""
+
+		with WatcherMtime.instance_lock:
+		#
+			if (WatcherMtime.instance != None): WatcherMtime.instance = None
+		#
+
+		self.free()
 	#
 
 	def unregister(self, _path, callback):
@@ -248,21 +264,6 @@ Get the WatcherMtime singleton.
 		#
 
 		return WatcherMtime.instance
-	#
-
-	@staticmethod
-	def stop():
-	#
-		"""
-Stops all watchers.
-
-:since: v0.1.01
-		"""
-
-		with WatcherMtime.instance_lock:
-		#
-			if (WatcherMtime.instance != None): WatcherMtime.instance = None
-		#
 	#
 #
 

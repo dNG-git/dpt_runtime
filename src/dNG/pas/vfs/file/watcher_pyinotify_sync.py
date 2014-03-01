@@ -56,7 +56,7 @@ Checks a given path for changes if "is_synchronous()" is true.
 :since:  v0.1.01
 		"""
 
-		if(self.pyinotify_instance.check_events()):
+		if (self.pyinotify_instance.check_events()):
 		#
 			self.pyinotify_instance.read_events()
 			self.pyinotify_instance.process_events()
@@ -89,6 +89,22 @@ called.
 		return True
 	#
 
+	def stop(self):
+	#
+		"""
+Stops all watchers.
+
+:since: v0.1.01
+		"""
+
+		with WatcherPyinotifySync.instance_lock:
+		#
+			if (WatcherPyinotifySync.instance != None): WatcherPyinotifySync.instance = None
+		#
+
+		self.free()
+	#
+
 	@staticmethod
 	def get_instance():
 	#
@@ -105,21 +121,6 @@ Get the WatcherPyinotifySync singleton.
 		#
 
 		return WatcherPyinotifySync.instance
-	#
-
-	@staticmethod
-	def stop():
-	#
-		"""
-Stops all watchers.
-
-:since: v0.1.01
-		"""
-
-		with WatcherPyinotifySync.instance_lock:
-		#
-			if (WatcherPyinotifySync.instance != None): WatcherPyinotifySync.instance = None
-		#
 	#
 #
 

@@ -119,7 +119,6 @@ Frees all watcher callbacks for garbage collection.
 		#
 			if (len(self.watched_paths) > 0):
 			#
-				self.pyinotify_instance.stop()
 				self.watched_callbacks = { }
 				self.watched_paths = { }
 			#
@@ -170,7 +169,6 @@ if a callback is given but not defined for the watched path.
 		with self.lock:
 		#
 			if (_path in self.watched_callbacks): _return = (True if (callback == None) else (callback in self.watched_callbacks[_path]))
-			elif (not path.isdir(_path)): _return = self.is_watched(path.split(_path)[0], callback)
 		#
 
 		return _return
@@ -239,6 +237,23 @@ Handles registration of filesystem watches and its callbacks.
 		return _return
 	#
 
+	def stop(self):
+	#
+		"""
+Stops all watchers.
+
+:since: v0.1.01
+		"""
+
+		with WatcherPyinotify.instance_lock:
+		#
+			if (WatcherPyinotify.instance != None): WatcherPyinotify.instance = None
+		#
+
+		self.free()
+		self.pyinotify_instance.stop()
+	#
+
 	def unregister(self, _path, callback, _deleted = False):
 	#
 		"""
@@ -304,25 +319,6 @@ Get the WatcherPyinotify singleton.
 		#
 
 		return WatcherPyinotify.instance
-	#
-
-	@staticmethod
-	def stop():
-	#
-		"""
-Stops all watchers.
-
-:since: v0.1.01
-		"""
-
-		with WatcherPyinotify.instance_lock:
-		#
-			if (WatcherPyinotify.instance != None):
-			#
-				WatcherPyinotify.instance.pyinotify_instance.stop()
-				WatcherPyinotify.instance = None
-			#
-		#
 	#
 #
 

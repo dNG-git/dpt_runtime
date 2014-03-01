@@ -25,8 +25,12 @@ NOTE_END //n"""
 
 # pylint: disable=import-error,no-name-in-module
 
-try: from urllib.parse import urlsplit
-except ImportError: from urlparse import urlsplit
+try: from urllib.parse import unquote, urlsplit
+except ImportError:
+#
+	from urllib import unquote
+	from urlparse import urlsplit
+#
 
 from dNG.pas.data.logging.log_line import LogLine
 from dNG.pas.runtime.thread_lock import ThreadLock
@@ -51,9 +55,13 @@ try:
 	from .watcher_pyinotify_sync import WatcherPyinotifySync
 	_mode = _IMPLEMENTATION_INOTIFY
 #
-except ImportError: _mode = _IMPLEMENTATION_MTIME
+except ImportError:
+#
+	_mode = _IMPLEMENTATION_MTIME
+	WatcherPyinotify = None
+#
 
-if (_mode == _IMPLEMENTATION_MTIME): from .watcher_mtime import WatcherMtime
+from .watcher_mtime import WatcherMtime
 
 class Watcher(AbstractWatcher):
 #
@@ -113,17 +121,18 @@ Checks a given URL for changes if "is_synchronous()" is true.
 
 :param url: Resource URL
 
-:return: (bool) True if the given resource URL has been changed since last
-         check and "is_synchronous()" is true.
-:since:  v0.1.01
+:since: v0.1.01
 		"""
 
 		_path = self._get_path(url)
 
 		with self.lock:
 		#
-			if (self.watcher_class == None or _path == None or _path.strip() == ""): return False
-			else: return self.watcher_class.get_instance().check(_path)
+			if (
+				self.watcher_class != None and
+				_path != None and
+				_path.strip() != ""
+			): self.watcher_class.get_instance().check(_path)
 		#
 	#
 
@@ -137,7 +146,7 @@ Disables this watcher and frees all callbacks for garbage collection.
 
 		with self.lock:
 		#
-			self.free()
+			self.stop()
 			self.implementation = None
 		#
 	#
@@ -152,11 +161,7 @@ Frees all watcher callbacks for garbage collection.
 
 		with self.lock:
 		#
-			if (self.watcher_class != None):
-			#
-				self.watcher_class.get_instance().free()
-				self.watcher_class = None
-			#
+			if (self.watcher_class != None): self.watcher_class.get_instance().free()
 		#
 	#
 
@@ -172,7 +177,7 @@ Return the local filesystem path for the given "file:///" URL.
 		"""
 
 		url_elements = urlsplit(url)
-		return (url_elements.path[1:] if (url_elements.scheme == "file") else None)
+		return (unquote(url_elements.path[1:]) if (url_elements.scheme == "file") else None)
 	#
 
 	def _init_watcher_class(self):
@@ -185,11 +190,22 @@ Initializes the watcher instance.
 
 		if (self.implementation != None and self.watcher_class == None):
 		#
-			if (self.implementation == _IMPLEMENTATION_INOTIFY): self.watcher_class = WatcherPyinotify
-			elif (self.implementation == _IMPLEMENTATION_INOTIFY): self.watcher_class = WatcherPyinotifySync
+			if (
+				WatcherPyinotify != None and
+				self.implementation == _IMPLEMENTATION_INOTIFY
+			): self.watcher_class = WatcherPyinotify
+			elif (
+				WatcherPyinotify != None and
+				self.implementation == _IMPLEMENTATION_INOTIFY_SYNC
+			): self.watcher_class = WatcherPyinotifySync
 			else: self.watcher_class = WatcherMtime
 
-			LogLine.debug("pas.vfs.file.Watcher mode is {0}".format("synchronous" if (self.is_synchronous()) else "asynchronous"))
+			LogLine.debug("pas.vfs.file.Watcher mode is {0}".format(
+				"synchronous"
+				if (self.is_synchronous())
+				else
+				"asynchronous"
+			))
 		#
 	#
 
@@ -269,12 +285,36 @@ Set the filesystem watcher implementation to use.
 
 		with self.lock:
 		#
-			if (self.watcher_class != None): self.free()
+			if (self.watcher_class != None): self.stop()
 		#
 
-		if (_mode == _IMPLEMENTATION_INOTIFY and (implementation == None or implementation == _IMPLEMENTATION_INOTIFY)): self.implementation = _IMPLEMENTATION_INOTIFY
-		elif (_mode == _IMPLEMENTATION_INOTIFY and implementation == _IMPLEMENTATION_INOTIFY_SYNC): self.implementation = _IMPLEMENTATION_INOTIFY_SYNC
+		if (
+			_mode == _IMPLEMENTATION_INOTIFY and
+			(implementation == None or implementation == _IMPLEMENTATION_INOTIFY)
+		): self.implementation = _IMPLEMENTATION_INOTIFY
+		elif (
+			_mode == _IMPLEMENTATION_INOTIFY and
+			implementation == _IMPLEMENTATION_INOTIFY_SYNC
+		): self.implementation = _IMPLEMENTATION_INOTIFY_SYNC
 		else: self.implementation = _IMPLEMENTATION_MTIME
+	#
+
+	def stop(self):
+	#
+		"""
+Stops all watchers.
+
+:since: v0.1.01
+		"""
+
+		with self.lock:
+		#
+			if (self.watcher_class != None):
+			#
+				self.watcher_class.get_instance().stop()
+				self.watcher_class = None
+			#
+		#
 	#
 
 	def unregister(self, url, callback):

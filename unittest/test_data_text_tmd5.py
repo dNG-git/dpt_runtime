@@ -29,7 +29,7 @@ import unittest
 
 from dNG.pas.data.text.tmd5 import Tmd5
 
-class TestTmd5(unittest.TestCase):
+class TestDataTextTmd5(unittest.TestCase):
 #
 	def test_values(self):
 	#

@@ -30,7 +30,7 @@ import os
 import re
 
 from dNG.data.file import File
-from dNG.data.json_parser import JsonParser
+from dNG.data.json_resource import JsonResource
 from dNG.pas.runtime.io_exception import IOException
 from dNG.pas.runtime.value_exception import ValueException
 from .binary import Binary
@@ -173,8 +173,8 @@ Import a given JSON encoded string as an dict of settings.
 
 		_return = True
 
-		json_parser = JsonParser()
-		json_data = json_parser.json2data(json)
+		json_resource = JsonResource()
+		json_data = json_resource.json_to_data(json)
 
 		if (json_data == None): _return = False
 		else: Settings.get_instance().update(json_data)
