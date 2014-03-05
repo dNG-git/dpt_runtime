@@ -404,6 +404,7 @@ Load the Python file with "imp" defined by the given name.
 			_return = imp.load_module(name, file_obj, file_path, description)
 			if (file_obj != None): file_obj.close()
 		#
+		except ImportError: pass
 		except Exception as handled_exception: exception = handled_exception
 
 		imp.release_lock()
@@ -436,6 +437,7 @@ Load the Python package with "importlib" defined by the given name.
 		exception = None
 
 		try: _return = import_module(name)
+		except ImportError: pass
 		except Exception as handled_exception: exception = handled_exception
 
 		if (exception != None and NamedLoader.log_handler != None): NamedLoader.log_handler.error(exception)
