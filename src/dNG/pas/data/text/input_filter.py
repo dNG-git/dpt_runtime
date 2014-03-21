@@ -26,6 +26,9 @@ NOTE_END //n"""
 from unicodedata import category as unicode_category
 import re
 
+try: from urllib.parse import quote
+except ImportError: from urllib import quote
+
 from dNG.pas.data.binary import Binary
 
 class InputFilter(object):
@@ -88,7 +91,7 @@ characters.
 	#
 		"""
 Checks a eMail address if it's valid (RFC822) and returns the (unfolded)
-address if it is.
+ASCII address if it is. Does not recognize comments.
 
 :param data: Input eMail
 
@@ -97,94 +100,100 @@ address if it is.
 :since:  v0.1.00
 		"""
 
-		address_parsing = True
+		# pylint: disable=broad-except
+
+		email_address = InputFilter.filter_control_chars(data)
+		email_address = re.sub("\\r\\n([\\x09\\x20])+", "\\1", email_address)
+
 		is_valid = True
-		data_part = ""
+		quote_count = 0
 
-		data = InputFilter.filter_control_chars(data)
-		if (type(data) == str): data = re.sub("\\r\\n([\\x09\\x20])+", "\\1", data)
-		dot_parts = ([ ] if (data == None) else data.split("."))
-		re_char_escaped = re.compile("([\\\\]+)\"$")
+		data_parts = email_address.split("\"")
+		domain_part = ""
+		local_part = ""
+		quoted_part = ""
+
+		re_char_escaped = re.compile("([\\\\]+)$")
 		re_valid_chars = re.compile("^[\\x00-\\x0c\\x0e-\\x7f]+$")
-		re_valid_chars_quotes = re.compile("^\"[\\x00-\\x0c\\x0e-\\x7f]+\"$")
-		re_invalid_chars = re.compile("[\\x00-\\x20\\x22\\x28\\x29\\x2c\\x2e\\x3a-\\x3c\\x3e\\x40\\x5b-\\x5d\\x7f-\\xff]")
+		re_invalid_chars = re.compile("[\\x00-\\x20\\x22\\x28\\x29\\x2c\\x3a-\\x3c\\x3e\\x40\\x5b-\\x5d\\x7f-\\xff]")
 
-		for dot_part in dot_parts:
+		for data_part in data_parts:
 		#
-			if (not address_parsing): data_part += "." + dot_part
-			elif (is_valid):
+			# Is it a unquoted part?
+			if ((quote_count % 2) == 0):
 			#
-				if (len(data_part) > 0 or dot_part[0] == "\""):
+				if ("@" in data_part):
 				#
-					if (len(dot_part) > 1 and dot_part[-1:] == "\""):
-					#
-						re_result = re_char_escaped.search(dot_part)
+					at_splitted = data_part.split("@")
+					if (re_valid_chars.match(at_splitted[0]) == None): at_splitted[0] = quote(at_splitted[0])
 
-						if (re_result != None and (len(re_result.group(1)) % 2) == 1): data_part += dot_part
-						else:
-						#
-							data_part += dot_part
-							if (re_valid_chars_quotes.search(data_part) == None): is_valid = False
-						#
+					if (
+						domain_part == "" and
+						len(at_splitted) < 3 and
+						re_invalid_chars.search(at_splitted[0]) == None and
+						".." not in at_splitted[0] and
+						".." not in at_splitted[1]
+					):
 					#
-					elif ("\"@" not in dot_part): data_part += dot_part
+						local_part += at_splitted[0]
+						domain_part = at_splitted[1]
+					#
 					else:
 					#
-						at_splitted = dot_part.split("\"@", 2)
-						address_parsing = False
-
-						if (re_valid_chars.search(data_part + at_splitted[0]) == None): is_valid = False
-						else: data_part = at_splitted[1]
+						is_valid = False
+						break
 					#
+				#
+				elif (".." in data_part or re_invalid_chars.search(data_part) != None):
+				#
+					is_valid = False
+					break
+				#
+				else: local_part += data_part
+
+				quote_count += 1
+			#
+			else:
+			#
+				quoted_part += data_part
+				re_result = re_char_escaped.search(data_part)
+
+				# Is it escaped?
+				if (re_result != None and (len(re_result.group(1)) % 2) == 1):
+				#
+					is_valid = False
+					quoted_part += "\""
 				#
 				else:
 				#
-					if ("@" not in dot_part): data_part = dot_part
-					else:
-					#
-						at_splitted = dot_part.split("@", 2)
-						address_parsing = False
-						data_part = at_splitted[0]
-					#
+					is_valid = True
+					quote_count += 1
 
-					if (not re_invalid_chars.search(data_part)): is_valid = False
-					data_part = ("" if (address_parsing) else at_splitted[1])
+					local_part += (quote(quoted_part) if (re_valid_chars.match(quoted_part) == None) else "\"{0}\"".format(quoted_part))
+					quoted_part = ""
 				#
 			#
+
+			if (quote_count > 3): quote_count = 0
 		#
 
-		if (len(data_part) < 1): is_valid = False
-
-		dot_parts = data_part.split(".")
-		data_part = ""
-		re_comment = re.compile("^\\[[\\x00-\\x0c\\x0e-\\x7f]+\\]$")
-
-		for dot_part in dot_parts:
+		if (domain_part == ""): is_valid = False
+		elif (
+			is_valid and
+			(
+				re_invalid_chars.search(domain_part[1:-1]) != None
+				if (domain_part[:1] == "[" and domain_part[-1:] == "]") else
+				re_invalid_chars.search(domain_part) != None
+			)
+		):
 		#
-			if (is_valid):
-			#
-				if (len(data_part) > 0 or dot_part[0] == '['):
-				#
-					if (len(dot_part) > 1 and dot_part[-1:] == "]"):
-					#
-						re_result = re_char_escaped.search(dot_part)
+			domain_part = Binary.utf8(domain_part)
 
-						if (re_result != None and (len(re_result.group(1)) % 2) == 1): data_part += dot_part
-						else:
-						#
-							data_part += dot_part
-
-							if (re_comment.search(data_part) == None): is_valid = False
-							else: data_part = ""
-						#
-					#
-					else: data_part += dot_part
-				#
-				elif (re_invalid_chars.search(dot_part) != None): is_valid = False
-			#
+			try: domain_part = Binary.raw_str(domain_part.encode("idna"))
+			except Exception: is_valid = False
 		#
 
-		return (data if (is_valid) else "")
+		return ("{0}@{1}".format(local_part, domain_part) if (is_valid) else "")
 	#
 
 	@staticmethod
