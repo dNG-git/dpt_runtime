@@ -1,5 +1,7 @@
 {
  "pas_core_login": "Anmelden",
  "pas_core_save": "Speichern",
- "pas_core_username": "Benutzername"
+ "pas_core_username": "Benutzername",
+
+ "errors_pas_core_tasks_daemon_not_available": "Die Hintergrund-Dienstanwendung steht derzeit nicht zur Verfügung."
 }
