@@ -101,6 +101,20 @@ Get the content from cache for the given file path and name.
 		return _return
 	#
 
+	def is_file_known(self, file_pathname):
+	#
+		"""
+Return true if the given file path and name is cached.
+
+:param file_pathname: Cached file path and name
+
+:return: (bool) True if currently cached
+:since:  v0.1.01
+		"""
+
+		with self.lock: return (file_pathname in self)
+	#
+
 	def set_file(self, file_pathname, cache_entry):
 	#
 		"""

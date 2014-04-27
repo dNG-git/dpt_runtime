@@ -307,7 +307,7 @@ Register a callback for the application activation event.
 :since: v0.1.00
 		"""
 
-		Cli.callbacks_run.append(callback)
+		if (callback not in Cli.callbacks_run): Cli.callbacks_run.append(callback)
 	#
 
 	@staticmethod
@@ -321,7 +321,7 @@ Register a callback for the application shutdown event.
 :since: v0.1.00
 		"""
 
-		Cli.callbacks_shutdown.append(callback)
+		if (callback not in Cli.callbacks_shutdown): Cli.callbacks_shutdown.append(callback)
 	#
 #
 

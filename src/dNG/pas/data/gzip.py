@@ -96,6 +96,7 @@ for at least part of the data in string.
 :since:  v0.1.01
 		"""
 
+		if (self.compressor == None): raise IOException("Gzip compressor already flushed and closed")
 		data = Binary.bytes(string)
 
 		if (self.size == None): compressed_data = self.compressor.compress(data)
@@ -129,15 +130,19 @@ remaining compressed output is returned.
 		"""
 
 		if (mode != Z_FINISH): raise IOException("Gzip flush only supports Z_FINISH")
+		if (self.compressor == None): raise IOException("Gzip compressor already flushed and closed")
 
 		if (self.size == None): _return = self.compressor.flush(Z_FINISH)
 		else:
 		#
-			_return = (Binary.BYTES_TYPE() if (self.size < 1) else (self.compressor.flush(Z_FINISH)[:-4] + pack("<2I", self.crc32 & 0xffffffff, int(self.size % 4294967296))))
-
-			self.crc32 = None
-			self.size = 0
+			_return = (
+				Binary.BYTES_TYPE()
+				if (self.size < 1) else
+				(self.compressor.flush(Z_FINISH)[:-4] + pack("<2I", self.crc32 & 0xffffffff, int(self.size % 4294967296)))
+			)
 		#
+
+		self.compressor = None
 
 		return _return
 	#

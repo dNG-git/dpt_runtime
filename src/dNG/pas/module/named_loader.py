@@ -274,7 +274,7 @@ Checks if a common name is defined or can be resolved to a class name.
 :since:  v0.1.00
 		"""
 
-		return (False if (NamedLoader.get_class(common_name, autoload) == None) else True)
+		return (NamedLoader.get_class(common_name, autoload) != None)
 	#
 
 	@staticmethod

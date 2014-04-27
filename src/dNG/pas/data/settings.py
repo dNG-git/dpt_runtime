@@ -183,6 +183,22 @@ Import a given JSON encoded string as an dict of settings.
 	#
 
 	@staticmethod
+	def is_file_known(file_pathname):
+	#
+		"""
+Return true if the given file path and name is cached.
+
+:param file_pathname: File path and name of the settings file
+
+:return: (bool) True if currently cached
+:since:  v0.1.01
+		"""
+
+		file_pathname = path.normpath(file_pathname)
+		return (False if (Settings.cache_instance == None) else Settings.cache_instance.is_file_known(file_pathname))
+	#
+
+	@staticmethod
 	def read_file(file_pathname, required = False):
 	#
 		"""
