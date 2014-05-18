@@ -116,7 +116,7 @@ Checks if a given key is a defined setting.
 :since:  v0.1.00
 		"""
 
-		return (key in Settings.get_instance().dict)
+		return (key in Settings.get_dict())
 	#
 
 	@staticmethod
@@ -132,8 +132,7 @@ Returns the value with the specified key.
 :since:  v0.1.00
 		"""
 
-		_dict = Settings.get_instance().dict
-		return _dict.get(key, default)
+		return Settings.get_dict().get(key, default)
 	#
 
 	@staticmethod
@@ -165,7 +164,7 @@ not defined.
 :since:  v0.1.00
 		"""
 
-		_dict = Settings.get_instance().dict
+		_dict = Settings.get_dict()
 
 		key_with_lang = "{0}_{1}".format(key, lang)
 		_return = (_dict[key_with_lang] if (key_with_lang in _dict) else None)
@@ -192,7 +191,7 @@ Get the settings singleton.
 				if (Settings._instance == None):
 				#
 					Settings._instance = Settings()
-					Settings.read_file("{0}/settings/core.json".format(Settings._instance['path_data']))
+					Settings.read_file("{0}/settings/core.json".format(Settings._instance.dict['path_data']))
 				#
 			#
 		#
@@ -292,7 +291,7 @@ Sets the value for the specified key.
 :since: v0.1.00
 		"""
 
-		Settings.get_instance().dict[key] = value
+		Settings.get_dict()[key] = value
 	#
 
 	@staticmethod

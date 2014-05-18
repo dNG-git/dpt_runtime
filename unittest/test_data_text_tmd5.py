@@ -34,7 +34,8 @@ class TestDataTextTmd5(unittest.TestCase):
 	def test_values(self):
 	#
 		self.assertEqual("8f98a27ba7566c4ddca2a67902b4ba9cfa4cb410c65df90385bad89355ea1338f0f6430e187e05326ff0b32f9811a3d6", Tmd5.hash("Hello world"))
-		self.assertEqual("2cef7df359d3944e4d8ab2900773ec9b12313a3d28f802e3a22b07d2e01c6dcf05f21388389da3241f2e3663398397c4", Tmd5.hash("Hello world", "some_random_binary_value_should_be_used_here"))
+		self.assertEqual("d3cc8d008571a9d367ba954bef5ebab1e115bd839d6aee498354a214310792d40338a7e1bc545a0ba06dc0d0c37139bd", Tmd5.hash("Hello world", "some_random_binary_value_should_be_used_here"))
+		self.assertEqual("e212d1deb155ec764023171f700178f24fdd3c00473b61d0c9c81e784613474cdf1c6e99c2e97bd276110870405c24bc", Tmd5.password_hash("Hello world", "some_random_binary_value_should_be_used_here", "additional pepper :)"))
 	#
 #
 

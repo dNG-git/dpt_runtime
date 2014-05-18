@@ -33,8 +33,9 @@ class TestDataTextL10n(unittest.TestCase):
 #
 	def setUp(self):
 	#
-		self.de = L10n.get_instance("de")
-		self.de.init("core")
+		self.de_dict = L10n.get_dict("de")
+		L10n.init("core", "de")
+		L10n.init("core", "en")
 	#
 
 	def test_value(self):
@@ -43,7 +44,8 @@ class TestDataTextL10n(unittest.TestCase):
 One key tests everything :)
 		"""
 
-		self.assertEqual("de-DE", self.de.get("lang_rfc_region"))
+		self.assertEqual("de-DE", self.de_dict.get("lang_rfc_region"))
+		self.assertEqual("en-US", L10n.get("lang_rfc_region", lang = "en"))
 	#
 #
 

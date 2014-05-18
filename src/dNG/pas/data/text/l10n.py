@@ -107,12 +107,10 @@ Checks if a given key is a defined language string.
 :since:  v0.1.00
 		"""
 
-		# pylint: disable=broad-except
+		try: _dict = L10n.get_dict(lang)
+		except ValueException: _dict = { }
 
-		try: instance = L10n.get_instance(lang)
-		except Exception: instance = { }
-
-		return (key in instance)
+		return (key in _dict)
 	#
 
 	@staticmethod
@@ -129,8 +127,7 @@ Returns the value with the specified key or the default one if undefined.
 :since:  v0.1.00
 		"""
 
-		instance = L10n.get_instance(lang)
-		return dict.get(instance, key, (key if (default == None) else default))
+		return L10n.get_dict(lang).get(key, (key if (default == None) else default))
 	#
 
 	@staticmethod
@@ -147,15 +144,16 @@ Returns the defined default language of the current task.
 	#
 
 	@staticmethod
-	def get_instance(lang = None):
+	def get_dict(lang = None):
 	#
 		"""
-Get the L10n singleton for the given or default language.
+Returns all language strings for the given or default language currently
+defined as a dict.
 
 :param lang: Language code
 
-:return: (L10n) Object on success
-:since:  v0.1.00
+:return: (dict) L10nInstance dict
+:since:  v0.1.01
 		"""
 
 		if (lang == None): lang = L10n.get_default_lang()
@@ -172,6 +170,21 @@ Get the L10n singleton for the given or default language.
 		#
 
 		return L10n._instances[lang]
+	#
+
+	@staticmethod
+	def get_instance(lang = None):
+	#
+		"""
+Get the L10n dict instance of the given or default language.
+
+:param lang: Language code
+
+:return: (object) L10nInstance
+:since:  v0.1.00
+		"""
+
+		return L10n.get_dict(lang)
 	#
 
 	@staticmethod
