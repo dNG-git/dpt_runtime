@@ -49,11 +49,11 @@ class WatcherMtime(AbstractWatcher):
              Mozilla Public License, v. 2.0
 	"""
 
-	instance = None
+	_instance = None
 	"""
 WatcherMtime instance
 	"""
-	instance_lock = InstanceLock()
+	_instance_lock = InstanceLock()
 	"""
 Thread safety instance lock
 	"""
@@ -66,7 +66,7 @@ Constructor __init__(Watcher)
 :since: v0.1.01
 		"""
 
-		self.lock = ThreadLock()
+		self._lock = ThreadLock()
 		"""
 	Thread safety lock
 		"""
@@ -96,7 +96,7 @@ Checks a given path for changes if "is_synchronous()" is true.
 
 		_return = False
 
-		with self.lock:
+		with self._lock:
 		#
 			if (self.watched_paths != None and _path in self.watched_paths and self.watched_paths[_path] != os.stat(_path).st_mtime):
 			#
@@ -122,7 +122,7 @@ Frees all watcher callbacks for garbage collection.
 :since: v0.1.01
 		"""
 
-		with self.lock:
+		with self._lock:
 		#
 			if (self.watched_paths != None and len(self.watched_paths) > 0):
 			#
@@ -159,7 +159,7 @@ if a callback is given but not defined for the watched path.
 :since:  v0.1.01
 		"""
 
-		with self.lock:
+		with self._lock:
 		#
 			_return = (self.watched_paths != None and _path in self.watched_paths)
 			if (_return and callback != None): _return = (callback in self.watched_callbacks[_path])
@@ -182,7 +182,7 @@ Handles registration of filesystem watches and its callbacks.
 
 		_return = True
 
-		with self.lock:
+		with self._lock:
 		#
 			if (self.watched_callbacks != None):
 			#
@@ -207,9 +207,12 @@ Stops all watchers.
 :since: v0.1.01
 		"""
 
-		with WatcherMtime.instance_lock:
-		#
-			if (WatcherMtime.instance != None): WatcherMtime.instance = None
+		if (WatcherMtime._instance != None):
+		# Thread safety
+			with WatcherMtime._instance_lock:
+			#
+				if (WatcherMtime._instance != None): WatcherMtime._instance = None
+			#
 		#
 
 		self.free()
@@ -229,7 +232,7 @@ Handles deregistration of filesystem watches.
 
 		_return = True
 
-		with self.lock:
+		with self._lock:
 		#
 			if (self.watched_paths != None and _path in self.watched_paths):
 			#
@@ -258,12 +261,15 @@ Get the WatcherMtime singleton.
 :since:  v0.1.00
 		"""
 
-		with WatcherMtime.instance_lock:
-		#
-			if (WatcherMtime.instance == None): WatcherMtime.instance = WatcherMtime()
+		if (WatcherMtime._instance == None):
+		# Thread safety
+			with WatcherMtime._instance_lock:
+			#
+				if (WatcherMtime._instance == None): WatcherMtime._instance = WatcherMtime()
+			#
 		#
 
-		return WatcherMtime.instance
+		return WatcherMtime._instance
 	#
 #
 

@@ -49,11 +49,11 @@ class WatcherPyinotify(WatchManager):
              Mozilla Public License, v. 2.0
 	"""
 
-	instance = None
+	_instance = None
 	"""
 WatcherPyinotify weakref instance
 	"""
-	instance_lock = InstanceLock()
+	_instance_lock = InstanceLock()
 	"""
 Thread safety instance lock
 	"""
@@ -68,7 +68,7 @@ Constructor __init__(WatcherPyinotify)
 
 		WatchManager.__init__(self)
 
-		self.lock = ThreadLock()
+		self._lock = ThreadLock()
 		"""
 	Thread safety lock
 		"""
@@ -115,7 +115,7 @@ Frees all watcher callbacks for garbage collection.
 :since: v0.1.01
 		"""
 
-		with self.lock:
+		with self._lock:
 		#
 			if (len(self.watched_paths) > 0):
 			#
@@ -166,7 +166,7 @@ if a callback is given but not defined for the watched path.
 
 		_return = False
 
-		with self.lock:
+		with self._lock:
 		#
 			if (_path in self.watched_callbacks): _return = (True if (callback == None) else (callback in self.watched_callbacks[_path]))
 		#
@@ -186,7 +186,7 @@ Returns all registered callbacks for the given path.
 
 		_return = [ ]
 
-		with self.lock:
+		with self._lock:
 		#
 			if (_path in self.watched_callbacks): _return = self.watched_callbacks[_path]
 			elif (not path.isdir(_path)): _return = self.get_callbacks(path.split(_path)[0])
@@ -211,7 +211,7 @@ Handles registration of filesystem watches and its callbacks.
 
 		_return = True
 
-		with self.lock:
+		with self._lock:
 		#
 			if (path.isdir(_path)): directory_path = _path
 			else: directory_path = path.split(_path)[0]
@@ -245,9 +245,12 @@ Stops all watchers.
 :since: v0.1.01
 		"""
 
-		with WatcherPyinotify.instance_lock:
-		#
-			if (WatcherPyinotify.instance != None): WatcherPyinotify.instance = None
+		if (WatcherPyinotify._instance != None):
+		# Thread safety
+			with WatcherPyinotify._instance_lock:
+			#
+				if (WatcherPyinotify._instance != None): WatcherPyinotify._instance = None
+			#
 		#
 
 		self.free()
@@ -271,7 +274,7 @@ Handles deregistration of filesystem watches.
 
 		_return = True
 
-		with self.lock:
+		with self._lock:
 		#
 			is_directory = path.isdir(_path)
 
@@ -313,12 +316,15 @@ Get the WatcherPyinotify singleton.
 :since:  v0.1.00
 		"""
 
-		with WatcherPyinotify.instance_lock:
-		#
-			if (WatcherPyinotify.instance == None): WatcherPyinotify.instance = WatcherPyinotify()
+		if (WatcherPyinotify._instance == None):
+		# Thread safety
+			with WatcherPyinotify._instance_lock:
+			#
+				if (WatcherPyinotify._instance == None): WatcherPyinotify._instance = WatcherPyinotify()
+			#
 		#
 
-		return WatcherPyinotify.instance
+		return WatcherPyinotify._instance
 	#
 #
 

@@ -43,7 +43,7 @@ The cache singleton provides caching mechanisms.
 
 	# pylint: disable=unused-argument
 
-	weakref_instance = None
+	_weakref_instance = None
 	"""
 Cache weakref instance
 	"""
@@ -86,7 +86,7 @@ Get the content from cache for the given file path and name.
 
 		_return = None
 
-		with self.lock:
+		with self._lock:
 		#
 			if (self.is_synchronous()): self.check("file:///{0}".format(file_pathname))
 
@@ -112,7 +112,7 @@ Return true if the given file path and name is cached.
 :since:  v0.1.01
 		"""
 
-		with self.lock: return (file_pathname in self)
+		with self._lock: return (file_pathname in self)
 	#
 
 	def set_file(self, file_pathname, cache_entry):
@@ -126,7 +126,7 @@ Fill the cache for the given file path and name with the given cache entry.
 :since: v0.1.00
 		"""
 
-		with self.lock:
+		with self._lock:
 		#
 			if (file_pathname not in self):
 			#
@@ -171,7 +171,7 @@ Remove changed files from the cache.
 :since: v0.1.01
 		"""
 
-		with self.lock:
+		with self._lock:
 		#
 			file_pathname = url[8:]
 
@@ -196,12 +196,12 @@ Get the Cache singleton.
 :since:  v0.1.00
 		"""
 
-		_return = (None if (Cache.weakref_instance == None) else Cache.weakref_instance())
+		_return = (None if (Cache._weakref_instance == None) else Cache._weakref_instance())
 
 		if (_return == None):
 		#
 			_return = Cache()
-			Cache.weakref_instance = ref(_return)
+			Cache._weakref_instance = ref(_return)
 		#
 
 		return _return

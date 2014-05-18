@@ -58,7 +58,13 @@ abstracts this behaviour.
 	"""
 
 	BYTES_TYPE = _PY_BYTES_TYPE
+	"""
+Bytes data type
+	"""
 	UNICODE_TYPE = _PY_UNICODE_TYPE
+	"""
+Unicode string data type
+	"""
 
 	@staticmethod
 	def bytes(data):

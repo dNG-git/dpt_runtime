@@ -97,9 +97,12 @@ Stops all watchers.
 :since: v0.1.01
 		"""
 
-		with WatcherPyinotifySync.instance_lock:
-		#
-			if (WatcherPyinotifySync.instance != None): WatcherPyinotifySync.instance = None
+		if (WatcherPyinotifySync._instance != None):
+		# Thread safety
+			with WatcherPyinotifySync._instance_lock:
+			#
+				if (WatcherPyinotifySync._instance != None): WatcherPyinotifySync._instance = None
+			#
 		#
 
 		self.free()
@@ -115,12 +118,15 @@ Get the WatcherPyinotifySync singleton.
 :since:  v0.1.00
 		"""
 
-		with WatcherPyinotifySync.instance_lock:
-		#
-			if (WatcherPyinotifySync.instance == None): WatcherPyinotifySync.instance = WatcherPyinotifySync()
+		if (WatcherPyinotify._instance == None):
+		# Thread safety
+			with WatcherPyinotifySync._instance_lock:
+			#
+				if (WatcherPyinotifySync._instance == None): WatcherPyinotifySync._instance = WatcherPyinotifySync()
+			#
 		#
 
-		return WatcherPyinotifySync.instance
+		return WatcherPyinotifySync._instance
 	#
 #
 

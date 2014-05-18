@@ -45,11 +45,11 @@ Provides MimeType related methods on top of Python basic ones.
              Mozilla Public License, v. 2.0
 	"""
 
-	weakref_instance = None
+	_weakref_instance = None
 	"""
 MimeType weakref instance
 	"""
-	weakref_lock = InstanceLock()
+	_weakref_lock = InstanceLock()
 	"""
 Thread safety weakref lock
 	"""
@@ -208,14 +208,14 @@ Get the MimeType singleton.
 
 		_return = None
 
-		with MimeType.weakref_lock:
+		with MimeType._weakref_lock:
 		#
-			if (MimeType.weakref_instance != None): _return = MimeType.weakref_instance()
+			if (MimeType._weakref_instance != None): _return = MimeType._weakref_instance()
 
 			if (_return == None):
 			#
 				_return = MimeType()
-				MimeType.weakref_instance = ref(_return)
+				MimeType._weakref_instance = ref(_return)
 			#
 
 			_return.refresh()

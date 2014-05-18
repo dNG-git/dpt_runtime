@@ -25,6 +25,7 @@ NOTE_END //n"""
 
 # pylint: disable=import-error
 
+from contextlib import contextmanager
 from os import path
 from sys import modules as sys_modules
 from weakref import proxy
@@ -73,15 +74,15 @@ common name.
 CamelCase RegExp
 	"""
 
-	instance = None
+	_instance = None
 	"""
 "NamedLoader" weakref instance
 	"""
-	lock = ThreadLock()
+	_lock = ThreadLock()
 	"""
 Thread safety lock
 	"""
-	log_handler = None
+	_log_handler = None
 	"""
 The LogHandler is called whenever debug messages should be logged or errors
 happened.
@@ -195,7 +196,8 @@ Get the class name for the given common name.
 Returns a new instance based on its common name.
 
 :param common_name: Common name
-:param required: True if errors should throw exceptions
+:param required: True if exceptions should be thrown if the class is not
+                 defined.
 :param autoload: True to load the class automatically if not done already
 
 :return: (object) Requested object on success
@@ -227,16 +229,15 @@ Get the loader instance.
 :since:  v0.1.00
 		"""
 
-		if (NamedLoader.instance == None):
-		#
-			# Instance could be created in another thread so check again
-			with NamedLoader.lock:
+		if (NamedLoader._instance == None):
+		# Thread safety
+			with NamedLoader._lock:
 			#
-				if (NamedLoader.instance == None): NamedLoader.instance = NamedLoader()
+				if (NamedLoader._instance == None): NamedLoader._instance = NamedLoader()
 			#
 		#
 
-		return NamedLoader.instance
+		return NamedLoader._instance
 	#
 
 	@staticmethod
@@ -246,7 +247,8 @@ Get the loader instance.
 Returns a singleton based on its common name.
 
 :param common_name: Common name
-:param required: True if errors should throw exceptions
+:param required: True if exceptions should be thrown if the class is not
+                 defined.
 
 :return: (object) Requested object on success
 :since:  v0.1.00
@@ -295,7 +297,7 @@ Return the inititalized Python module defined by the given name.
 		#
 			if (getattr(_return, "__initializing__", True)):
 			#
-				with NamedLoader.lock: _return = sys_modules.get(name, None)
+				with NamedLoader._lock: _return = sys_modules.get(name, None)
 			#
 		#
 
@@ -352,9 +354,8 @@ Load the Python file defined by the given name.
 		_return = NamedLoader._get_module(name)
 
 		if (_return == None):
-		#
-			# Module could be imported in another thread so check again
-			with NamedLoader.lock:
+		# Thread safety
+			with NamedLoader._lock:
 			#
 				_return = sys_modules.get(name, None)
 
@@ -367,7 +368,7 @@ Load the Python file defined by the given name.
 					#
 					except Exception as handled_exception:
 					#
-						if (NamedLoader.log_handler != None): NamedLoader.log_handler.error(handled_exception)
+						if (NamedLoader._log_handler != None): NamedLoader._log_handler.error(handled_exception)
 					#
 				#
 			#
@@ -396,23 +397,22 @@ Load the Python file with "imp" defined by the given name.
 		( package_parent, _file) = name.rsplit(".", 1)
 		_path = package_parent.replace(".", path.sep)
 
-		imp.acquire_lock()
-
-		try:
+		with _load_py_file_imp_lock():
 		#
-			( file_obj, file_path, description ) = imp.find_module(_file, [ path.normpath("{0}/{1}".format(NamedLoader._get_loader().get_base_dir(), _path)) ])
-			_return = imp.load_module(name, file_obj, file_path, description)
-			if (file_obj != None): file_obj.close()
+			try:
+			#
+				( file_obj, file_path, description ) = imp.find_module(_file, [ path.normpath("{0}/{1}".format(NamedLoader._get_loader().get_base_dir(), _path)) ])
+				_return = imp.load_module(name, file_obj, file_path, description)
+				if (file_obj != None): file_obj.close()
+			#
+			except ImportError: pass
+			except Exception as handled_exception: exception = handled_exception
 		#
-		except ImportError: pass
-		except Exception as handled_exception: exception = handled_exception
-
-		imp.release_lock()
 
 		if (exception != None):
 		#
 			_return = None
-			if (NamedLoader.log_handler != None): NamedLoader.log_handler.error(exception)
+			if (NamedLoader._log_handler != None): NamedLoader._log_handler.error(exception)
 		#
 
 		return _return
@@ -440,7 +440,7 @@ Load the Python package with "importlib" defined by the given name.
 		except ImportError: pass
 		except Exception as handled_exception: exception = handled_exception
 
-		if (exception != None and NamedLoader.log_handler != None): NamedLoader.log_handler.error(exception)
+		if (exception != None and NamedLoader._log_handler != None): NamedLoader._log_handler.error(exception)
 
 		return _return
 	#
@@ -456,8 +456,22 @@ Sets the LogHandler.
 :since: v0.1.00
 		"""
 
-		NamedLoader.log_handler = proxy(log_handler)
+		NamedLoader._log_handler = proxy(log_handler)
 	#
+#
+
+@contextmanager
+def _load_py_file_imp_lock():
+#
+	"""
+Helper method to lock and unlock the importer safely.
+
+:since: v0.1.01
+	"""
+
+	imp.acquire_lock()
+	yield
+	imp.release_lock()
 #
 
 ##j## EOF

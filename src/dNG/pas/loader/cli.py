@@ -95,15 +95,15 @@ Native Python implementation
 Mono/.NET based Python implementation
 	"""
 
-	callbacks_run = [ ]
+	_callbacks_run = [ ]
 	"""
 Callbacks for "run()"
 	"""
-	callbacks_shutdown = [ ]
+	_callbacks_shutdown = [ ]
 	"""
 Callbacks for "shutdown()"
 	"""
-	weakref_instance = None
+	_weakref_instance = None
 	"""
 "Cli" weakref instance
 	"""
@@ -134,7 +134,7 @@ Callable main loop without arguments
 Mainloop event
 		"""
 
-		Cli.weakref_instance = ref(self)
+		Cli._weakref_instance = ref(self)
 	#
 
 	def error(self, _exception):
@@ -161,7 +161,7 @@ Executes registered callbacks for the active application.
 
 		# pylint: disable=broad-except
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -Cli.run()- (#echo(__LINE__)#)")
+		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.run()- (#echo(__LINE__)#)".format(self))
 
 		if (self.arg_parser != None and hasattr(self.arg_parser, "parse_args")): args = self.arg_parser.parse_args()
 		else: args = { }
@@ -170,8 +170,8 @@ Executes registered callbacks for the active application.
 
 		try:
 		#
-			for callback in Cli.callbacks_run: callback(args)
-			Cli.callbacks_run = [ ]
+			for callback in Cli._callbacks_run: callback(args)
+			Cli._callbacks_run = [ ]
 
 			self.mainloop_event.set()
 			if (self.mainloop != None): self.mainloop()
@@ -190,7 +190,7 @@ Register a callback for the application main loop.
 :since: v0.1.00
 		"""
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -Cli.set_mainloop(callback)- (#echo(__LINE__)#)")
+		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_mainloop(callback)- (#echo(__LINE__)#)".format(self))
 
 		if (self.mainloop != None): raise ValueException("Main loop already registered")
 		self.mainloop = callback
@@ -220,7 +220,7 @@ Handles an OS signal.
 :since: v0.1.00
 		"""
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -Cli._signal(os_signal, stack_frame)- (#echo(__LINE__)#)")
+		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}._signal(os_signal, stack_frame)- (#echo(__LINE__)#)".format(self))
 		self.shutdown()
 	#
 
@@ -236,7 +236,7 @@ Executes registered callbacks before shutting down this application.
 
 		# pylint: disable=broad-except,raising-bad-type
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -Cli.shutdown()- (#echo(__LINE__)#)")
+		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.shutdown()- (#echo(__LINE__)#)".format(self))
 
 		Thread.set_inactive()
 
@@ -244,13 +244,13 @@ Executes registered callbacks before shutting down this application.
 Cleanup unused objects
 		"""
 
-		for callback in Cli.callbacks_shutdown:
+		for callback in Cli._callbacks_shutdown:
 		#
 			try: callback()
 			except Exception as handled_exception: self.error(handled_exception)
 		#
 
-		Cli.callbacks_shutdown = [ ]
+		Cli._callbacks_shutdown = [ ]
 		if (_exception != None): raise _exception
 	#
 
@@ -264,7 +264,7 @@ Get the Cli singleton.
 :since:  v0.1.00
 		"""
 
-		return Cli.weakref_instance()
+		return Cli._weakref_instance()
 	#
 
 	@staticmethod
@@ -307,7 +307,7 @@ Register a callback for the application activation event.
 :since: v0.1.00
 		"""
 
-		if (callback not in Cli.callbacks_run): Cli.callbacks_run.append(callback)
+		if (callback not in Cli._callbacks_run): Cli._callbacks_run.append(callback)
 	#
 
 	@staticmethod
@@ -321,11 +321,11 @@ Register a callback for the application shutdown event.
 :since: v0.1.00
 		"""
 
-		if (callback not in Cli.callbacks_shutdown): Cli.callbacks_shutdown.append(callback)
+		if (callback not in Cli._callbacks_shutdown): Cli._callbacks_shutdown.append(callback)
 	#
 #
 
-def direct_cls_signal(os_signal, stack_frame):
+def _on_signal(os_signal, stack_frame):
 #
 	"""
 Callback function for OS signals.
@@ -342,9 +342,9 @@ Callback function for OS signals.
 	if (instance != None): instance._signal(os_signal, stack_frame)
 #
 
-if (hasattr(signal, "SIGABRT")): signal.signal(signal.SIGABRT, direct_cls_signal)
-if (hasattr(signal, "SIGINT")): signal.signal(signal.SIGINT, direct_cls_signal)
-if (hasattr(signal, "SIGTERM")): signal.signal(signal.SIGTERM, direct_cls_signal)
-if (hasattr(signal, "SIGQUIT")): signal.signal(signal.SIGQUIT, direct_cls_signal)
+if (hasattr(signal, "SIGABRT")): signal.signal(signal.SIGABRT, _on_signal)
+if (hasattr(signal, "SIGINT")): signal.signal(signal.SIGINT, _on_signal)
+if (hasattr(signal, "SIGTERM")): signal.signal(signal.SIGTERM, _on_signal)
+if (hasattr(signal, "SIGQUIT")): signal.signal(signal.SIGQUIT, _on_signal)
 
 ##j## EOF

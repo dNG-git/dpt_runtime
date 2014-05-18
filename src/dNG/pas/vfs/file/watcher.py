@@ -102,7 +102,7 @@ Constructor __init__(Watcher)
 		"""
 Watcher implementation instance
 		"""
-		self.lock = ThreadLock()
+		self._lock = ThreadLock()
 		"""
 Thread safety lock
 		"""
@@ -126,7 +126,7 @@ Checks a given URL for changes if "is_synchronous()" is true.
 
 		_path = self._get_path(url)
 
-		with self.lock:
+		with self._lock:
 		#
 			if (
 				self.watcher_class != None and
@@ -144,7 +144,7 @@ Disables this watcher and frees all callbacks for garbage collection.
 :since: v0.1.01
 		"""
 
-		with self.lock:
+		with self._lock:
 		#
 			self.stop()
 			self.implementation = None
@@ -159,7 +159,7 @@ Frees all watcher callbacks for garbage collection.
 :since: v0.1.01
 		"""
 
-		with self.lock:
+		with self._lock:
 		#
 			if (self.watcher_class != None): self.watcher_class.get_instance().free()
 		#
@@ -219,7 +219,7 @@ called.
 :since:  v0.1.01
 		"""
 
-		with self.lock:
+		with self._lock:
 		#
 			self._init_watcher_class()
 			return (False if (self.watcher_class == None) else self.watcher_class.get_instance().is_synchronous())
@@ -242,7 +242,7 @@ if a callback is given but not defined for the watched URL.
 
 		_path = self._get_path(url)
 
-		with self.lock:
+		with self._lock:
 		#
 			if (self.watcher_class == None or _path == None or _path.strip() == ""): return False
 			else: return self.watcher_class.get_instance().is_watched(_path, callback)
@@ -262,7 +262,7 @@ Handles registration of resource URL watches and its callbacks.
 
 		_path = self._get_path(url)
 
-		with self.lock:
+		with self._lock:
 		#
 			self._init_watcher_class()
 
@@ -283,7 +283,7 @@ Set the filesystem watcher implementation to use.
 
 		# global: _IMPLEMENTATION_INOTIFY, _IMPLEMENTATION_INOTIFY_SYNC, _IMPLEMENTATION_MTIME, _mode
 
-		with self.lock:
+		with self._lock:
 		#
 			if (self.watcher_class != None): self.stop()
 		#
@@ -307,7 +307,7 @@ Stops all watchers.
 :since: v0.1.01
 		"""
 
-		with self.lock:
+		with self._lock:
 		#
 			if (self.watcher_class != None):
 			#
@@ -330,7 +330,7 @@ Handles deregistration of resource URL watches.
 
 		_path = self._get_path(url)
 
-		with self.lock:
+		with self._lock:
 		#
 			if (self.watcher_class == None or _path == None or _path.strip() == ""): return False
 			else: return self.watcher_class.get_instance().unregister(_path, callback)

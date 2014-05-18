@@ -35,10 +35,10 @@ from dNG.pas.runtime.io_exception import IOException
 from dNG.pas.runtime.value_exception import ValueException
 from .binary import Binary
 
-class Settings(dict):
+class Settings(object):
 #
 	"""
-The settings singleton provides methods on top of an dict.
+The settings singleton provides a central configuration facility.
 
 :author:     direct Netware Group
 :copyright:  direct Netware Group - All rights reserved
@@ -54,19 +54,19 @@ The settings singleton provides methods on top of an dict.
 Comments in (invalid) JSON setting files are replaced before getting parsed.
 	"""
 
-	cache_instance = None
+	_cache_instance = None
 	"""
 Cache instance
 	"""
-	instance = None
+	_instance = None
 	"""
 Settings instance
 	"""
-	lock = RLock()
+	_lock = RLock()
 	"""
 Thread safety lock
 	"""
-	log_handler = None
+	_log_handler = None
 	"""
 The LogHandler is called whenever debug messages should be logged or errors
 happened.
@@ -80,12 +80,28 @@ Constructor __init__(Settings)
 :since: v0.1.00
 		"""
 
-		dict.__init__(self)
+		self.dict = { "path_system": path.normpath("{0}/../../../..".format(Binary.str(__file__))) }
+		"""
+Underlying dict
+		"""
 
-		self['path_system'] = path.normpath("{0}/../../../..".format(Binary.str(__file__)))
-		self['path_base'] = (Binary.str(os.environ['dNGpath']) if ("dNGpath" in os.environ) else path.normpath("{0}/..".format(self['path_system'])))
-		self['path_data'] = (Binary.str(os.environ['dNGpathData']) if ("dNGpathData" in os.environ) else path.normpath("{0}/data".format(self['path_base'])))
-		self['path_lang'] = (Binary.str(os.environ['dNGpathLang']) if ("dNGpathLang" in os.environ) else path.normpath("{0}/lang".format(self['path_base'])))
+		self.dict['path_base'] = (Binary.str(os.environ['dNGpath']) if ("dNGpath" in os.environ) else path.normpath("{0}/..".format(self.dict['path_system'])))
+		self.dict['path_data'] = (Binary.str(os.environ['dNGpathData']) if ("dNGpathData" in os.environ) else path.normpath("{0}/data".format(self.dict['path_base'])))
+		self.dict['path_lang'] = (Binary.str(os.environ['dNGpathLang']) if ("dNGpathLang" in os.environ) else path.normpath("{0}/lang".format(self.dict['path_base'])))
+	#
+
+	def update(self, other):
+	#
+		"""
+python.org: Update the dictionary with the key/value pairs from other,
+overwriting existing keys.
+
+:param other: Other dictionary
+
+:since: v0.1.01
+		"""
+
+		with Settings._lock: self.dict.update(other)
 	#
 
 	@staticmethod
@@ -100,7 +116,7 @@ Checks if a given key is a defined setting.
 :since:  v0.1.00
 		"""
 
-		return (key in Settings.get_instance())
+		return (key in Settings.get_instance().dict)
 	#
 
 	@staticmethod
@@ -116,8 +132,8 @@ Returns the value with the specified key.
 :since:  v0.1.00
 		"""
 
-		instance = Settings.get_instance()
-		return dict.get(instance, key, default)
+		_dict = Settings.get_instance().dict
+		return _dict.get(key, default)
 	#
 
 	@staticmethod
@@ -130,7 +146,33 @@ Returns all settings currently defined as a dict.
 :since:  v0.1.00
 		"""
 
-		return Settings.get_instance()
+		return Settings.get_instance().dict
+	#
+
+	@staticmethod
+	def get_lang_associated(key, lang, default = None):
+	#
+		"""
+Returns the value associated with the given language. Otherwise the default
+one with the specified key is returned. Default is used if both values are
+not defined.
+
+:param key: Settings key
+:param lang: Language code
+:param default: Default value if not set
+
+:return: (mixed) Value
+:since:  v0.1.00
+		"""
+
+		_dict = Settings.get_instance().dict
+
+		key_with_lang = "{0}_{1}".format(key, lang)
+		_return = (_dict[key_with_lang] if (key_with_lang in _dict) else None)
+
+		if (_return == None): _return = (_dict[key] if (key in _dict) else default)
+
+		return _return
 	#
 
 	@staticmethod
@@ -143,20 +185,19 @@ Get the settings singleton.
 :since:  v0.1.00
 		"""
 
-		if (Settings.instance == None):
-		#
-			# Instance could be created in another thread so check again
-			with Settings.lock:
+		if (Settings._instance == None):
+		# Thread safety
+			with Settings._lock:
 			#
-				if (Settings.instance == None):
+				if (Settings._instance == None):
 				#
-					Settings.instance = Settings()
-					Settings.read_file("{0}/settings/core.json".format(Settings.instance['path_data']))
+					Settings._instance = Settings()
+					Settings.read_file("{0}/settings/core.json".format(Settings._instance['path_data']))
 				#
 			#
 		#
 
-		return Settings.instance
+		return Settings._instance
 	#
 
 	@staticmethod
@@ -195,7 +236,7 @@ Return true if the given file path and name is cached.
 		"""
 
 		file_pathname = path.normpath(file_pathname)
-		return (False if (Settings.cache_instance == None) else Settings.cache_instance.is_file_known(file_pathname))
+		return (False if (Settings._cache_instance == None) else Settings._cache_instance.is_file_known(file_pathname))
 	#
 
 	@staticmethod
@@ -213,7 +254,7 @@ Read all settings from the given file.
 		# pylint: disable=maybe-no-member
 
 		file_pathname = path.normpath(file_pathname)
-		file_content = (None if (Settings.cache_instance == None) else Settings.cache_instance.get_file(file_pathname))
+		file_content = (None if (Settings._cache_instance == None) else Settings._cache_instance.get_file(file_pathname))
 
 		if (file_content == None):
 		#
@@ -226,16 +267,16 @@ Read all settings from the given file.
 
 				file_content = file_content.replace("\r", "")
 				file_content = Settings.RE_EXTENDED_JSON_COMMENT_LINE.sub("", file_content)
-				if (Settings.cache_instance != None): Settings.cache_instance.set_file(file_pathname, file_content)
+				if (Settings._cache_instance != None): Settings._cache_instance.set_file(file_pathname, file_content)
 			#
 			elif (required): raise IOException("{0} not found".format(file_pathname))
-			elif (Settings.log_handler != None): Settings.log_handler.debug("{0} not found".format(file_pathname))
+			elif (Settings._log_handler != None): Settings._log_handler.debug("{0} not found".format(file_pathname))
 		#
 
 		if (file_content != None and (not Settings.import_json(file_content))):
 		#
 			if (required): raise ValueException("{0} is not a valid JSON encoded settings file".format(file_pathname))
-			if (Settings.log_handler != None): Settings.log_handler.warning("{0} is not a valid JSON encoded settings file".format(file_pathname))
+			if (Settings._log_handler != None): Settings._log_handler.warning("{0} is not a valid JSON encoded settings file".format(file_pathname))
 		#
 	#
 
@@ -251,7 +292,7 @@ Sets the value for the specified key.
 :since: v0.1.00
 		"""
 
-		Settings.get_instance()[key] = value
+		Settings.get_instance().dict[key] = value
 	#
 
 	@staticmethod
@@ -265,8 +306,8 @@ Sets the cache instance.
 :since: v0.1.00
 		"""
 
-		if (Settings.log_handler != None): Settings.log_handler.debug("#echo(__FILEPATH__)# -settings.set_cache_instance(cache_instance)- (#echo(__LINE__)#)")
-		Settings.cache_instance = proxy(cache_instance)
+		if (Settings._log_handler != None): Settings._log_handler.debug("#echo(__FILEPATH__)# -settings.set_cache_instance(cache_instance)- (#echo(__LINE__)#)")
+		Settings._cache_instance = proxy(cache_instance)
 	#
 
 	@staticmethod
@@ -280,7 +321,7 @@ Sets the LogHandler.
 :since: v0.1.00
 		"""
 
-		Settings.log_handler = proxy(log_handler)
+		Settings._log_handler = proxy(log_handler)
 	#
 
 	@staticmethod

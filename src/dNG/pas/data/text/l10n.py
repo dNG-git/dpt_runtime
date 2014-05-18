@@ -27,15 +27,15 @@ from threading import local
 import re
 
 from dNG.pas.data.binary import Binary
-from dNG.pas.data.cached_json_file import CachedJsonFile
 from dNG.pas.data.settings import Settings
 from dNG.pas.runtime.instance_lock import InstanceLock
 from dNG.pas.runtime.value_exception import ValueException
+from .l10n_instance import L10nInstance
 
-class L10n(dict):
+class L10n(object):
 #
 	"""
-Provides l10n (localization) methods on top of an dict.
+Provides static l10n (localization) methods.
 
 :author:     direct Netware Group
 :copyright:  direct Netware Group - All rights reserved
@@ -50,89 +50,18 @@ Provides l10n (localization) methods on top of an dict.
 	"""
 Default application language
 	"""
-	instances = { }
+	_instances = { }
 	"""
 L10n instances
 	"""
-	instances_lock = InstanceLock()
+	_instances_lock = InstanceLock()
 	"""
 Thread safety instances lock
 	"""
-	local = local()
+	_local = local()
 	"""
 Local data handle
 	"""
-
-	def __init__(self, lang):
-	#
-		"""
-Constructor __init__(L10n)
-
-:param lang: Language code
-
-:since: v0.1.00
-		"""
-
-		dict.__init__(self)
-
-		self.files = [ ]
-		"""
-L10n files initialized
-		"""
-		self.lang = lang
-		"""
-L10n language code
-		"""
-		self.strings = { }
-		"""
-Underlying l10n dict
-		"""
-	#
-
-	def get_lang(self):
-	#
-		"""
-Returns the language code of this instance.
-
-:return: (str) Language code
-:since:  v0.1.00
-		"""
-
-		return self.lang
-	#
-
-	def read_file(self, file_pathname):
-	#
-		"""
-Read all translations from the given file.
-
-:param file_pathname: File path and name
-
-:since: v0.1.00
-		"""
-
-		if (file_pathname not in self.files or CachedJsonFile.is_changed(file_pathname)):
-		#
-			json_data = CachedJsonFile.read(file_pathname)
-			if (type(json_data) == dict): self.update(json_data)
-		#
-	#
-
-	def write_file(self, file_pathname, template_pathname):
-	#
-		"""
-Write all translations to the given file using the given template.
-
-:param file_pathname: File path and name of the translation file
-:param template_pathname: File path and name of the translation template
-       file
-
-:return: (bool) True on success
-:since:  v0.1.00
-		"""
-
-		return False
-	#
 
 	@staticmethod
 	def init(file_basename, lang = None):
@@ -214,7 +143,7 @@ Returns the defined default language of the current task.
 :since:  v0.1.00
 		"""
 
-		return (L10n.local.lang if (hasattr(L10n.local, "lang")) else L10n.default_lang)
+		return (L10n._local.lang if (hasattr(L10n._local, "lang")) else L10n.default_lang)
 	#
 
 	@staticmethod
@@ -234,16 +163,15 @@ Get the L10n singleton for the given or default language.
 
 		if (lang == None): raise ValueException("Language not defined and default language is undefined.")
 
-		if (lang not in L10n.instances):
-		#
-			# Instance could be created in another thread so check again
-			with L10n.instances_lock:
+		if (lang not in L10n._instances):
+		# Thread safe
+			with L10n._instances_lock:
 			#
-				if (lang not in L10n.instances): L10n.instances[lang] = L10n(lang)
+				if (lang not in L10n._instances): L10n._instances[lang] = L10nInstance(lang)
 			#
 		#
 
-		return L10n.instances[lang]
+		return L10n._instances[lang]
 	#
 
 	@staticmethod
@@ -271,7 +199,7 @@ Defines a default language for the calling thread.
 :since: v0.1.00
 		"""
 
-		L10n.local.lang = lang
+		L10n._local.lang = lang
 	#
 #
 

@@ -80,15 +80,15 @@ class LogHandler(AbstractLogHandler):
              Mozilla Public License, v. 2.0
 	"""
 
-	appender_defined = False
+	_appender_defined = False
 	"""
 Append log file handlers only once
 	"""
-	weakref_instance = None
+	_weakref_instance = None
 	"""
 LogHandler weakref instance
 	"""
-	weakref_lock = InstanceLock()
+	_weakref_lock = InstanceLock()
 	"""
 Thread safety weakref lock
 	"""
@@ -142,7 +142,7 @@ Preserve the amount of files
 		self.logger = logging.getLogger(self.ident)
 		self.logger.setLevel(self.level)
 
-		if (not LogHandler.appender_defined):
+		if (not LogHandler._appender_defined):
 		#
 			log_file_pathname = Settings.get("pas_core_log_pathname")
 
@@ -181,7 +181,7 @@ Preserve the amount of files
 				else: logger_root.addHandler(self.log_handler)
 			#
 
-			LogHandler.appender_defined = True
+			LogHandler._appender_defined = True
 		#
 	#
 
@@ -297,14 +297,14 @@ Get the LogHandler singleton.
 
 		_return = None
 
-		with LogHandler.weakref_lock:
+		with LogHandler._weakref_lock:
 		#
-			if (LogHandler.weakref_instance != None): _return = LogHandler.weakref_instance()
+			if (LogHandler._weakref_instance != None): _return = LogHandler._weakref_instance()
 
 			if (_return == None):
 			#
 				_return = LogHandler()
-				LogHandler.weakref_instance = ref(_return)
+				LogHandler._weakref_instance = ref(_return)
 			#
 		#
 

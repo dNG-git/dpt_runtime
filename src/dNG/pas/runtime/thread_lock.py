@@ -99,7 +99,7 @@ Acquire a lock.
 
 		try:
 		#
-			if (not self.lock.acquire(timeout = self.timeout)): raise IOException("Timeout occurred while acquiring lock")
+			if (not self._lock.acquire(timeout = self.timeout)): raise IOException("Timeout occurred while acquiring lock")
 		#
 		except TypeError:
 		#
@@ -109,7 +109,7 @@ Acquire a lock.
 				self.event.set()
 			#
 
-			if (self.lock.acquire(False)): self.event.clear()
+			if (self._lock.acquire(False)): self.event.clear()
 			else:
 			#
 				timeout = self.timeout
@@ -119,7 +119,7 @@ Acquire a lock.
 					_time = time()
 					self.event.wait(timeout)
 
-					if (self.lock.acquire(False)):
+					if (self._lock.acquire(False)):
 					#
 						self.event.clear()
 						break
@@ -152,7 +152,7 @@ Release a lock.
 :since: v0.1.01
 		"""
 
-		self.lock.release()
+		self._lock.release()
 		if (self.event != None): self.event.set()
 	#
 
