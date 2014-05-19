@@ -27,9 +27,9 @@ NOTE_END //n"""
 
 from contextlib import contextmanager
 from os import path
-from sys import modules as sys_modules
 from weakref import proxy
 import re
+import sys
 
 _MODE_IMP = 1
 """
@@ -96,7 +96,7 @@ Constructor __init__(NamedLoader)
 :since: v0.1.00
 		"""
 
-		self.base_dir = Settings.get("pas_global_modules_base_dir", None)
+		self.base_dir = Settings.get("pas_global_modules_base_dir")
 		"""
 Base directory we search for python files.
 		"""
@@ -183,8 +183,8 @@ Get the class name for the given common name.
 
 		module_name = "{0}.{1}".format(package, NamedLoader.RE_CAMEL_CASE_SPLITTER.sub("\\1_\\2", classname).lower())
 
-		if (autoload): module = NamedLoader._load_module(module_name)
-		else: module = NamedLoader._get_module(module_name)
+		if (autoload): module = NamedLoader._load_module(module_name, classname)
+		else: module = NamedLoader._get_module(module_name, classname)
 
 		return (None if (module == None) else getattr(module, classname, None))
 	#
@@ -280,46 +280,54 @@ Checks if a common name is defined or can be resolved to a class name.
 	#
 
 	@staticmethod
-	def _get_module(name):
+	def _get_module(name, classname = None):
 	#
 		"""
 Return the inititalized Python module defined by the given name.
 
 :param name: Python module name
+:param classname: Class name to load in this module used to verify that it
+                  is initialized.
 
 :return: (object) Python module; None if unknown
 :since:  v0.1.00
 		"""
 
-		_return = sys_modules.get(name, None)
+		_return = sys.modules.get(name)
 
-		if (_return != None and hasattr(_return, "__initializing__")):
+		if (_return != None and classname != None and (not hasattr(_return, classname))):
 		#
-			if (getattr(_return, "__initializing__", True)):
-			#
-				with NamedLoader._lock: _return = sys_modules.get(name, None)
-			#
+			with NamedLoader._lock: _return = sys.modules.get(name)
 		#
 
 		return _return
 	#
 
 	@staticmethod
-	def _load_module(name):
+	def _load_module(name, classname = None):
 	#
 		"""
 Load the Python module defined by the given name.
 
 :param name: Python module name
+:param classname: Class name to load in this module used to verify that it
+                  is initialized.
 
 :return: (object) Python module; None if unknown
 :since:  v0.1.00
 		"""
 
-		package = name.rsplit(".", 1)[0]
+		_return = NamedLoader._get_module(name, classname)
 
-		NamedLoader._load_package(package)
-		return NamedLoader._load_py_file(name)
+		if (_return == None):
+		#
+			package = name.rsplit(".", 1)[0]
+
+			NamedLoader._load_package(package)
+			_return = NamedLoader._load_py_file(name, classname)
+		#
+
+		return _return
 	#
 
 	@staticmethod
@@ -338,12 +346,14 @@ Load the Python package defined by the given name.
 	#
 
 	@staticmethod
-	def _load_py_file(name):
+	def _load_py_file(name, classname = None):
 	#
 		"""
 Load the Python file defined by the given name.
 
 :param name: Python file name
+:param classname: Class name to load in this module used to verify that it
+                  is initialized.
 
 :return: (object) Python file; None if unknown
 :since:  v0.1.00
@@ -351,13 +361,13 @@ Load the Python file defined by the given name.
 
 		# global: _mode, _MODE_IMPORT_MODULE
 		# pylint: disable=broad-except
-		_return = NamedLoader._get_module(name)
+		_return = NamedLoader._get_module(name, classname)
 
 		if (_return == None):
 		# Thread safety
 			with NamedLoader._lock:
 			#
-				_return = sys_modules.get(name, None)
+				_return = sys.modules.get(name)
 
 				if (_return == None):
 				#
