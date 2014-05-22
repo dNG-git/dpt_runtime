@@ -68,11 +68,10 @@ Returns true if the feature requested is supported by this instance.
 
 		if (feature in self.supported_features):
 		#
-			_return = (
-				self.supported_features[feature]
-				if (type(self.supported_features[feature]) == bool) else
-				self.supported_features[feature]()
-			)
+			_return = (self.supported_features[feature]
+			           if (type(self.supported_features[feature]) == bool) else
+			           self.supported_features[feature]()
+			          )
 		#
 
 		return _return

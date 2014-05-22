@@ -23,6 +23,8 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=import-error,no-name-in-module
+
 from unicodedata import category as unicode_category
 import re
 
@@ -127,13 +129,12 @@ ASCII address if it is. Does not recognize comments.
 					at_splitted = data_part.split("@")
 					if (re_valid_chars.match(at_splitted[0]) == None): at_splitted[0] = quote(at_splitted[0])
 
-					if (
-						domain_part == "" and
-						len(at_splitted) < 3 and
-						re_invalid_chars.search(at_splitted[0]) == None and
-						".." not in at_splitted[0] and
-						".." not in at_splitted[1]
-					):
+					if (domain_part == ""
+					    and len(at_splitted) < 3
+					    and re_invalid_chars.search(at_splitted[0]) == None
+					    and ".." not in at_splitted[0]
+					    and ".." not in at_splitted[1]
+					   ):
 					#
 						local_part += at_splitted[0]
 						domain_part = at_splitted[1]
@@ -178,14 +179,12 @@ ASCII address if it is. Does not recognize comments.
 		#
 
 		if (domain_part == ""): is_valid = False
-		elif (
-			is_valid and
-			(
-				re_invalid_chars.search(domain_part[1:-1]) != None
-				if (domain_part[:1] == "[" and domain_part[-1:] == "]") else
-				re_invalid_chars.search(domain_part) != None
-			)
-		):
+		elif (is_valid
+		      and (re_invalid_chars.search(domain_part[1:-1]) != None
+		           if (domain_part[:1] == "[" and domain_part[-1:] == "]") else
+		           re_invalid_chars.search(domain_part) != None
+		          )
+		     ):
 		#
 			domain_part = Binary.utf8(domain_part)
 

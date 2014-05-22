@@ -128,12 +128,11 @@ File size a log file gets rotated
 Preserve the amount of files
 		"""
 
-		self.levels = {
-			"debug": DEBUG,
-			"error": ERROR,
-			"info": INFO,
-			"warning": WARNING
-		}
+		self.levels = { "debug": DEBUG,
+		                "error": ERROR,
+		                "info": INFO,
+		                "warning": WARNING
+		              }
 
 		level = Settings.get("pas_core_log_level")
 		if (level == None): level = Settings.get("core_log_level", "warning")

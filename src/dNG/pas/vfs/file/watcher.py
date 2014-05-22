@@ -23,7 +23,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-# pylint: disable=import-error,no-name-in-module
+# pylint: disable=import-error,invalid-name,no-name-in-module
 
 try: from urllib.parse import unquote, urlsplit
 except ImportError:
@@ -128,11 +128,10 @@ Checks a given URL for changes if "is_synchronous()" is true.
 
 		with self._lock:
 		#
-			if (
-				self.watcher_class != None and
-				_path != None and
-				_path.strip() != ""
-			): self.watcher_class.get_instance().check(_path)
+			if (self.watcher_class != None
+			    and _path != None
+			    and _path.strip() != ""
+			   ): self.watcher_class.get_instance().check(_path)
 		#
 	#
 
@@ -190,22 +189,20 @@ Initializes the watcher instance.
 
 		if (self.implementation != None and self.watcher_class == None):
 		#
-			if (
-				WatcherPyinotify != None and
-				self.implementation == _IMPLEMENTATION_INOTIFY
-			): self.watcher_class = WatcherPyinotify
-			elif (
-				WatcherPyinotify != None and
-				self.implementation == _IMPLEMENTATION_INOTIFY_SYNC
-			): self.watcher_class = WatcherPyinotifySync
+			if (WatcherPyinotify != None
+			    and self.implementation == _IMPLEMENTATION_INOTIFY
+			   ): self.watcher_class = WatcherPyinotify
+			elif (WatcherPyinotify != None
+			      and self.implementation == _IMPLEMENTATION_INOTIFY_SYNC
+			     ): self.watcher_class = WatcherPyinotifySync
 			else: self.watcher_class = WatcherMtime
 
-			LogLine.debug("pas.vfs.file.Watcher mode is {0}".format(
-				"synchronous"
-				if (self.is_synchronous())
-				else
-				"asynchronous"
-			))
+			LogLine.debug("pas.vfs.file.Watcher mode is {0}"
+			              .format("synchronous"
+			                      if (self.is_synchronous()) else
+			                      "asynchronous"
+			                     )
+			             )
 		#
 	#
 
@@ -288,14 +285,12 @@ Set the filesystem watcher implementation to use.
 			if (self.watcher_class != None): self.stop()
 		#
 
-		if (
-			_mode == _IMPLEMENTATION_INOTIFY and
-			(implementation == None or implementation == _IMPLEMENTATION_INOTIFY)
-		): self.implementation = _IMPLEMENTATION_INOTIFY
-		elif (
-			_mode == _IMPLEMENTATION_INOTIFY and
-			implementation == _IMPLEMENTATION_INOTIFY_SYNC
-		): self.implementation = _IMPLEMENTATION_INOTIFY_SYNC
+		if (_mode == _IMPLEMENTATION_INOTIFY
+		    and (implementation == None or implementation == _IMPLEMENTATION_INOTIFY)
+		   ): self.implementation = _IMPLEMENTATION_INOTIFY
+		elif (_mode == _IMPLEMENTATION_INOTIFY
+		      and implementation == _IMPLEMENTATION_INOTIFY_SYNC
+		     ): self.implementation = _IMPLEMENTATION_INOTIFY_SYNC
 		else: self.implementation = _IMPLEMENTATION_MTIME
 	#
 

@@ -135,11 +135,10 @@ remaining compressed output is returned.
 		if (self.size == None): _return = self.compressor.flush(Z_FINISH)
 		else:
 		#
-			_return = (
-				Binary.BYTES_TYPE()
-				if (self.size < 1) else
-				(self.compressor.flush(Z_FINISH)[:-4] + pack("<2I", self.crc32 & 0xffffffff, int(self.size % 4294967296)))
-			)
+			_return = (Binary.BYTES_TYPE()
+			           if (self.size < 1) else
+			           (self.compressor.flush(Z_FINISH)[:-4] + pack("<2I", self.crc32 & 0xffffffff, int(self.size % 4294967296)))
+			          )
 		#
 
 		self.compressor = None

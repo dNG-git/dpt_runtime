@@ -54,6 +54,8 @@ python.org: Method representing the thread’s activity.
 :since: v0.1.01
 		"""
 
+		# pylint: disable=broad-except
+
 		try: PyThread.run(self)
 		except Exception as handled_exception: LogLine.error(handled_exception)
 	#
