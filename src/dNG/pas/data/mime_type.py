@@ -132,7 +132,7 @@ Returns the list of extensions known for the given mime-type.
 
 		if (mimetype != None or mimetype in self.definitions):
 		#
-			_return = (self.definitions[mimetype]['extensions'] if ("extensions" in self.definitions[mimetype]) else [ ])
+			_return = self.definitions[mimetype].get("extensions", [ ])
 			if (type(_return) != list): _return = [ _return ]
 		#
 		else: _return = None
@@ -169,7 +169,7 @@ Refresh all mime-type definitions from the file.
 
 					self.definitions[mimetype] = json_data[mimetype]
 
-					if ("extensions" in json_data[mimetype] and type(json_data[mimetype]['extensions']) == list):
+					if (type(json_data[mimetype].get("extensions")) == list):
 					#
 						for extension in json_data[mimetype]['extensions']:
 						#
