@@ -283,7 +283,7 @@ Checks if a common name is defined or can be resolved to a class name.
 	def _get_module(name, classname = None):
 	#
 		"""
-Return the inititalized Python module defined by the given name.
+Returns the inititalized Python module defined by the given name.
 
 :param name: Python module name
 :param classname: Class name to load in this module used to verify that it
@@ -415,8 +415,14 @@ Load the Python file with "imp" defined by the given name.
 				_return = imp.load_module(name, file_obj, file_path, description)
 				if (file_obj != None): file_obj.close()
 			#
-			except ImportError: pass
-			except Exception as handled_exception: exception = handled_exception
+			except ImportError as handled_exception:
+			#
+				if (NamedLoader._log_handler != None): NamedLoader._log_handler.debug(handled_exception)
+			#
+			except Exception as handled_exception:
+			#
+				if (NamedLoader._log_handler != None): NamedLoader._log_handler.error(handled_exception)
+			#
 		#
 
 		if (exception != None):
@@ -444,13 +450,15 @@ Load the Python package with "importlib" defined by the given name.
 
 		_return = None
 
-		exception = None
-
 		try: _return = import_module(name)
-		except ImportError: pass
-		except Exception as handled_exception: exception = handled_exception
-
-		if (exception != None and NamedLoader._log_handler != None): NamedLoader._log_handler.error(exception)
+		except ImportError as handled_exception:
+		#
+			if (NamedLoader._log_handler != None): NamedLoader._log_handler.debug(handled_exception)
+		#
+		except Exception as handled_exception:
+		#
+			if (NamedLoader._log_handler != None): NamedLoader._log_handler.error(handled_exception)
+		#
 
 		return _return
 	#
