@@ -23,6 +23,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+from dNG.pas.data.binary import Binary
 from dNG.pas.data.cached_json_file import CachedJsonFile
 
 class L10nInstance(dict):
@@ -59,10 +60,18 @@ L10n files initialized
 		"""
 L10n language code
 		"""
-		self.strings = { }
+	#
+
+	def get(self, key, default = None):
+	#
 		"""
-Underlying l10n dict
+python.org: Return the value for key if key is in the dictionary, else default.
+
+:return: (str) L10n value
+:since:  v0.1.01
 		"""
+
+		return Binary.str(dict.get(self, key, default))
 	#
 
 	def get_lang(self):

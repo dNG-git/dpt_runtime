@@ -86,15 +86,18 @@ Get the content from cache for the given file path and name.
 
 		_return = None
 
-		with self._lock:
-		#
-			if (self.is_synchronous()): self.check("file:///{0}".format(file_pathname))
+		if (self.is_synchronous()): self.check("file:///{0}".format(file_pathname))
 
-			if (file_pathname in self):
+		if (file_pathname in self):
+		# Thread safety
+			with self._lock:
 			#
-				_return = self[file_pathname]
-				self.history.remove(file_pathname)
-				self.history.insert(0, file_pathname)
+				if (file_pathname in self):
+				#
+					_return = self[file_pathname]
+					self.history.remove(file_pathname)
+					self.history.insert(0, file_pathname)
+				#
 			#
 		#
 
@@ -112,7 +115,7 @@ Return true if the given file path and name is cached.
 :since:  v0.1.01
 		"""
 
-		with self._lock: return (file_pathname in self)
+		return (file_pathname in self)
 	#
 
 	def set_file(self, file_pathname, cache_entry):
@@ -171,17 +174,20 @@ Remove changed files from the cache.
 :since: v0.1.01
 		"""
 
-		with self._lock:
+		file_pathname = url[8:]
+
+		if (file_pathname in self):
 		#
-			file_pathname = url[8:]
+			with self._lock:
+			# Thread safety
+				if (file_pathname in self):
+				#
+					self.size -= len(self[file_pathname])
+					self.history.remove(file_pathname)
+					del(self[file_pathname])
 
-			if (file_pathname in self):
-			#
-				self.size -= len(self[file_pathname])
-				self.history.remove(file_pathname)
-				del(self[file_pathname])
-
-				self.unregister(url, self.uncache_changed)
+					self.unregister(url, self.uncache_changed)
+				#
 			#
 		#
 	#

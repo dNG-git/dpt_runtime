@@ -101,7 +101,7 @@ overwriting existing keys.
 :since: v0.1.01
 		"""
 
-		with Settings._lock: self.dict.update(other)
+		self.dict.update(other)
 	#
 
 	@staticmethod
