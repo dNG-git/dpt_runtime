@@ -62,16 +62,18 @@ L10n language code
 		"""
 	#
 
-	def get(self, key, default = None):
+	def __getitem__(self, key):
 	#
 		"""
-python.org: Return the value for key if key is in the dictionary, else default.
+python.org: Called to implement evaluation of self[key].
+
+:param key: L10n key
 
 :return: (str) L10n value
-:since:  v0.1.01
+:since:  v0.1.00
 		"""
 
-		return Binary.str(dict.get(self, key, default))
+		return Binary.str(dict.__getitem__(self, key))
 	#
 
 	def get_lang(self):
