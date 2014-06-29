@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.data.Settings
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 from os import path
 from threading import RLock
@@ -105,18 +100,20 @@ overwriting existing keys.
 	#
 
 	@staticmethod
-	def is_defined(key):
+	def _force_reinitialization():
 	#
 		"""
-Checks if a given key is a defined setting.
+This method creates a new settings singleton. It should only be done after
+changing the OS environment to process changes paths.
 
-:param key: Settings key
-
-:return: (bool) True if defined
-:since:  v0.1.00
+:since: v0.1.00
 		"""
 
-		return (key in Settings.get_dict())
+		with Settings._lock:
+		#
+			Settings._instance = None
+			Settings.get_instance()
+		#
 	#
 
 	@staticmethod
@@ -223,6 +220,21 @@ Import a given JSON encoded string as an dict of settings.
 	#
 
 	@staticmethod
+	def is_defined(key):
+	#
+		"""
+Checks if a given key is a defined setting.
+
+:param key: Settings key
+
+:return: (bool) True if defined
+:since:  v0.1.00
+		"""
+
+		return (key in Settings.get_dict())
+	#
+
+	@staticmethod
 	def is_file_known(file_pathname):
 	#
 		"""
@@ -247,10 +259,13 @@ Read all settings from the given file.
 :param file_pathname: File path and name of the settings file
 :param required: True if missing files should throw exceptions
 
-:since: v0.1.00
+:return: (bool) True on success
+:since:  v0.1.00
 		"""
 
 		# pylint: disable=maybe-no-member
+
+		_return = True
 
 		file_pathname = path.normpath(file_pathname)
 		file_content = (None if (Settings._cache_instance == None) else Settings._cache_instance.get_file(file_pathname))
@@ -269,14 +284,18 @@ Read all settings from the given file.
 				if (Settings._cache_instance != None): Settings._cache_instance.set_file(file_pathname, file_content)
 			#
 			elif (required): raise IOException("{0} not found".format(file_pathname))
-			elif (Settings._log_handler != None): Settings._log_handler.debug("{0} not found".format(file_pathname))
+			elif (Settings._log_handler != None): Settings._log_handler.debug("{0} not found", file_pathname, context = "pas_core")
 		#
 
 		if (file_content != None and (not Settings.import_json(file_content))):
 		#
 			if (required): raise ValueException("{0} is not a valid JSON encoded settings file".format(file_pathname))
-			if (Settings._log_handler != None): Settings._log_handler.warning("{0} is not a valid JSON encoded settings file".format(file_pathname))
+			if (Settings._log_handler != None): Settings._log_handler.warning("{0} is not a valid JSON encoded settings file", file_pathname, context = "pas_core")
+
+			_return = False
 		#
+
+		return _return
 	#
 
 	@staticmethod
@@ -305,7 +324,7 @@ Sets the cache instance.
 :since: v0.1.00
 		"""
 
-		if (Settings._log_handler != None): Settings._log_handler.debug("#echo(__FILEPATH__)# -settings.set_cache_instance(cache_instance)- (#echo(__LINE__)#)")
+		if (Settings._log_handler != None): Settings._log_handler.debug("#echo(__FILEPATH__)# -Settings.set_cache_instance()- (#echo(__LINE__)#)", context = "pas_core")
 		Settings._cache_instance = proxy(cache_instance)
 	#
 

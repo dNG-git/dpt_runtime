@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.vfs.file.WatcherMtime
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 # pylint: disable=import-error,no-name-in-module
 
@@ -107,7 +102,7 @@ Checks a given path for changes if "is_synchronous()" is true.
 				#
 					for callback in self.watched_callbacks[_path]: callback(WatcherMtime.EVENT_TYPE_MODIFIED, url)
 				#
-				except Exception as handled_exception: LogLine.error(handled_exception)
+				except Exception as handled_exception: LogLine.error(handled_exception, context = "pas_core")
 			#
 		#
 

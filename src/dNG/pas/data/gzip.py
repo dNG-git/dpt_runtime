@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.data.Gzip
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 from struct import pack
 from zlib import compressobj, crc32, MAX_WBITS, Z_FINISH

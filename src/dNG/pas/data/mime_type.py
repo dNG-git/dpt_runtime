@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.data.MimeType
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 from weakref import ref
 import mimetypes
@@ -174,13 +169,13 @@ Refresh all mime-type definitions from the file.
 						for extension in json_data[mimetype]['extensions']:
 						#
 							if (extension not in self.extensions): self.extensions[extension] = mimetype
-							else: LogLine.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[extension]))
+							else: LogLine.warning("Extension '{0}' declared for more than one mimetype", self.extensions[extension], context = "pas_core")
 						#
 					#
 					elif ("extension" in json_data[mimetype]):
 					#
 						if (json_data[mimetype]['extension'] not in self.extensions): self.extensions[json_data[mimetype]['extension']] = mimetype
-						else: LogLine.warning("Extension '{0}' declared for more than one mimetype".format(self.extensions[json_data[mimetype]['extension']]))
+						else: LogLine.warning("Extension '{0}' declared for more than one mimetype", self.extensions[json_data[mimetype]['extension']], context = "pas_core")
 					#
 				#
 			#

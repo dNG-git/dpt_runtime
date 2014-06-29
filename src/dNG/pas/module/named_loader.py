@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.module.NamedLoader
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 # pylint: disable=import-error
 
@@ -254,12 +249,16 @@ Returns a singleton based on its common name.
 :since:  v0.1.00
 		"""
 
+		_return = None
+
 		_class = NamedLoader.get_class(common_name)
 
 		if (_class == None and required): raise IOException("{0} is not defined".format(common_name))
-		if ((not hasattr(_class, "get_instance")) and required): raise TypeException("{0} has not defined a singleton".format(common_name))
 
-		return _class.get_instance(**kwargs)
+		if (hasattr(_class, "get_instance")): _return = _class.get_instance(**kwargs)
+		elif (required): raise TypeException("{0} has not defined a singleton".format(common_name))
+
+		return _return
 	#
 
 	@staticmethod
@@ -378,7 +377,7 @@ Load the Python file defined by the given name.
 					#
 					except Exception as handled_exception:
 					#
-						if (NamedLoader._log_handler != None): NamedLoader._log_handler.error(handled_exception)
+						if (NamedLoader._log_handler != None): NamedLoader._log_handler.error(handled_exception, context = "pas_core")
 					#
 				#
 			#
@@ -403,7 +402,6 @@ Load the Python file with "imp" defined by the given name.
 
 		_return = None
 
-		exception = None
 		( package_parent, _file) = name.rsplit(".", 1)
 		_path = package_parent.replace(".", path.sep)
 
@@ -417,18 +415,12 @@ Load the Python file with "imp" defined by the given name.
 			#
 			except ImportError as handled_exception:
 			#
-				if (NamedLoader._log_handler != None): NamedLoader._log_handler.debug(handled_exception)
+				if (NamedLoader._log_handler != None): NamedLoader._log_handler.debug(handled_exception, context = "pas_core")
 			#
 			except Exception as handled_exception:
 			#
-				if (NamedLoader._log_handler != None): NamedLoader._log_handler.error(handled_exception)
+				if (NamedLoader._log_handler != None): NamedLoader._log_handler.error(handled_exception, context = "pas_core")
 			#
-		#
-
-		if (exception != None):
-		#
-			_return = None
-			if (NamedLoader._log_handler != None): NamedLoader._log_handler.error(exception)
 		#
 
 		return _return
@@ -453,11 +445,11 @@ Load the Python package with "importlib" defined by the given name.
 		try: _return = import_module(name)
 		except ImportError as handled_exception:
 		#
-			if (NamedLoader._log_handler != None): NamedLoader._log_handler.debug(handled_exception)
+			if (NamedLoader._log_handler != None): NamedLoader._log_handler.debug(handled_exception, context = "pas_core")
 		#
 		except Exception as handled_exception:
 		#
-			if (NamedLoader._log_handler != None): NamedLoader._log_handler.error(handled_exception)
+			if (NamedLoader._log_handler != None): NamedLoader._log_handler.error(handled_exception, context = "pas_core")
 		#
 
 		return _return

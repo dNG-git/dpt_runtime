@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.data.CachedJsonFile
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 from dNG.data.json_resource import JsonResource
 from dNG.pas.data.logging.log_line import LogLine
@@ -68,7 +63,7 @@ Read and parse data from the given file or from cache.
 			if (_return == None):
 			#
 				if (required): raise ValueException("{0} is not a valid JSON encoded file".format(file_pathname))
-				LogLine.warning("{0} is not a valid JSON encoded file".format(file_pathname))
+				LogLine.warning("{0} is not a valid JSON encoded file", file_pathname, context = "pas_core")
 			#
 		#
 

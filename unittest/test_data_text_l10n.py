@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-UnitTest for dNG.pas.data.text.L10n
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 from os import path
 import sys
@@ -31,6 +26,12 @@ from dNG.pas.data.text.l10n import L10n
 
 class TestDataTextL10n(unittest.TestCase):
 #
+	"""
+UnitTest for dNG.pas.data.text.L10n
+
+:since: v0.1.01
+	"""
+
 	def setUp(self):
 	#
 		self.de_dict = L10n.get_dict("de")

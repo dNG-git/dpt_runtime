@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-UnitTest for dNG.pas.data.text.Tmd5
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 from os import path
 import sys
@@ -31,6 +26,12 @@ from dNG.pas.data.text.tmd5 import Tmd5
 
 class TestDataTextTmd5(unittest.TestCase):
 #
+	"""
+UnitTest for dNG.pas.data.text.Tmd5
+
+:since: v0.1.01
+	"""
+
 	def test_values(self):
 	#
 		self.assertEqual("8f98a27ba7566c4ddca2a67902b4ba9cfa4cb410c65df90385bad89355ea1338f0f6430e187e05326ff0b32f9811a3d6", Tmd5.hash("Hello world"))

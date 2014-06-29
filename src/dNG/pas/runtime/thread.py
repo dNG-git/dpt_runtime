@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.runtime.Thread
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 from threading import Thread as PyThread
 
@@ -57,7 +52,7 @@ python.org: Method representing the thread’s activity.
 		# pylint: disable=broad-except
 
 		try: PyThread.run(self)
-		except Exception as handled_exception: LogLine.error(handled_exception)
+		except Exception as handled_exception: LogLine.error(handled_exception, context = "pas_core")
 	#
 
 	def start(self):
@@ -69,7 +64,7 @@ python.org: Start the thread's activity.
 		"""
 
 		if (self.daemon or Thread._active): PyThread.start(self)
-		else: LogLine.debug("pas.core.Thread prevented new non-daemon thread")
+		else: LogLine.debug("{0!r} prevented new non-daemon thread", self, context = "pas_core")
 	#
 
 	@staticmethod

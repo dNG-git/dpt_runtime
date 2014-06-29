@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.data.logging.LogLine
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 from dNG.pas.module.named_loader import NamedLoader
 
@@ -41,63 +36,75 @@ handler.
 	"""
 
 	@staticmethod
-	def debug(data):
+	def debug(data, *args, **kwargs):
 	#
 		"""
 Debug message method
 
 :param data: Debug data
+:param context: Logging context
 
 :since: v0.1.00
 		"""
 
+		# pylint: disable=star-args
+
 		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
-		if (log_handler != None): log_handler.debug(data)
+		if (log_handler != None): log_handler.debug(data, *args, **kwargs)
 	#
 
 	@staticmethod
-	def error(data):
+	def error(data, *args, **kwargs):
 	#
 		"""
 Error message method
 
 :param data: Error data
+:param context: Logging context
 
 :since: v0.1.00
 		"""
 
+		# pylint: disable=star-args
+
 		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
-		if (log_handler != None): log_handler.error(data)
+		if (log_handler != None): log_handler.error(data, *args, **kwargs)
 	#
 
 	@staticmethod
-	def info(data):
+	def info(data, *args, **kwargs):
 	#
 		"""
 Info message method
 
 :param data: Info data
+:param context: Logging context
 
 :since: v0.1.00
 		"""
 
+		# pylint: disable=star-args
+
 		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
-		if (log_handler != None): log_handler.info(data)
+		if (log_handler != None): log_handler.info(data, *args, **kwargs)
 	#
 
 	@staticmethod
-	def warning(data):
+	def warning(data, *args, **kwargs):
 	#
 		"""
 Warning message method
 
 :param data: Warning data
+:param context: Logging context
 
 :since: v0.1.00
 		"""
 
+		# pylint: disable=star-args
+
 		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
-		if (log_handler != None): log_handler.warning(data)
+		if (log_handler != None): log_handler.warning(data, *args, **kwargs)
 	#
 #
 

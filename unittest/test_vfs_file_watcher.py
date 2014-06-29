@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-UnitTest for dNG.pas.data.Binary
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 from os import path
 from shutil import rmtree
@@ -94,6 +89,12 @@ except ImportError: WatchManager = None
 
 class TestVfsFileWatcher(unittest.TestCase):
 #
+	"""
+UnitTest for dNG.pas.data.Binary
+
+:since: v0.1.01
+	"""
+
 	def setUp(self):
 	#
 		"""

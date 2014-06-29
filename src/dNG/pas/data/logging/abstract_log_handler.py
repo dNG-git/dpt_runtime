@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.data.logging.AbstractLogHandler
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 import logging
 import re
@@ -30,6 +25,8 @@ import traceback
 
 from dNG.pas.data.binary import Binary
 from dNG.pas.data.traced_exception import TracedException
+from dNG.pas.runtime.not_implemented_exception import NotImplementedException
+from dNG.pas.runtime.value_exception import ValueException
 
 class AbstractLogHandler(object):
 #
@@ -57,11 +54,11 @@ Constructor __init__(AbstractLogHandler)
 		"""
 Log identifier
 		"""
-		self.level = None
+		self.level = { }
 		"""
 Log level
 		"""
-		self.levels = { }
+		self.level_map = { }
 		"""
 Mapped log levels
 		"""
@@ -87,19 +84,76 @@ Add the logger name given to the active log handler.
 		logging.getLogger(name).addHandler(self.log_handler)
 	#
 
-	def get_level(self):
+	def debug(self, data, *args, **kwargs):
+	#
+		"""
+Debug message method
+
+:param data: Debug data
+:param context: Logging context
+
+:since: v0.1.00
+		"""
+
+		# pylint: disable=star-args
+
+		raise NotImplementedException()
+	#
+
+	def error(self, data, *args, **kwargs):
+	#
+		"""
+Error message method
+
+:param data: Error data
+:param context: Logging context
+
+:since: v0.1.00
+		"""
+
+		# pylint: disable=star-args
+
+		raise NotImplementedException()
+	#
+
+	def _get_implementation_level(self, context = "global"):
+	#
+		"""
+Returns the log implementation specific level value.
+
+:param context: Logging context
+
+:return: (mixed) Log implementation specific level value
+:since:  v0.1.00
+		"""
+
+		if (context not in self.level): self._load_context_level(context)
+		return self.level[context]
+	#
+
+	def get_level(self, context = "global"):
 	#
 		"""
 Get the log level.
 
-:return: (str) Log level
+:param context: Logging context
+
+:return: (mixed) Log level
 :since:  v0.1.00
 		"""
 
-		return [ k for k, v in self.levels.items() if self.level == v ][0]
+		if (context not in self.level): self._load_context_level(context)
+
+		level_matches = [ k for k, v in self.level_map.items() if self.level[context] == v ]
+
+		if (len(level_matches) > 0): _return = level_matches[0]
+		elif (context != "global" and len(level_matches) < 0): _return = self.get_level("global")
+		else: raise ValueException("Log level can not be identified")
+
+		return _return
 	#
 
-	def _get_line(self, data):
+	def _get_line(self, data, *args):
 	#
 		"""
 Get the formatted log message.
@@ -110,7 +164,7 @@ Get the formatted log message.
 :since:  v0.1.00
 		"""
 
-		# pylint: disable=broad-except
+		# pylint: disable=broad-except,star-args
 
 		if (isinstance(data, TracedException)): data = data.get_printable_trace()
 		elif (isinstance(data, BaseException)):
@@ -125,7 +179,9 @@ Get the formatted log message.
 		else:
 		#
 			data = Binary.str(data)
+
 			if (type(data) != str): data = repr(data)
+			elif (len(args) > 0): data = data.format(*args)
 		#
 
 		if ("\n" in data or "\r" in data): data = "\"" + re.sub("[\n\r]", "\"; \"", data) + "\""
@@ -134,17 +190,76 @@ Get the formatted log message.
 		return _return
 	#
 
-	def set_level(self, level):
+	def info(self, data, *args, **kwargs):
 	#
 		"""
-Sets the log level.
+Info message method
 
-:param level: Log level
+:param data: Info data
+:param context: Logging context
 
 :since: v0.1.00
 		"""
 
-		if (level in self.levels): self.level = self.levels[level]
+		# pylint: disable=star-args
+
+		raise NotImplementedException()
+	#
+
+	def _load_context_level(self, context):
+	#
+		"""
+Determines the context specific log level.
+
+:param context: Logging context
+
+:since: v0.1.00
+		"""
+
+		if (context != "global"): self.level[context] = self.level['global']
+	#
+
+	def set_level(self, level, context = "global"):
+	#
+		"""
+Sets the log level.
+
+:param level: Log level identifier
+:param context: Logging context
+
+:since: v0.1.00
+		"""
+
+		if (level in self.level_map): self.level[context] = self.level_map[level]
+	#
+
+	def warning(self, data, *args, **kwargs):
+	#
+		"""
+Warning message method
+
+:param data: Warning data
+:param context: Logging context
+
+:since: v0.1.00
+		"""
+
+		# pylint: disable=star-args
+
+		raise NotImplementedException()
+	#
+
+	@staticmethod
+	def get_instance():
+	#
+		"""
+Get the LogHandler singleton.
+
+:return: (LogHandler) Object on success
+:since:  v0.1.00
+		"""
+
+		raise NotImplementedException()
 	#
 #
 

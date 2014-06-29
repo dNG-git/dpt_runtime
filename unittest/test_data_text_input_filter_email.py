@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-UnitTest for dNG.pas.data.text.InputFilter
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 from os import path
 import sys
@@ -32,6 +27,12 @@ from dNG.pas.data.text.input_filter import InputFilter
 
 class TestDataTextInputFilter(unittest.TestCase):
 #
+	"""
+UnitTest for dNG.pas.data.text.InputFilter
+
+:since: v0.1.01
+	"""
+
 	email_addresses = [
 		( "test@local.invalid", "test@local.invalid" ),
 		( "test@[127.0.0.1]", "test@[127.0.0.1]" ),

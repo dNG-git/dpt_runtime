@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.data.logging.LogHandler
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 # pylint: disable=import-error,undefined-variable
 
@@ -128,18 +123,18 @@ File size a log file gets rotated
 Preserve the amount of files
 		"""
 
-		self.levels = { "debug": DEBUG,
-		                "error": ERROR,
-		                "info": INFO,
-		                "warning": WARNING
-		              }
+		self.level_map = { "debug": DEBUG,
+		                   "error": ERROR,
+		                   "info": INFO,
+		                   "warning": WARNING
+		                 }
 
 		level = Settings.get("pas_core_log_level")
 		if (level == None): level = Settings.get("core_log_level", "warning")
-		self.level = (self.levels[level] if (level in self.levels) else WARNING)
+		self.level['global'] = self.level_map.get(level, WARNING)
 
 		self.logger = logging.getLogger(self.ident)
-		self.logger.setLevel(self.level)
+		self.logger.setLevel(DEBUG)
 
 		if (not LogHandler._appender_defined):
 		#
@@ -162,7 +157,7 @@ Preserve the amount of files
 			if (_api_type == _API_JAVA):
 			#
 				self.log_handler = RotatingFileHandler(SimpleLayout(), self.log_file_pathname)
-				self.log_handler.setLevel(self.level)
+				self.log_handler.setLevel(DEBUG)
 				self.log_handler.setMaxBackupIndex(self.log_file_rotates)
 				self.log_handler.setMaximumFileSize(self.log_file_size_max)
 
@@ -199,59 +194,98 @@ Add the logger name given to the active log handler.
 		else: AbstractLogHandler.add_logger(self, name)
 	#
 
-	def debug(self, data):
+	def debug(self, data, *args, **kwargs):
 	#
 		"""
 Debug message method
 
 :param data: Debug data
+:param context: Logging context
 
 :since: v0.1.00
 		"""
 
-		if (self.level == DEBUG): self._write(DEBUG, data)
+		# pylint: disable=star-args
+
+		context = kwargs.get("context", "global")
+		if (self._get_implementation_level(context) == DEBUG): self._write(DEBUG, data, *args)
 	#
 
-	def error(self, data):
+	def error(self, data, *args, **kwargs):
 	#
 		"""
 Error message method
 
 :param data: Error data
+:param context: Logging context
 
 :since: v0.1.00
 		"""
 
-		if (self.level != NOTSET): self._write(ERROR, data)
+		# pylint: disable=star-args
+
+		context = kwargs.get("context", "global")
+		if (self._get_implementation_level(context) != NOTSET): self._write(ERROR, data, *args)
 	#
 
-	def info(self, data):
+	def info(self, data, *args, **kwargs):
 	#
 		"""
 Info message method
 
 :param data: Info data
+:param context: Logging context
 
 :since: v0.1.00
 		"""
 
-		if (self.level == DEBUG or self.level == INFO): self._write(INFO, data)
+		# pylint: disable=star-args
+
+		level = self._get_implementation_level(kwargs.get("context", "global"))
+		if (level == DEBUG or level == INFO): self._write(INFO, data, *args)
 	#
 
-	def warning(self, data):
+	def _load_context_level(self, context):
+	#
+		"""
+Determines the context specific log level.
+
+:param context: Logging context
+
+:since: v0.1.00
+		"""
+
+		context_level_setting = "{0}_log_level".format(context)
+
+		if (context != "global"):
+		#
+			self.set_level((Settings.get(context_level_setting)
+			                if (Settings.is_defined(context_level_setting)) else
+			                self.get_level("global")
+			               ),
+			               context
+			              )
+		#
+	#
+
+	def warning(self, data, *args, **kwargs):
 	#
 		"""
 Warning message method
 
 :param data: Warning data
+:param context: Logging context
 
 :since: v0.1.00
 		"""
 
-		if (self.level != ERROR and self.level != NOTSET): self._write(WARNING, data)
+		# pylint: disable=star-args
+
+		level = self._get_implementation_level(kwargs.get("context", "global"))
+		if (level != ERROR and level != NOTSET): self._write(WARNING, data, *args)
 	#
 
-	def _write(self, level, data):
+	def _write(self, level, data, *args):
 	#
 		"""
 "_write()" adds all messages to the logger instance.
@@ -261,6 +295,8 @@ Warning message method
 
 :since: v0.1.00
 		"""
+
+		# pylint: disable=star-args
 
 		exception = isinstance(data, BaseException)
 		message = strftime(self.log_format_datetime)
@@ -275,7 +311,7 @@ Warning message method
 		elif (level == INFO): message = "<info>      {0}".format(message)
 		elif (level == DEBUG): message = "<debug>     {0}".format(message)
 
-		message = "{0} {1}".format(message, self._get_line(data))
+		message = "{0} {1}".format(message, self._get_line(data, *args))
 
 		if (level == CRITICAL): self.logger.critical(message)
 		elif (level == ERROR): self.logger.error(message)

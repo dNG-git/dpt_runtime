@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.loader.Cli
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,12 +16,14 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 # pylint: disable=import-error,unused-import
 
+from errno import ESRCH
+from time import sleep
 from weakref import ref
+import os
 import threading
 
 try: import signal
@@ -161,7 +159,7 @@ Executes registered callbacks for the active application.
 
 		# pylint: disable=broad-except
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.run()- (#echo(__LINE__)#)".format(self))
+		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.run()- (#echo(__LINE__)#)", self, context = "pas_core")
 
 		if (self.arg_parser != None and hasattr(self.arg_parser, "parse_args")): args = self.arg_parser.parse_args()
 		else: args = { }
@@ -190,7 +188,7 @@ Register a callback for the application main loop.
 :since: v0.1.00
 		"""
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_mainloop(callback)- (#echo(__LINE__)#)".format(self))
+		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_mainloop()- (#echo(__LINE__)#)", self, context = "pas_core")
 
 		if (self.mainloop != None): raise ValueException("Main loop already registered")
 		self.mainloop = callback
@@ -220,7 +218,7 @@ Handles an OS signal.
 :since: v0.1.00
 		"""
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}._signal(os_signal, stack_frame)- (#echo(__LINE__)#)".format(self))
+		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}._signal()- (#echo(__LINE__)#)", self, context = "pas_core")
 		self.shutdown()
 	#
 
@@ -236,7 +234,7 @@ Executes registered callbacks before shutting down this application.
 
 		# pylint: disable=broad-except,raising-bad-type
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.shutdown()- (#echo(__LINE__)#)".format(self))
+		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.shutdown()- (#echo(__LINE__)#)", self, context = "pas_core")
 
 		Thread.set_inactive()
 
@@ -252,6 +250,33 @@ Cleanup unused objects
 
 		Cli._callbacks_shutdown = [ ]
 		if (_exception != None): raise _exception
+	#
+
+	def _wait_for_os_pid(self, pid):
+	#
+		"""
+Waits for the given OS process ID to exit.
+
+:param pid: OS process ID
+
+:since: v1.0.1
+		"""
+
+		if (pid > 0 and hasattr(os, "kill")):
+		#
+			for _ in range(0, 60):
+			#
+				try:
+				#
+					os.kill(pid, 0)
+					sleep(0.5)
+				#
+				except OSError as handled_exception:
+				#
+					if (handled_exception.errno != ESRCH): raise
+				#
+			#
+		#
 	#
 
 	@staticmethod

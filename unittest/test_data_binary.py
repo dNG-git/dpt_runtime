@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-UnitTest for dNG.pas.data.Binary
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 from os import path
 import sys
@@ -48,6 +43,12 @@ from dNG.pas.data.binary import Binary
 
 class TestDataBinary(unittest.TestCase):
 #
+	"""
+UnitTest for dNG.pas.data.Binary
+
+:since: v0.1.01
+	"""
+
 	def test_formats(self):
 	#
 		# global: _PY_BYTES, _PY_BYTES_TYPE, _PY_STR, _PY_UNICODE, _PY_UNICODE_TYPE

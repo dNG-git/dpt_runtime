@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.data.CachedFile
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 from os import path
 
@@ -105,7 +100,7 @@ Read data from the given file or from cache.
 				if (cache_instance != None): cache_instance.set_file(file_pathname, _return)
 			#
 			elif (required): raise IOException("{0} not found".format(file_pathname))
-			else: LogLine.debug("{0} not found".format(file_pathname))
+			else: LogLine.debug("{0} not found", file_pathname, context = "pas_core")
 		#
 
 		return _return

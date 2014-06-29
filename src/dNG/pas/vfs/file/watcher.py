@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.vfs.file.Watcher
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -20,8 +16,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
 #echo(pasCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 # pylint: disable=import-error,invalid-name,no-name-in-module
 
@@ -197,12 +192,7 @@ Initializes the watcher instance.
 			     ): self.watcher_class = WatcherPyinotifySync
 			else: self.watcher_class = WatcherMtime
 
-			LogLine.debug("pas.vfs.file.Watcher mode is {0}"
-			              .format("synchronous"
-			                      if (self.is_synchronous()) else
-			                      "asynchronous"
-			                     )
-			             )
+			LogLine.debug("{0!r} mode is {1}", self, ("synchronous" if (self.is_synchronous()) else "asynchronous"), context = "pas_core")
 		#
 	#
 
