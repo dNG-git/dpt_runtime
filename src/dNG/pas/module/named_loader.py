@@ -409,7 +409,7 @@ Load the Python file with "imp" defined by the given name.
 		#
 			try:
 			#
-				( file_obj, file_path, description ) = imp.find_module(_file, [ path.normpath("{0}/{1}".format(NamedLoader._get_loader().get_base_dir(), _path)) ])
+				( file_obj, file_path, description ) = imp.find_module(_file, [ path.join(NamedLoader._get_loader().get_base_dir(), _path) ])
 				_return = imp.load_module(name, file_obj, file_path, description)
 				if (file_obj != None): file_obj.close()
 			#

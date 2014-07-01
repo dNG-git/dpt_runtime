@@ -144,7 +144,7 @@ Process a simple scenario.
 		self.watcher.register(base_url, self.changed_callback)
 		self.assertTrue(self.watcher.is_watched(base_url))
 
-		unittest_directory = path.normpath("{0}/unittest".format(base_directory))
+		unittest_directory = path.join(base_directory, "unittest")
 		unittest_url = base_url + "/unittest"
 
 		os.mkdir(unittest_directory)
@@ -153,7 +153,7 @@ Process a simple scenario.
 		self.watcher.register(unittest_url, self.changed_callback)
 		self.assertTrue(self.watcher.is_watched(unittest_url))
 
-		unittest_file = path.normpath("{0}/unittest.txt".format(base_directory))
+		unittest_file = path.join(base_directory, "unittest.txt")
 		unittest_url = base_url + "/unittest.txt"
 
 		self.assertFalse(self.watcher.is_watched(unittest_url))

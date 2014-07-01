@@ -143,20 +143,28 @@ Preserve the amount of files
 			if (Settings.is_defined("pas_core_log_pathname")):
 			#
 				log_file_pathname = path.normpath(log_file_pathname)
-				if (os.access(log_file_pathname, os.W_OK) or ((not os.access(log_file_pathname, os.F_OK)) and os.access(path.split(log_file_pathname)[0], os.W_OK))): self.log_file_pathname = log_file_pathname
+
+				if (os.access(log_file_pathname, os.W_OK)
+				    or ((not os.access(log_file_pathname, os.F_OK)) and os.access(path.split(log_file_pathname)[0], os.W_OK))
+				   ): self.log_file_pathname = log_file_pathname
 			#
 
 			if (self.log_file_pathname == None and Settings.is_defined("pas_core_log_name")):
 			#
-				log_file_pathname = path.normpath("{0}/log/{1}".format(Settings.get("path_base"), Settings.get("pas_core_log_name")))
-				if (os.access(log_file_pathname, os.W_OK) or ((not os.access(log_file_pathname, os.F_OK)) and os.access(path.normpath("{0}/log".format(Settings.get("path_base"))), os.W_OK))): self.log_file_pathname = log_file_pathname
+				log_file_pathname = path.join(Settings.get("path_base"), "log", Settings.get("pas_core_log_name"))
+
+				if (os.access(log_file_pathname, os.W_OK)
+				    or ((not os.access(log_file_pathname, os.F_OK)) and os.access(path.join(Settings.get("path_base"), "log"), os.W_OK))
+				   ): self.log_file_pathname = log_file_pathname
 			#
 
-			if (self.log_file_pathname == None): self.log_file_pathname = path.normpath("{0}/pas.log".format(Settings.get("path_base")))
+			if (self.log_file_pathname == None): self.log_file_pathname = path.join(Settings.get("path_base"), "pas.log")
 
 			if (_api_type == _API_JAVA):
 			#
-				self.log_handler = RotatingFileHandler(SimpleLayout(), self.log_file_pathname)
+				try: self.log_handler = RotatingFileHandler(SimpleLayout(), self.log_file_pathname, encoding = "utf-8")
+				except TypeError: self.log_handler = RotatingFileHandler(SimpleLayout(), self.log_file_pathname)
+
 				self.log_handler.setLevel(DEBUG)
 				self.log_handler.setMaxBackupIndex(self.log_file_rotates)
 				self.log_handler.setMaximumFileSize(self.log_file_size_max)

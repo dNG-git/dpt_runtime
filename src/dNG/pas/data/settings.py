@@ -81,8 +81,8 @@ Underlying dict
 		"""
 
 		self.dict['path_base'] = (Binary.str(os.environ['dNGpath']) if ("dNGpath" in os.environ) else path.normpath("{0}/..".format(self.dict['path_system'])))
-		self.dict['path_data'] = (Binary.str(os.environ['dNGpathData']) if ("dNGpathData" in os.environ) else path.normpath("{0}/data".format(self.dict['path_base'])))
-		self.dict['path_lang'] = (Binary.str(os.environ['dNGpathLang']) if ("dNGpathLang" in os.environ) else path.normpath("{0}/lang".format(self.dict['path_base'])))
+		self.dict['path_data'] = (Binary.str(os.environ['dNGpathData']) if ("dNGpathData" in os.environ) else path.join(self.dict['path_base'], "data"))
+		self.dict['path_lang'] = (Binary.str(os.environ['dNGpathLang']) if ("dNGpathLang" in os.environ) else path.join(self.dict['path_base'], "lang"))
 	#
 
 	def update(self, other):
