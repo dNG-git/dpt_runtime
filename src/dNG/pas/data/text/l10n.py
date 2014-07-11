@@ -135,7 +135,13 @@ Returns the defined default language of the current task.
 :since:  v0.1.00
 		"""
 
-		return (L10n._local.lang if (hasattr(L10n._local, "lang")) else L10n.default_lang)
+		_return = None
+
+		if (hasattr(L10n._local, "lang")): _return = L10n._local.lang
+		if (_return == None): _return = L10n.default_lang
+		if (_return == None): _return = Settings.get("core_lang")
+
+		return _return
 	#
 
 	@staticmethod
