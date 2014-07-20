@@ -64,7 +64,7 @@ common name.
              Mozilla Public License, v. 2.0
 	"""
 
-	RE_CAMEL_CASE_SPLITTER = re.compile("([a-z0-9]|[A-Z]+(?![A-Z]+$))([A-Z])")
+	RE_CAMEL_CASE_SPLITTER = re.compile("([a-z0-9])([A-Z]+)")
 	"""
 CamelCase RegExp
 	"""

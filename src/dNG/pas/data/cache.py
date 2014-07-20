@@ -68,6 +68,20 @@ Size in bytes
 		"""
 	#
 
+	def __repr__(self):
+	#
+		"""
+python.org: Called by the repr() built-in function and by string conversions
+(reverse quotes) to compute the "official" string representation of an
+object.
+
+:return: (str) String representation
+:since:  v0.1.00
+		"""
+
+		return object.__repr__(self)
+	#
+
 	def get_file(self, file_pathname):
 	#
 		"""
