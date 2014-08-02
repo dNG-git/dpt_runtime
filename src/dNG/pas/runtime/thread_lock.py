@@ -76,10 +76,12 @@ python.org: Enter the runtime context related to this object.
 		"""
 python.org: Exit the runtime context related to this object.
 
-:since: v0.1.01
+:return: (bool) True to suppress exceptions
+:since:  v0.1.01
 		"""
 
 		self.release()
+		return False
 	#
 
 	def acquire(self):

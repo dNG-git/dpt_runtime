@@ -20,6 +20,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 
 from dNG.pas.data.binary import Binary
 from dNG.pas.data.cached_json_file import CachedJsonFile
+from .number_formatter import NumberFormatter
 
 class L10nInstance(dict):
 #
@@ -69,6 +70,22 @@ python.org: Called to implement evaluation of self[key].
 		"""
 
 		return Binary.str(dict.__getitem__(self, key))
+	#
+
+	def format_number(self, number, fractional_digits = -1):
+	#
+		"""
+Returns a formatted number.
+
+:param number: Number as int or float
+:param fractional_digits: Fractional digits to return
+:param lang: Language code
+
+:return: (str) Formatted value
+:since:  v0.1.00
+		"""
+
+		return NumberFormatter.format(number, self['lang_number_format'], fractional_digits)
 	#
 
 	def get_lang(self):

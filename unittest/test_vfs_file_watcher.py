@@ -52,6 +52,8 @@ Constructor __init__(TemporaryDirectory)
 		#
 			"""
 python.org: Enter the runtime context related to this object.
+
+:return: (str) Temporary directory path
 			"""
 
 			self.name = mkdtemp(self.suffix, self.prefix, self.dir)
@@ -62,9 +64,12 @@ python.org: Enter the runtime context related to this object.
 		#
 			"""
 python.org: Exit the runtime context related to this object.
+
+:return: (bool) True to suppress exceptions
 			"""
 
 			self.cleanup()
+			return False
 		#
 
 		def cleanup(self, _warn = False):

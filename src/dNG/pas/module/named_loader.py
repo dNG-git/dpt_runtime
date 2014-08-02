@@ -360,6 +360,7 @@ Load the Python file defined by the given name.
 
 		# global: _mode, _MODE_IMPORT_MODULE
 		# pylint: disable=broad-except
+
 		_return = NamedLoader._get_module(name, classname)
 
 		if (_return == None):
@@ -398,8 +399,6 @@ Load the Python file with "imp" defined by the given name.
 :since:  v0.1.00
 		"""
 
-		# pylint: disable=broad-except
-
 		_return = None
 
 		( package_parent, _file) = name.rsplit(".", 1)
@@ -416,10 +415,6 @@ Load the Python file with "imp" defined by the given name.
 			except ImportError as handled_exception:
 			#
 				if (NamedLoader._log_handler != None): NamedLoader._log_handler.debug(handled_exception, context = "pas_core")
-			#
-			except Exception as handled_exception:
-			#
-				if (NamedLoader._log_handler != None): NamedLoader._log_handler.error(handled_exception, context = "pas_core")
 			#
 		#
 
@@ -438,18 +433,12 @@ Load the Python package with "importlib" defined by the given name.
 :since:  v0.1.00
 		"""
 
-		# pylint: disable=broad-except
-
 		_return = None
 
 		try: _return = import_module(name)
 		except ImportError as handled_exception:
 		#
 			if (NamedLoader._log_handler != None): NamedLoader._log_handler.debug(handled_exception, context = "pas_core")
-		#
-		except Exception as handled_exception:
-		#
-			if (NamedLoader._log_handler != None): NamedLoader._log_handler.error(handled_exception, context = "pas_core")
 		#
 
 		return _return

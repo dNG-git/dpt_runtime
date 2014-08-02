@@ -25,7 +25,7 @@ import os
 try: from urllib.parse import quote
 except ImportError: from urllib import quote
 
-from dNG.pas.data.logging.log_line import LogLine
+from dNG.pas.runtime.exception_log_trap import ExceptionLogTrap
 from dNG.pas.runtime.instance_lock import InstanceLock
 from dNG.pas.runtime.thread_lock import ThreadLock
 from dNG.pas.vfs.abstract_watcher import AbstractWatcher
@@ -87,8 +87,6 @@ Checks a given path for changes if "is_synchronous()" is true.
 :since:  v0.1.01
 		"""
 
-		# pylint: disable=broad-except
-
 		_return = False
 
 		with self._lock:
@@ -98,11 +96,10 @@ Checks a given path for changes if "is_synchronous()" is true.
 				_return = True
 				url = "file:///{0}".format(quote(_path, "/"))
 
-				try:
+				for callback in self.watched_callbacks[_path]:
 				#
-					for callback in self.watched_callbacks[_path]: callback(WatcherMtime.EVENT_TYPE_MODIFIED, url)
+					with ExceptionLogTrap("pas_core"): callback(WatcherMtime.EVENT_TYPE_MODIFIED, url)
 				#
-				except Exception as handled_exception: LogLine.error(handled_exception, context = "pas_core")
 			#
 		#
 

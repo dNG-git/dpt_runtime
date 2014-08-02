@@ -26,7 +26,7 @@ from weakref import ref
 try: from urllib.parse import quote
 except ImportError: from urllib import quote
 
-from dNG.pas.data.logging.log_line import LogLine
+from dNG.pas.runtime.exception_log_trap import ExceptionLogTrap
 from dNG.pas.vfs.abstract_watcher import AbstractWatcher
 
 class WatcherPyinotifyCallback(ProcessEvent):
@@ -73,8 +73,6 @@ Handles all inotify events.
 :since: v0.1.01
 		"""
 
-		# pylint: disable=broad-except
-
 		manager = self.manager_weakref()
 
 		if (manager and manager.is_watched(_path)):
@@ -82,11 +80,10 @@ Handles all inotify events.
 			callbacks = manager.get_callbacks(_path)
 			url = "file:///{0}".format(quote(_path, "/"))
 
-			try:
+			for callback in callbacks:
 			#
-				for callback in callbacks: callback(event_type, url, changed_value)
+				with ExceptionLogTrap("pas_core"): callback(event_type, url, changed_value)
 			#
-			except Exception as handled_exception: LogLine.error(handled_exception, context = "pas_core")
 		#
 	#
 

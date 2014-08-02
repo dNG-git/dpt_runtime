@@ -59,6 +59,23 @@ Local data handle
 	"""
 
 	@staticmethod
+	def format_number(number, fractional_digits = -1, lang = None):
+	#
+		"""
+Returns a formatted number.
+
+:param number: Number as int or float
+:param fractional_digits: Fractional digits to return
+:param lang: Language code
+
+:return: (str) Formatted value
+:since:  v0.1.00
+		"""
+
+		return L10n.get_instance(lang).format_number(number, fractional_digits)
+	#
+
+	@staticmethod
 	def init(file_basename, lang = None):
 	#
 		"""

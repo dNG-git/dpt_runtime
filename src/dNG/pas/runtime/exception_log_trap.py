@@ -14,67 +14,74 @@ obtain one at http://mozilla.org/MPL/2.0/.
 ----------------------------------------------------------------------------
 http://www.direct-netware.de/redirect.py?licenses;mpl2
 ----------------------------------------------------------------------------
-#echo(pasCoreVersion)#
+#echo(pasDatabaseVersion)#
 #echo(__FILEPATH__)#
 """
 
-from threading import Thread as PyThread
+import traceback
 
 from dNG.pas.data.logging.log_line import LogLine
-from dNG.pas.runtime.exception_log_trap import ExceptionLogTrap
 
-class Thread(PyThread):
+class ExceptionLogTrap(object):
 #
 	"""
-"Thread" represents a deactivatable Thread implementation.
+"ExceptionLogTrap" provides a context where exceptions are catched, logged
+and suppressed.
 
 :author:     direct Netware Group
-:copyright:  direct Netware Group - All rights reserved
+:copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.1.01
+:since:      v0.1.00
 :license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
              Mozilla Public License, v. 2.0
 	"""
 
-	_active = True
-	"""
-True if new non-daemon threads are allowed to be started.
-	"""
-
-	def run(self):
+	def __init__(self, context = None):
 	#
 		"""
-python.org: Method representing the thread’s activity.
+Constructor __init__(ExceptionLogTrap)
 
-:since: v0.1.01
-		"""
-
-		with ExceptionLogTrap("pas_core"): PyThread.run(self)
-	#
-
-	def start(self):
-	#
-		"""
-python.org: Start the thread's activity.
-
-:since: v0.1.01
-		"""
-
-		if (self.daemon or Thread._active): PyThread.start(self)
-		else: LogLine.debug("{0!r} prevented new non-daemon thread", self, context = "pas_core")
-	#
-
-	@staticmethod
-	def set_inactive():
-	#
-		"""
-Prevents new non-daemon threads to be started.
+:param context: Logging context
 
 :since: v0.1.00
 		"""
 
-		Thread._active = False
+		self.context = context
+		"""
+Logging context
+		"""
+	#
+
+	def __enter__(self):
+	#
+		"""
+python.org: Enter the runtime context related to this object.
+
+:since: v0.1.00
+		"""
+
+		pass
+	#
+
+	def __exit__(self, exc_type, exc_value, _traceback):
+	#
+		"""
+python.org: Exit the runtime context related to this object.
+
+:return: (bool) True to suppress exceptions
+:since:  v0.1.00
+		"""
+
+		if (exc_type != None
+		    or exc_value != None
+		   ):
+		#
+			traceback_string = "".join(traceback.format_exception(exc_type, exc_value, _traceback))
+			LogLine.error("Exception: {0}\n{1}".format(exc_value, traceback_string), context = self.context)
+		#
+
+		return True
 	#
 #
 

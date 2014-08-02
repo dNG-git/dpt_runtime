@@ -24,5 +24,6 @@
 
  "lang_charset": "UTF-8",
  "lang_iso_domain": "de",
+ "lang_number_format": "#.###,#",
  "lang_rfc_region": "de-DE"
 }

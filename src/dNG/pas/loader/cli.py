@@ -61,6 +61,7 @@ if (_mode == _IMPLEMENTATION_PYTHON):
 #
 
 from dNG.pas.data.traced_exception import TracedException
+from dNG.pas.runtime.exception_log_trap import ExceptionLogTrap
 from dNG.pas.runtime.thread import Thread
 from dNG.pas.runtime.value_exception import ValueException
 
@@ -232,7 +233,7 @@ Executes registered callbacks before shutting down this application.
 :since: v0.1.00
 		"""
 
-		# pylint: disable=broad-except,raising-bad-type
+		# pylint: disable=raising-bad-type
 
 		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.shutdown()- (#echo(__LINE__)#)", self, context = "pas_core")
 
@@ -244,8 +245,7 @@ Cleanup unused objects
 
 		for callback in Cli._callbacks_shutdown:
 		#
-			try: callback()
-			except Exception as handled_exception: self.error(handled_exception)
+			with ExceptionLogTrap(): callback()
 		#
 
 		Cli._callbacks_shutdown = [ ]

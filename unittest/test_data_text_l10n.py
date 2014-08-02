@@ -39,6 +39,20 @@ UnitTest for dNG.pas.data.text.L10n
 		L10n.init("core", "en")
 	#
 
+	def test_format_number(self):
+	#
+		"""
+One key tests everything :)
+		"""
+
+		self.assertEqual("1234.568", L10n.format_number(1234567.895, 0))
+		self.assertEqual("1234.567,90", L10n.format_number(1234567.895, 2))
+		self.assertEqual("1234.567,123456", L10n.format_number(1234567.123456))
+		self.assertEqual("1234,568", L10n.format_number(1234567.895, 0, lang = "en"))
+		self.assertEqual("1234,567.90", L10n.format_number(1234567.895, 2, lang = "en"))
+		self.assertEqual("1,235", L10n.format_number(1.234567895, 3))
+	#
+
 	def test_value(self):
 	#
 		"""
