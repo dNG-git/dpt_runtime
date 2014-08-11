@@ -250,7 +250,7 @@ Info message method
 		# pylint: disable=star-args
 
 		level = self._get_implementation_level(kwargs.get("context", "global"))
-		if (level == DEBUG or level == INFO): self._write(INFO, data, *args)
+		if (level in ( DEBUG, INFO)): self._write(INFO, data, *args)
 	#
 
 	def _load_context_level(self, context):
@@ -290,7 +290,7 @@ Warning message method
 		# pylint: disable=star-args
 
 		level = self._get_implementation_level(kwargs.get("context", "global"))
-		if (level != ERROR and level != NOTSET): self._write(WARNING, data, *args)
+		if (level not in ( ERROR, NOTSET)): self._write(WARNING, data, *args)
 	#
 
 	def _write(self, level, data, *args):

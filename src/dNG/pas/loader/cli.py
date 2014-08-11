@@ -20,7 +20,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 
 # pylint: disable=import-error,unused-import
 
-from errno import ESRCH
+from errno import EINVAL, ESRCH
 from time import sleep
 from weakref import ref
 import os
@@ -262,7 +262,7 @@ Waits for the given OS process ID to exit.
 :since: v1.0.1
 		"""
 
-		if (pid > 0 and hasattr(os, "kill")):
+		if (pid != None and pid > 0 and hasattr(os, "kill")):
 		#
 			for _ in range(0, 60):
 			#
@@ -273,7 +273,7 @@ Waits for the given OS process ID to exit.
 				#
 				except OSError as handled_exception:
 				#
-					if (handled_exception.errno != ESRCH): raise
+					if (handled_exception.errno not in ( EINVAL, ESRCH )): raise
 				#
 			#
 		#
