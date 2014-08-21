@@ -21,7 +21,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 from weakref import ref
 import mimetypes
 
-from dNG.pas.data.cached_json_file import CachedJsonFile
+from dNG.pas.data.cache.json_file_content import JsonFileContent
 from dNG.pas.runtime.instance_lock import InstanceLock
 from .settings import Settings
 from .logging.log_line import LogLine
@@ -143,7 +143,7 @@ Refresh all mime-type definitions from the file.
 :since: v0.1.01
 		"""
 
-		json_data = CachedJsonFile.read("{0}/settings/core_mimetypes.json".format(Settings.get("path_data")))
+		json_data = JsonFileContent.read("{0}/settings/core_mimetypes.json".format(Settings.get("path_data")))
 
 		if (type(json_data) == dict):
 		#

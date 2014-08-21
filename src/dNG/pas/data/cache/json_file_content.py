@@ -20,19 +20,20 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 
 from dNG.data.json_resource import JsonResource
 from dNG.pas.data.logging.log_line import LogLine
+from dNG.pas.module.named_loader import NamedLoader
 from dNG.pas.runtime.value_exception import ValueException
-from .cached_file import CachedFile
+from .file_content import FileContent
 
-class CachedJsonFile(CachedFile):
+class JsonFileContent(FileContent):
 #
 	"""
-"CachedJsonFile" provides access to JSON files on disk or cached.
+"JsonFileContent" provides access to JSON files on disk or cached.
 
 :author:     direct Netware Group
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.1.00
+:since:      v0.1.02
 :license:    http://www.direct-netware.de/redirect.py?licenses;mpl2
              Mozilla Public License, v. 2.0
 	"""
@@ -41,29 +42,34 @@ class CachedJsonFile(CachedFile):
 	def read(file_pathname, required = False):
 	#
 		"""
-Read and parse data from the given file or from cache.
+Read data from the given file or from cache.
 
-:param file_pathname: File path and name of the JSON file
-:param required: True if missing files or parser errors should throw
-                 exceptions
+:param file_pathname: File path and name
+:param required: True if missing files should throw an exception
 
-:return: (mixed) Parsed JSON data; None on error
-:since:  v0.1.01
+:return: (mixed) File data; None on error
+:since:  v0.1.02
 		"""
 
-		_return = None
+		# pylint: disable=maybe-no-member
 
-		file_content = CachedFile.read(file_pathname, required)
+		_return = FileContent._read_cache(file_pathname, required)
 
-		if (file_content != None):
+		if (not isinstance(_return, dict)):
 		#
-			json_resource = JsonResource()
-			_return = json_resource.json_to_data(file_content)
+			file_content = FileContent._read_file(file_pathname, required)
 
-			if (_return == None):
+			if (file_content != None):
 			#
-				if (required): raise ValueException("{0} is not a valid JSON encoded file".format(file_pathname))
-				LogLine.warning("{0} is not a valid JSON encoded file", file_pathname, context = "pas_core")
+				cache_instance = NamedLoader.get_singleton("dNG.pas.data.cache.Content", False)
+				_return = JsonResource().json_to_data(file_content)
+
+				if (_return == None):
+				#
+					if (required): raise ValueException("{0} is not a valid JSON encoded file".format(file_pathname))
+					LogLine.warning("{0} is not a valid JSON encoded file", file_pathname, context = "pas_core")
+				#
+				elif (cache_instance != None): cache_instance.set_file(file_pathname, _return, len(file_content))
 			#
 		#
 

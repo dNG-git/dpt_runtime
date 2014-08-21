@@ -19,7 +19,7 @@ http://www.direct-netware.de/redirect.py?licenses;mpl2
 """
 
 from dNG.pas.data.binary import Binary
-from dNG.pas.data.cached_json_file import CachedJsonFile
+from dNG.pas.data.cache.json_file_content import JsonFileContent
 from .number_formatter import NumberFormatter
 
 class L10nInstance(dict):
@@ -110,9 +110,9 @@ Read all translations from the given file.
 :since: v0.1.00
 		"""
 
-		if (file_pathname not in self.files or CachedJsonFile.is_changed(file_pathname)):
+		if (file_pathname not in self.files or JsonFileContent.is_changed(file_pathname)):
 		#
-			json_data = CachedJsonFile.read(file_pathname)
+			json_data = JsonFileContent.read(file_pathname)
 			if (type(json_data) == dict): self.update(json_data)
 		#
 	#
