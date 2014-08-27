@@ -46,8 +46,6 @@ with TemporaryDirectory(dir = ".") as build_directory:
 	InstallData.set_build_target_path(build_directory)
 	InstallData.set_build_target_parameters(parameters)
 
-	print(InstallData._build_target_path)
-
 	_build_path = path.join(build_directory, "src")
 
 	setup(name = "pas_core",
