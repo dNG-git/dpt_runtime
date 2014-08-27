@@ -51,6 +51,7 @@ with TemporaryDirectory(dir = ".") as build_directory:
 	setup(name = "pas_core",
 	      version = get_version(),
 	      description = "Python Application Services",
+	      long_description = """"pas_core" provides multiple features used in other modules.""",
 	      author = "direct Netware Group",
 	      author_email = "web@direct-netware.de",
 	      license = "MPL2",
