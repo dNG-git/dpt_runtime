@@ -287,7 +287,8 @@ Read all settings from the given file.
 			elif (Settings._log_handler != None): Settings._log_handler.debug("{0} not found", file_pathname, context = "pas_core")
 		#
 
-		if (file_content != None and (not Settings.import_json(file_content))):
+		if (file_content == None): _return = False
+		elif (not Settings.import_json(file_content)):
 		#
 			if (required): raise ValueException("{0} is not a valid JSON encoded settings file".format(file_pathname))
 			if (Settings._log_handler != None): Settings._log_handler.warning("{0} is not a valid JSON encoded settings file", file_pathname, context = "pas_core")
