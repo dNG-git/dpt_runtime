@@ -152,7 +152,7 @@
  "video/vnd.mpegurl": { "extension": "mxu" },
  "video/x-mpeg1": { "type": "video/mpeg" },
  "video/x-mpeg2": { "type": "video/mpeg" },
- "video/x-msvideo": { "extension": "avi" },
+ "video/x-msvideo": { "extensions": [ "avi", "divx" ] },
  "video/x-sgi-movie": { "extension": "movie" },
  "x-conference/x-cooltalk": { "extension": "ice" }
 }
