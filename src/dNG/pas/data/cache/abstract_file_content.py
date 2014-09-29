@@ -20,7 +20,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 from dNG.pas.runtime.not_implemented_exception import NotImplementedException
 
-class AbstractFile(object):
+class AbstractFileContent(object):
 #
 	"""
 The abstract file cache defines methods to access cached data.

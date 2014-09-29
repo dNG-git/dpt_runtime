@@ -22,10 +22,10 @@ from weakref import ref
 
 from dNG.pas.data.settings import Settings
 from dNG.pas.vfs.file.watcher import Watcher
-from .abstract_file import AbstractFile
+from .abstract_file_content import AbstractFileContent
 #from .abstract_value import AbstractValue
 
-class Content(dict, Watcher, AbstractFile):
+class Content(dict, Watcher, AbstractFileContent):
 #
 	"""
 The cache singleton for content provides memory-based caching mechanisms for
@@ -57,7 +57,7 @@ Constructor __init__(Content)
 
 		dict.__init__(self)
 		Watcher.__init__(self)
-		AbstractFile.__init__(self)
+		AbstractFileContent.__init__(self)
 		#AbstractValue.__init__(self)
 
 		self.history = [ ]
