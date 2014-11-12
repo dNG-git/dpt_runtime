@@ -29,7 +29,7 @@ from .logging.log_line import LogLine
 class MimeType(object):
 #
 	"""
-Provides MimeType related methods on top of Python basic ones.
+Provides mime type related methods on top of Python basic ones.
 
 :author:     direct Netware Group
 :copyright:  direct Netware Group - All rights reserved
@@ -59,24 +59,24 @@ Constructor __init__(MimeType)
 
 		self.definitions = None
 		"""
-Mimetype definitions
+Mime type definitions
 		"""
 		self.extensions = { }
 		"""
-Mimetype extension list
+Mime type extension list
 		"""
 	#
 
 	def get(self, extension = None, mimetype = None):
 	#
 		"""
-Returns the mime-type definition. Either extension or mime-type can be
+Returns the mime type definition. Either extension or mime type can be
 looked up.
 
 :param extension: Extension to look up
-:param mimetype: MimeType to look up
+:param mimetype: Mime type to look up
 
-:return: (dict) Mime-type definition
+:return: (dict) Mime type definition
 :since:  v0.1.01
 		"""
 
@@ -117,20 +117,21 @@ looked up.
 	def get_extensions(self, mimetype):
 	#
 		"""
-Returns the list of extensions known for the given mime-type.
+Returns the list of extensions known for the given mime type.
 
-:param mimetype: Mime-type to return the extensions for.
+:param mimetype: Mime type to return the extensions for.
 
 :return: (list) Extensions
 :since:  v0.1.01
 		"""
+
+		_return = [ ]
 
 		if (mimetype != None or mimetype in self.definitions):
 		#
 			_return = self.definitions[mimetype].get("extensions", [ ])
 			if (type(_return) != list): _return = [ _return ]
 		#
-		else: _return = None
 
 		return _return
 	#
@@ -138,7 +139,7 @@ Returns the list of extensions known for the given mime-type.
 	def refresh(self):
 	#
 		"""
-Refresh all mime-type definitions from the file.
+Refresh all mime type definitions from the file.
 
 :since: v0.1.01
 		"""
@@ -169,13 +170,13 @@ Refresh all mime-type definitions from the file.
 						for extension in json_data[mimetype]['extensions']:
 						#
 							if (extension not in self.extensions): self.extensions[extension] = mimetype
-							else: LogLine.warning("Extension '{0}' declared for more than one mimetype", self.extensions[extension], context = "pas_core")
+							else: LogLine.warning("Extension '{0}' declared for more than one mime type", self.extensions[extension], context = "pas_core")
 						#
 					#
 					elif ("extension" in json_data[mimetype]):
 					#
 						if (json_data[mimetype]['extension'] not in self.extensions): self.extensions[json_data[mimetype]['extension']] = mimetype
-						else: LogLine.warning("Extension '{0}' declared for more than one mimetype", self.extensions[json_data[mimetype]['extension']], context = "pas_core")
+						else: LogLine.warning("Extension '{0}' declared for more than one mime type", self.extensions[json_data[mimetype]['extension']], context = "pas_core")
 					#
 				#
 			#
