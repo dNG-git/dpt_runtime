@@ -157,13 +157,13 @@ Refresh all mime type definitions from the file.
 				if ("type" in json_data[mimetype]): aliases[mimetype] = json_data[mimetype]['type']
 				else:
 				#
+					self.definitions[mimetype] = json_data[mimetype].copy()
+
 					if ("class" not in json_data[mimetype]):
 					#
 						_class = mimetype.split("/", 1)[0]
-						json_data[mimetype]['class'] = (_class if (_class not in json_data or "class" not in json_data[_class]) else json_data[_class]['class'])
+						self.definitions[mimetype]['class'] = (_class if (_class not in json_data or "class" not in json_data[_class]) else json_data[_class]['class'])
 					#
-
-					self.definitions[mimetype] = json_data[mimetype]
 
 					if (type(json_data[mimetype].get("extensions")) == list):
 					#
@@ -211,10 +211,10 @@ Get the MimeType singleton.
 			if (_return == None):
 			#
 				_return = MimeType()
+				_return.refresh()
+
 				MimeType._weakref_instance = ref(_return)
 			#
-
-			_return.refresh()
 		#
 
 		return _return

@@ -106,7 +106,7 @@ Constructor __init__(LogHandler)
 		"""
 Logger object
 		"""
-		self.log_file_pathname = None
+		self.log_file_path_name = None
 		"""
 Path and filename of the log file
 		"""
@@ -138,32 +138,32 @@ Preserve the amount of files
 
 		if (not LogHandler._appender_defined):
 		#
-			log_file_pathname = Settings.get("pas_core_log_pathname")
+			log_file_path_name = Settings.get("pas_core_log_path_name")
 
-			if (Settings.is_defined("pas_core_log_pathname")):
+			if (Settings.is_defined("pas_core_log_path_name")):
 			#
-				log_file_pathname = path.normpath(log_file_pathname)
+				log_file_path_name = path.normpath(log_file_path_name)
 
-				if (os.access(log_file_pathname, os.W_OK)
-				    or ((not os.access(log_file_pathname, os.F_OK)) and os.access(path.split(log_file_pathname)[0], os.W_OK))
-				   ): self.log_file_pathname = log_file_pathname
-			#
-
-			if (self.log_file_pathname == None and Settings.is_defined("pas_core_log_name")):
-			#
-				log_file_pathname = path.join(Settings.get("path_base"), "log", Settings.get("pas_core_log_name"))
-
-				if (os.access(log_file_pathname, os.W_OK)
-				    or ((not os.access(log_file_pathname, os.F_OK)) and os.access(path.join(Settings.get("path_base"), "log"), os.W_OK))
-				   ): self.log_file_pathname = log_file_pathname
+				if (os.access(log_file_path_name, os.W_OK)
+				    or ((not os.access(log_file_path_name, os.F_OK)) and os.access(path.split(log_file_path_name)[0], os.W_OK))
+				   ): self.log_file_path_name = log_file_path_name
 			#
 
-			if (self.log_file_pathname == None): self.log_file_pathname = path.join(Settings.get("path_base"), "pas.log")
+			if (self.log_file_path_name == None and Settings.is_defined("pas_core_log_name")):
+			#
+				log_file_path_name = path.join(Settings.get("path_base"), "log", Settings.get("pas_core_log_name"))
+
+				if (os.access(log_file_path_name, os.W_OK)
+				    or ((not os.access(log_file_path_name, os.F_OK)) and os.access(path.join(Settings.get("path_base"), "log"), os.W_OK))
+				   ): self.log_file_path_name = log_file_path_name
+			#
+
+			if (self.log_file_path_name == None): self.log_file_path_name = path.join(Settings.get("path_base"), "pas.log")
 
 			if (_api_type == _API_JAVA):
 			#
-				try: self.log_handler = RotatingFileHandler(SimpleLayout(), self.log_file_pathname, encoding = "utf-8")
-				except TypeError: self.log_handler = RotatingFileHandler(SimpleLayout(), self.log_file_pathname)
+				try: self.log_handler = RotatingFileHandler(SimpleLayout(), self.log_file_path_name, encoding = "utf-8")
+				except TypeError: self.log_handler = RotatingFileHandler(SimpleLayout(), self.log_file_path_name)
 
 				self.log_handler.setLevel(DEBUG)
 				self.log_handler.setMaxBackupIndex(self.log_file_rotates)
@@ -176,7 +176,7 @@ Preserve the amount of files
 			#
 			else:
 			#
-				self.log_handler = RotatingFileHandler(self.log_file_pathname, maxBytes = self.log_file_size_max, backupCount = self.log_file_rotates)
+				self.log_handler = RotatingFileHandler(self.log_file_path_name, maxBytes = self.log_file_size_max, backupCount = self.log_file_rotates)
 				logger_root = logging.getLogger()
 
 				if ((hasattr(logger_root, "hasHandlers") and logger_root.hasHandlers()) or (len(logger_root.handlers) > 0)): self.logger.addHandler(self.log_handler)

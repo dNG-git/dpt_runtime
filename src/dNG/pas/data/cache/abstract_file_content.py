@@ -36,12 +36,12 @@ The abstract file cache defines methods to access cached data.
 
 	# pylint: disable=unused-argument
 
-	def get_file(self, file_pathname):
+	def get_file(self, file_path_name):
 	#
 		"""
 Get the content from cache for the given file path and name.
 
-:param file_pathname: Cached file path and name
+:param file_path_name: Cached file path and name
 
 :return: (mixed) Cached entry; None if no hit or changed
 :since:  v0.1.02
@@ -50,12 +50,12 @@ Get the content from cache for the given file path and name.
 		raise NotImplementedException()
 	#
 
-	def is_file_known(self, file_pathname):
+	def is_file_known(self, file_path_name):
 	#
 		"""
 Return true if the given file path and name is cached.
 
-:param file_pathname: Cached file path and name
+:param file_path_name: Cached file path and name
 
 :return: (bool) True if currently cached
 :since:  v0.1.02
@@ -64,12 +64,12 @@ Return true if the given file path and name is cached.
 		raise NotImplementedException()
 	#
 
-	def set_file(self, file_pathname, cache_entry):
+	def set_file(self, file_path_name, cache_entry):
 	#
 		"""
 Fill the cache for the given file path and name with the given cache entry.
 
-:param file_pathname: File path and name
+:param file_path_name: File path and name
 :param cache_entry: Cached entry data
 
 :since: v0.1.02

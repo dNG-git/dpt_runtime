@@ -25,7 +25,7 @@ from dNG.pas.vfs.file.watcher import Watcher
 from .abstract_file_content import AbstractFileContent
 #from .abstract_value import AbstractValue
 
-class Content(dict, Watcher, AbstractFileContent):
+class Content(Watcher, AbstractFileContent):
 #
 	"""
 The cache singleton for content provides memory-based caching mechanisms for
@@ -55,11 +55,14 @@ Constructor __init__(Content)
 :since: v0.1.02
 		"""
 
-		dict.__init__(self)
 		Watcher.__init__(self)
 		AbstractFileContent.__init__(self)
 		#AbstractValue.__init__(self)
 
+		self.cache = { }
+		"""
+Dictionary of cached entries
+		"""
 		self.history = [ ]
 		"""
 Holds a history of requests and updates (newest first)
@@ -74,26 +77,12 @@ Size in bytes
 		"""
 	#
 
-	def __repr__(self):
-	#
-		"""
-python.org: Called by the repr() built-in function and by string conversions
-(reverse quotes) to compute the "official" string representation of an
-object.
-
-:return: (str) String representation
-:since:  v0.1.02
-		"""
-
-		return object.__repr__(self)
-	#
-
-	def get_file(self, file_pathname):
+	def get_file(self, file_path_name):
 	#
 		"""
 Get the content from cache for the given file path and name.
 
-:param file_pathname: Cached file path and name
+:param file_path_name: Cached file path and name
 
 :return: (mixed) Cached entry; None if no hit or changed
 :since:  v0.1.02
@@ -101,17 +90,17 @@ Get the content from cache for the given file path and name.
 
 		_return = None
 
-		if (self.is_synchronous()): self.check("file:///{0}".format(file_pathname))
+		if (self.is_synchronous()): self.check("file:///{0}".format(file_path_name))
 
-		if (file_pathname in self):
+		if (file_path_name in self.cache):
 		# Thread safety
 			with self._lock:
 			#
-				if (file_pathname in self):
+				if (file_path_name in self.cache):
 				#
-					_return = self[file_pathname]['entry']
-					self.history.remove(file_pathname)
-					self.history.insert(0, file_pathname)
+					_return = self.cache[file_path_name]['entry']
+					self.history.remove(file_path_name)
+					self.history.insert(0, file_path_name)
 				#
 			#
 		#
@@ -119,26 +108,26 @@ Get the content from cache for the given file path and name.
 		return _return
 	#
 
-	def is_file_known(self, file_pathname):
+	def is_file_known(self, file_path_name):
 	#
 		"""
 Return true if the given file path and name is cached.
 
-:param file_pathname: Cached file path and name
+:param file_path_name: Cached file path and name
 
 :return: (bool) True if currently cached
 :since:  v0.1.02
 		"""
 
-		return (file_pathname in self)
+		return (file_path_name in self.cache)
 	#
 
-	def set_file(self, file_pathname, cache_entry, cache_entry_size = None):
+	def set_file(self, file_path_name, cache_entry, cache_entry_size = None):
 	#
 		"""
 Fill the cache for the given file path and name with the given cache entry.
 
-:param file_pathname: File path and name
+:param file_path_name: File path and name
 :param cache_entry: Cached entry data
 
 :since: v0.1.02
@@ -148,32 +137,32 @@ Fill the cache for the given file path and name with the given cache entry.
 
 		with self._lock:
 		#
-			if (file_pathname not in self):
+			if (file_path_name not in self.cache):
 			#
-				is_valid = self.register("file:///{0}".format(file_pathname), self._uncache_changed)
+				is_valid = self.register("file:///{0}".format(file_path_name), self._uncache_changed)
 
 				if (is_valid):
 				#
-					self[file_pathname] = { "entry": cache_entry, "size": cache_entry_size }
-					self.history.insert(0, file_pathname)
+					self.cache[file_path_name] = { "entry": cache_entry, "size": cache_entry_size }
+					self.history.insert(0, file_path_name)
 					self.size += cache_entry_size
 
 					if (self.size > self.max_size):
 					#
 						key = self.history.pop()
 
-						self.size -= len(self[key]['size'])
-						del(self[key])
+						self.size -= len(self.cache[key]['size'])
+						del(self.cache[key])
 					#
 				#
 			#
-			elif (self[file_pathname]['entry'] != cache_entry):
+			elif (self.cache[file_path_name]['entry'] != cache_entry):
 			#
-				self.size -= self[file_pathname]['size']
-				self.history.remove(file_pathname)
+				self.size -= self.cache[file_path_name]['size']
+				self.history.remove(file_path_name)
 
-				self[file_pathname] = { "entry": cache_entry, "size": cache_entry_size }
-				self.history.insert(0, file_pathname)
+				self.cache[file_path_name] = { "entry": cache_entry, "size": cache_entry_size }
+				self.history.insert(0, file_path_name)
 				self.size += cache_entry_size
 			#
 		#
@@ -191,17 +180,17 @@ Remove changed files from the cache.
 :since: v0.1.02
 		"""
 
-		file_pathname = url[8:]
+		file_path_name = url[8:]
 
-		if (file_pathname in self):
+		if (file_path_name in self.cache):
 		#
 			with self._lock:
 			# Thread safety
-				if (file_pathname in self):
+				if (file_path_name in self.cache):
 				#
-					self.size -= self[file_pathname]['size']
-					self.history.remove(file_pathname)
-					del(self[file_pathname])
+					self.size -= self.cache[file_path_name]['size']
+					self.history.remove(file_path_name)
+					del(self.cache[file_path_name])
 
 					self.unregister(url, self._uncache_changed)
 				#

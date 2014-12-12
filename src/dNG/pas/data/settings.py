@@ -235,28 +235,28 @@ Checks if a given key is a defined setting.
 	#
 
 	@staticmethod
-	def is_file_known(file_pathname):
+	def is_file_known(file_path_name):
 	#
 		"""
 Return true if the given file path and name is cached.
 
-:param file_pathname: File path and name of the settings file
+:param file_path_name: File path and name of the settings file
 
 :return: (bool) True if currently cached
 :since:  v0.1.01
 		"""
 
-		file_pathname = path.normpath(file_pathname)
-		return (False if (Settings._cache_instance == None) else Settings._cache_instance.is_file_known(file_pathname))
+		file_path_name = path.normpath(file_path_name)
+		return (False if (Settings._cache_instance == None) else Settings._cache_instance.is_file_known(file_path_name))
 	#
 
 	@staticmethod
-	def read_file(file_pathname, required = False):
+	def read_file(file_path_name, required = False):
 	#
 		"""
 Read all settings from the given file.
 
-:param file_pathname: File path and name of the settings file
+:param file_path_name: File path and name of the settings file
 :param required: True if missing files should throw exceptions
 
 :return: (bool) True on success
@@ -267,31 +267,31 @@ Read all settings from the given file.
 
 		_return = True
 
-		file_pathname = path.normpath(file_pathname)
-		file_content = (None if (Settings._cache_instance == None) else Settings._cache_instance.get_file(file_pathname))
+		file_path_name = path.normpath(file_path_name)
+		file_content = (None if (Settings._cache_instance == None) else Settings._cache_instance.get_file(file_path_name))
 
 		if (file_content == None):
 		#
 			file_object = File()
 
-			if (file_object.open(file_pathname, True, "r")):
+			if (file_object.open(file_path_name, True, "r")):
 			#
 				file_content = file_object.read()
 				file_object.close()
 
 				file_content = file_content.replace("\r", "")
 				file_content = Settings.RE_EXTENDED_JSON_COMMENT_LINE.sub("", file_content)
-				if (Settings._cache_instance != None): Settings._cache_instance.set_file(file_pathname, file_content)
+				if (Settings._cache_instance != None): Settings._cache_instance.set_file(file_path_name, file_content)
 			#
-			elif (required): raise IOException("{0} not found".format(file_pathname))
-			elif (Settings._log_handler != None): Settings._log_handler.debug("{0} not found", file_pathname, context = "pas_core")
+			elif (required): raise IOException("{0} not found".format(file_path_name))
+			elif (Settings._log_handler != None): Settings._log_handler.debug("{0} not found", file_path_name, context = "pas_core")
 		#
 
 		if (file_content == None): _return = False
 		elif (not Settings.import_json(file_content)):
 		#
-			if (required): raise ValueException("{0} is not a valid JSON encoded settings file".format(file_pathname))
-			if (Settings._log_handler != None): Settings._log_handler.warning("{0} is not a valid JSON encoded settings file", file_pathname, context = "pas_core")
+			if (required): raise ValueException("{0} is not a valid JSON encoded settings file".format(file_path_name))
+			if (Settings._log_handler != None): Settings._log_handler.warning("{0} is not a valid JSON encoded settings file", file_path_name, context = "pas_core")
 
 			_return = False
 		#
@@ -344,13 +344,13 @@ Sets the LogHandler.
 	#
 
 	@staticmethod
-	def write_file(file_pathname, template_pathname):
+	def write_file(file_path_name, template_path_name):
 	#
 		"""
 Write all settings to the given file using the given template.
 
-:param file_pathname: File path and name of the settings file
-:param template_pathname: File path and name of the settings template
+:param file_path_name: File path and name of the settings file
+:param template_path_name: File path and name of the settings template
        file
 
 :return: (bool) True on success

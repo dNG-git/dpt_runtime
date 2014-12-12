@@ -40,12 +40,12 @@ class FileContent(object):
 	"""
 
 	@staticmethod
-	def is_changed(file_pathname):
+	def is_changed(file_path_name):
 	#
 		"""
 Returns false if the file is cached and not modified.
 
-:param file_pathname: File path and name
+:param file_path_name: File path and name
 
 :return: (bool) True if not cached or modified
 :since:  v0.1.02
@@ -54,12 +54,12 @@ Returns false if the file is cached and not modified.
 		_return = False
 
 		cache_instance = NamedLoader.get_singleton("dNG.pas.data.cache.Content", False)
-		file_pathname = path.normpath(file_pathname)
+		file_path_name = path.normpath(file_path_name)
 
 		if (cache_instance == None): _return = True
 		else:
 		#
-			file_content = cache_instance.get_file(file_pathname)
+			file_content = cache_instance.get_file(file_path_name)
 			if (file_content == None): _return = True
 		#
 
@@ -67,12 +67,12 @@ Returns false if the file is cached and not modified.
 	#
 
 	@staticmethod
-	def read(file_pathname, required = False):
+	def read(file_path_name, required = False):
 	#
 		"""
 Read data from the given file or from cache.
 
-:param file_pathname: File path and name
+:param file_path_name: File path and name
 :param required: True if missing files should throw an exception
 
 :return: (mixed) File data; None on error
@@ -81,16 +81,16 @@ Read data from the given file or from cache.
 
 		# pylint: disable=maybe-no-member
 
-		_return = FileContent._read_cache(file_pathname, required)
+		_return = FileContent._read_cache(file_path_name, required)
 
 		if (_return == None):
 		#
-			_return = FileContent._read_file(file_pathname, required)
+			_return = FileContent._read_file(file_path_name, required)
 
 			if (_return != None):
 			#
 				cache_instance = NamedLoader.get_singleton("dNG.pas.data.cache.Content", False)
-				if (cache_instance != None): cache_instance.set_file(file_pathname, _return)
+				if (cache_instance != None): cache_instance.set_file(file_path_name, _return)
 			#
 		#
 
@@ -98,12 +98,12 @@ Read data from the given file or from cache.
 	#
 
 	@staticmethod
-	def _read_cache(file_pathname, required):
+	def _read_cache(file_path_name, required):
 	#
 		"""
 Read data from cache.
 
-:param file_pathname: File path and name
+:param file_path_name: File path and name
 :param required: True if missing files should throw an exception
 
 :return: (mixed) File data; None on error
@@ -111,16 +111,16 @@ Read data from cache.
 		"""
 
 		cache_instance = NamedLoader.get_singleton("dNG.pas.data.cache.Content", False)
-		return (None if (cache_instance == None) else cache_instance.get_file(file_pathname))
+		return (None if (cache_instance == None) else cache_instance.get_file(file_path_name))
 	#
 
 	@staticmethod
-	def _read_file(file_pathname, required):
+	def _read_file(file_path_name, required):
 	#
 		"""
 Read data from the given file or from cache.
 
-:param file_pathname: File path and name
+:param file_path_name: File path and name
 :param required: True if missing files should throw an exception
 
 :return: (mixed) File data; None on error
@@ -131,15 +131,15 @@ Read data from the given file or from cache.
 
 		file_object = File()
 
-		if (file_object.open(file_pathname, True, "r")):
+		if (file_object.open(file_path_name, True, "r")):
 		#
 			_return = file_object.read()
 			file_object.close()
 
 			_return = _return.replace("\r", "")
 		#
-		elif (required): raise IOException("{0} not found".format(file_pathname))
-		else: LogLine.debug("{0} not found", file_pathname, context = "pas_core")
+		elif (required): raise IOException("{0} not found".format(file_path_name))
+		else: LogLine.debug("{0} not found", file_path_name, context = "pas_core")
 
 		return _return
 	#

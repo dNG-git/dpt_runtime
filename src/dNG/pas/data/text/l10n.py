@@ -89,21 +89,21 @@ Load the given language section.
 		file_basename = Binary.str(file_basename)
 		instance = L10n.get_instance(lang)
 
-		file_pathname = ""
-		file_pathname_list = file_basename.split(".")
+		file_path_name = ""
+		file_path_name_list = file_basename.split(".")
 		re_file_name = re.compile("\\W+")
 
-		for basename in file_pathname_list:
+		for basename in file_path_name_list:
 		#
 			if (basename):
 			#
 				basename = re_file_name.sub(" ", basename)
-				file_pathname += ("/" if (len(file_pathname) > 0) else "") + basename
+				file_path_name += ("/" if (len(file_path_name) > 0) else "") + basename
 			#
 		#
 
-		file_pathname = "{0}/{1}/{2}.json".format(Settings.get("path_lang"), instance.get_lang(), file_pathname)
-		instance.read_file(file_pathname)
+		file_path_name = "{0}/{1}/{2}.json".format(Settings.get("path_lang"), instance.get_lang(), file_path_name)
+		instance.read_file(file_path_name)
 	#
 
 	@staticmethod

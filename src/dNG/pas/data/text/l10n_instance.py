@@ -100,30 +100,30 @@ Returns the language code of this instance.
 		return self.lang
 	#
 
-	def read_file(self, file_pathname):
+	def read_file(self, file_path_name):
 	#
 		"""
 Read all translations from the given file.
 
-:param file_pathname: File path and name
+:param file_path_name: File path and name
 
 :since: v0.1.00
 		"""
 
-		if (file_pathname not in self.files or JsonFileContent.is_changed(file_pathname)):
+		if (file_path_name not in self.files or JsonFileContent.is_changed(file_path_name)):
 		#
-			json_data = JsonFileContent.read(file_pathname)
+			json_data = JsonFileContent.read(file_path_name)
 			if (type(json_data) == dict): self.update(json_data)
 		#
 	#
 
-	def write_file(self, file_pathname, template_pathname):
+	def write_file(self, file_path_name, template_path_name):
 	#
 		"""
 Write all translations to the given file using the given template.
 
-:param file_pathname: File path and name of the translation file
-:param template_pathname: File path and name of the translation template
+:param file_path_name: File path and name of the translation file
+:param template_path_name: File path and name of the translation template
        file
 
 :return: (bool) True on success
