@@ -54,7 +54,7 @@ Constructor __init__(TranslatableException)
 Translated message
 		"""
 
-		if (value == None): value = self.l10n_message
+		if (value is None): value = self.l10n_message
 
 		TracedException.__init__(self, value, _exception)
 	#

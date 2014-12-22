@@ -166,7 +166,7 @@ not defined.
 		key_with_lang = "{0}_{1}".format(key, lang)
 		_return = (_dict[key_with_lang] if (key_with_lang in _dict) else None)
 
-		if (_return == None): _return = (_dict[key] if (key in _dict) else default)
+		if (_return is None): _return = (_dict[key] if (key in _dict) else default)
 
 		return _return
 	#
@@ -181,11 +181,11 @@ Get the settings singleton.
 :since:  v0.1.00
 		"""
 
-		if (Settings._instance == None):
+		if (Settings._instance is None):
 		# Thread safety
 			with Settings._lock:
 			#
-				if (Settings._instance == None):
+				if (Settings._instance is None):
 				#
 					Settings._instance = Settings()
 					Settings.read_file("{0}/settings/core.json".format(Settings._instance.dict['path_data']))
@@ -213,7 +213,7 @@ Import a given JSON encoded string as an dict of settings.
 		json_resource = JsonResource()
 		json_data = json_resource.json_to_data(json)
 
-		if (json_data == None): _return = False
+		if (json_data is None): _return = False
 		else: Settings.get_instance().update(json_data)
 
 		return _return
@@ -247,7 +247,7 @@ Return true if the given file path and name is cached.
 		"""
 
 		file_path_name = path.normpath(file_path_name)
-		return (False if (Settings._cache_instance == None) else Settings._cache_instance.is_file_known(file_path_name))
+		return (False if (Settings._cache_instance is None) else Settings._cache_instance.is_file_known(file_path_name))
 	#
 
 	@staticmethod
@@ -268,9 +268,9 @@ Read all settings from the given file.
 		_return = True
 
 		file_path_name = path.normpath(file_path_name)
-		file_content = (None if (Settings._cache_instance == None) else Settings._cache_instance.get_file(file_path_name))
+		file_content = (None if (Settings._cache_instance is None) else Settings._cache_instance.get_file(file_path_name))
 
-		if (file_content == None):
+		if (file_content is None):
 		#
 			file_object = File()
 
@@ -281,17 +281,17 @@ Read all settings from the given file.
 
 				file_content = file_content.replace("\r", "")
 				file_content = Settings.RE_EXTENDED_JSON_COMMENT_LINE.sub("", file_content)
-				if (Settings._cache_instance != None): Settings._cache_instance.set_file(file_path_name, file_content)
+				if (Settings._cache_instance is not None): Settings._cache_instance.set_file(file_path_name, file_content)
 			#
 			elif (required): raise IOException("{0} not found".format(file_path_name))
-			elif (Settings._log_handler != None): Settings._log_handler.debug("{0} not found", file_path_name, context = "pas_core")
+			elif (Settings._log_handler is not None): Settings._log_handler.debug("{0} not found", file_path_name, context = "pas_core")
 		#
 
-		if (file_content == None): _return = False
+		if (file_content is None): _return = False
 		elif (not Settings.import_json(file_content)):
 		#
 			if (required): raise ValueException("{0} is not a valid JSON encoded settings file".format(file_path_name))
-			if (Settings._log_handler != None): Settings._log_handler.warning("{0} is not a valid JSON encoded settings file", file_path_name, context = "pas_core")
+			if (Settings._log_handler is not None): Settings._log_handler.warning("{0} is not a valid JSON encoded settings file", file_path_name, context = "pas_core")
 
 			_return = False
 		#
@@ -325,7 +325,7 @@ Sets the cache instance.
 :since: v0.1.00
 		"""
 
-		if (Settings._log_handler != None): Settings._log_handler.debug("#echo(__FILEPATH__)# -Settings.set_cache_instance()- (#echo(__LINE__)#)", context = "pas_core")
+		if (Settings._log_handler is not None): Settings._log_handler.debug("#echo(__FILEPATH__)# -Settings.set_cache_instance()- (#echo(__LINE__)#)", context = "pas_core")
 		Settings._cache_instance = proxy(cache_instance)
 	#
 

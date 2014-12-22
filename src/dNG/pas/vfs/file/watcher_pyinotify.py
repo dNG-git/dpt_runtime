@@ -163,7 +163,7 @@ if a callback is given but not defined for the watched path.
 
 		with self._lock:
 		#
-			if (_path in self.watched_callbacks): _return = (True if (callback == None) else (callback in self.watched_callbacks[_path]))
+			if (_path in self.watched_callbacks): _return = (True if (callback is None) else (callback in self.watched_callbacks[_path]))
 		#
 
 		return _return
@@ -240,11 +240,11 @@ Stops all watchers.
 :since: v0.1.01
 		"""
 
-		if (WatcherPyinotify._instance != None):
+		if (WatcherPyinotify._instance is not None):
 		# Thread safety
 			with WatcherPyinotify._instance_lock:
 			#
-				if (WatcherPyinotify._instance != None): WatcherPyinotify._instance = None
+				if (WatcherPyinotify._instance is not None): WatcherPyinotify._instance = None
 			#
 		#
 
@@ -278,7 +278,7 @@ Handles deregistration of filesystem watches.
 
 			if (directory_path in self.watched_path_files and _path in self.watched_paths):
 			#
-				if (callback == None or _deleted): self.watched_callbacks[_path] = [ ]
+				if (callback is None or _deleted): self.watched_callbacks[_path] = [ ]
 				elif (callback in self.watched_callbacks[_path]): self.watched_callbacks[_path].remove(callback)
 
 				if (len(self.watched_callbacks[_path]) < 1): del(self.watched_callbacks[_path])
@@ -311,11 +311,11 @@ Get the WatcherPyinotify singleton.
 :since:  v0.1.00
 		"""
 
-		if (WatcherPyinotify._instance == None):
+		if (WatcherPyinotify._instance is None):
 		# Thread safety
 			with WatcherPyinotify._instance_lock:
 			#
-				if (WatcherPyinotify._instance == None): WatcherPyinotify._instance = WatcherPyinotify()
+				if (WatcherPyinotify._instance is None): WatcherPyinotify._instance = WatcherPyinotify()
 			#
 		#
 

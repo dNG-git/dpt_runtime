@@ -118,7 +118,7 @@ Python.org: Hook method for deconstructing the test fixture after testing
 it.
 		"""
 
-		if (self.watcher != None): self.watcher.disable()
+		if (self.watcher is not None): self.watcher.disable()
 		self.watcher = None
 	#
 
@@ -170,7 +170,7 @@ Process a simple scenario.
 		_file.close(False)
 	#
 
-	@unittest.skipIf((WatchManager == None), "pyinotify.WatchManager not usable")
+	@unittest.skipIf((WatchManager is None), "pyinotify.WatchManager not usable")
 	def test_inotify(self):
 	#
 		"""
@@ -210,7 +210,7 @@ Tests pyinotify ThreadedNotifier
 		self.assertEqual(None, self.changed_list[2]['changed_value'])
 	#
 
-	@unittest.skipIf((WatchManager == None), "pyinotify.WatchManager not usable")
+	@unittest.skipIf((WatchManager is None), "pyinotify.WatchManager not usable")
 	def test_inotify_sync(self):
 	#
 		"""

@@ -59,17 +59,17 @@ Read data from the given file or from cache.
 		#
 			file_content = FileContent._read_file(file_path_name, required)
 
-			if (file_content != None):
+			if (file_content is not None):
 			#
 				cache_instance = NamedLoader.get_singleton("dNG.pas.data.cache.Content", False)
 				_return = JsonResource().json_to_data(file_content)
 
-				if (_return == None):
+				if (_return is None):
 				#
 					if (required): raise ValueException("{0} is not a valid JSON encoded file".format(file_path_name))
 					LogLine.warning("{0} is not a valid JSON encoded file", file_path_name, context = "pas_core")
 				#
-				elif (cache_instance != None): cache_instance.set_file(file_path_name, _return, len(file_content))
+				elif (cache_instance is not None): cache_instance.set_file(file_path_name, _return, len(file_content))
 			#
 		#
 

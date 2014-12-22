@@ -133,7 +133,7 @@ Fill the cache for the given file path and name with the given cache entry.
 :since: v0.1.02
 		"""
 
-		if (cache_entry_size == None): cache_entry_size = len(cache_entry)
+		if (cache_entry_size is None): cache_entry_size = len(cache_entry)
 
 		with self._lock:
 		#
@@ -208,9 +208,9 @@ Get the Content singleton.
 :since:  v0.1.02
 		"""
 
-		_return = (None if (Content._weakref_instance == None) else Content._weakref_instance())
+		_return = (None if (Content._weakref_instance is None) else Content._weakref_instance())
 
-		if (_return == None):
+		if (_return is None):
 		#
 			_return = Content()
 			Content._weakref_instance = ref(_return)

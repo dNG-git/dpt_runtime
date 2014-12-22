@@ -56,11 +56,11 @@ Returns false if the file is cached and not modified.
 		cache_instance = NamedLoader.get_singleton("dNG.pas.data.cache.Content", False)
 		file_path_name = path.normpath(file_path_name)
 
-		if (cache_instance == None): _return = True
+		if (cache_instance is None): _return = True
 		else:
 		#
 			file_content = cache_instance.get_file(file_path_name)
-			if (file_content == None): _return = True
+			if (file_content is None): _return = True
 		#
 
 		return _return
@@ -83,14 +83,14 @@ Read data from the given file or from cache.
 
 		_return = FileContent._read_cache(file_path_name, required)
 
-		if (_return == None):
+		if (_return is None):
 		#
 			_return = FileContent._read_file(file_path_name, required)
 
-			if (_return != None):
+			if (_return is not None):
 			#
 				cache_instance = NamedLoader.get_singleton("dNG.pas.data.cache.Content", False)
-				if (cache_instance != None): cache_instance.set_file(file_path_name, _return)
+				if (cache_instance is not None): cache_instance.set_file(file_path_name, _return)
 			#
 		#
 
@@ -111,7 +111,7 @@ Read data from cache.
 		"""
 
 		cache_instance = NamedLoader.get_singleton("dNG.pas.data.cache.Content", False)
-		return (None if (cache_instance == None) else cache_instance.get_file(file_path_name))
+		return (None if (cache_instance is None) else cache_instance.get_file(file_path_name))
 	#
 
 	@staticmethod

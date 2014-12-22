@@ -49,7 +49,7 @@ try:
 #
 except ImportError: _api_type = None
 
-if (_api_type == None):
+if (_api_type is None):
 #
 	from org.apache.log4j import Logger as logging
 	from org.apache.log4j import RollingFileAppender as RotatingFileHandler
@@ -130,7 +130,7 @@ Preserve the amount of files
 		                 }
 
 		level = Settings.get("pas_core_log_level")
-		if (level == None): level = Settings.get("core_log_level", "warning")
+		if (level is None): level = Settings.get("core_log_level", "warning")
 		self.level['global'] = self.level_map.get(level, WARNING)
 
 		self.logger = logging.getLogger(self.ident)
@@ -149,7 +149,7 @@ Preserve the amount of files
 				   ): self.log_file_path_name = log_file_path_name
 			#
 
-			if (self.log_file_path_name == None and Settings.is_defined("pas_core_log_name")):
+			if (self.log_file_path_name is None and Settings.is_defined("pas_core_log_name")):
 			#
 				log_file_path_name = path.join(Settings.get("path_base"), "log", Settings.get("pas_core_log_name"))
 
@@ -158,7 +158,7 @@ Preserve the amount of files
 				   ): self.log_file_path_name = log_file_path_name
 			#
 
-			if (self.log_file_path_name == None): self.log_file_path_name = path.join(Settings.get("path_base"), "pas.log")
+			if (self.log_file_path_name is None): self.log_file_path_name = path.join(Settings.get("path_base"), "pas.log")
 
 			if (_api_type == _API_JAVA):
 			#
@@ -342,9 +342,9 @@ Get the LogHandler singleton.
 
 		with LogHandler._weakref_lock:
 		#
-			if (LogHandler._weakref_instance != None): _return = LogHandler._weakref_instance()
+			if (LogHandler._weakref_instance is not None): _return = LogHandler._weakref_instance()
 
-			if (_return == None):
+			if (_return is None):
 			#
 				_return = LogHandler()
 				LogHandler._weakref_instance = ref(_return)

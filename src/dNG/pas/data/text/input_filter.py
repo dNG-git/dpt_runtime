@@ -122,11 +122,11 @@ ASCII address if it is. Does not recognize comments.
 				if ("@" in data_part):
 				#
 					at_splitted = data_part.split("@")
-					if (re_valid_chars.match(at_splitted[0]) == None): at_splitted[0] = quote(at_splitted[0])
+					if (re_valid_chars.match(at_splitted[0]) is None): at_splitted[0] = quote(at_splitted[0])
 
 					if (domain_part == ""
 					    and len(at_splitted) < 3
-					    and re_invalid_chars.search(at_splitted[0]) == None
+					    and re_invalid_chars.search(at_splitted[0]) is None
 					    and ".." not in at_splitted[0]
 					    and ".." not in at_splitted[1]
 					   ):
@@ -140,7 +140,7 @@ ASCII address if it is. Does not recognize comments.
 						break
 					#
 				#
-				elif (".." in data_part or re_invalid_chars.search(data_part) != None):
+				elif (".." in data_part or re_invalid_chars.search(data_part) is not None):
 				#
 					is_valid = False
 					break
@@ -155,7 +155,7 @@ ASCII address if it is. Does not recognize comments.
 				re_result = re_char_escaped.search(data_part)
 
 				# Is it escaped?
-				if (re_result != None and (len(re_result.group(1)) % 2) == 1):
+				if (re_result is not None and (len(re_result.group(1)) % 2) == 1):
 				#
 					is_valid = False
 					quoted_part += "\""
@@ -165,7 +165,7 @@ ASCII address if it is. Does not recognize comments.
 					is_valid = True
 					quote_count += 1
 
-					local_part += (quote(quoted_part) if (re_valid_chars.match(quoted_part) == None) else "\"{0}\"".format(quoted_part))
+					local_part += (quote(quoted_part) if (re_valid_chars.match(quoted_part) is None) else "\"{0}\"".format(quoted_part))
 					quoted_part = ""
 				#
 			#
@@ -175,9 +175,9 @@ ASCII address if it is. Does not recognize comments.
 
 		if (domain_part == ""): is_valid = False
 		elif (is_valid
-		      and (re_invalid_chars.search(domain_part[1:-1]) != None
+		      and (re_invalid_chars.search(domain_part[1:-1]) is not None
 		           if (domain_part[:1] == "[" and domain_part[-1:] == "]") else
-		           re_invalid_chars.search(domain_part) != None
+		           re_invalid_chars.search(domain_part) is not None
 		          )
 		     ):
 		#
@@ -239,7 +239,7 @@ Check and convert to float.
 
 		try:
 		#
-			if (data != None): data = float(data)
+			if (data is not None): data = float(data)
 		#
 		except ValueError: data = None
 
@@ -260,7 +260,7 @@ Check and convert to int.
 
 		try:
 		#
-			if (data != None): data = int(data)
+			if (data is not None): data = int(data)
 		#
 		except ValueError: data = None
 

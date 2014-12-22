@@ -54,7 +54,7 @@ Underlying event instance
 		"""
 Underlying lock instance
 		"""
-		self.timeout = (Settings.get("pas_global_thread_lock_timeout", 10) if (timeout == None) else timeout)
+		self.timeout = (Settings.get("pas_global_thread_lock_timeout", 10) if (timeout is None) else timeout)
 		"""
 Lock timeout in seconds
 		"""
@@ -100,7 +100,7 @@ Acquire a lock.
 		#
 		except TypeError:
 		#
-			if (self.event == None):
+			if (self.event is None):
 			#
 				self.event = Event()
 				self.event.set()
@@ -150,7 +150,7 @@ Release a lock.
 		"""
 
 		self.lock.release()
-		if (self.event != None): self.event.set()
+		if (self.event is not None): self.event.set()
 	#
 
 	def set_timeout(self, timeout):

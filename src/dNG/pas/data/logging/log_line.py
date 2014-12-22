@@ -50,7 +50,7 @@ Debug message method
 		# pylint: disable=star-args
 
 		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
-		if (log_handler != None): log_handler.debug(data, *args, **kwargs)
+		if (log_handler is not None): log_handler.debug(data, *args, **kwargs)
 	#
 
 	@staticmethod
@@ -68,7 +68,7 @@ Error message method
 		# pylint: disable=star-args
 
 		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
-		if (log_handler != None): log_handler.error(data, *args, **kwargs)
+		if (log_handler is not None): log_handler.error(data, *args, **kwargs)
 	#
 
 	@staticmethod
@@ -86,7 +86,7 @@ Info message method
 		# pylint: disable=star-args
 
 		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
-		if (log_handler != None): log_handler.info(data, *args, **kwargs)
+		if (log_handler is not None): log_handler.info(data, *args, **kwargs)
 	#
 
 	@staticmethod
@@ -104,7 +104,7 @@ Warning message method
 		# pylint: disable=star-args
 
 		log_handler = NamedLoader.get_singleton("dNG.pas.data.logging.LogHandler", False)
-		if (log_handler != None): log_handler.warning(data, *args, **kwargs)
+		if (log_handler is not None): log_handler.warning(data, *args, **kwargs)
 	#
 #
 

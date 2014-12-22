@@ -56,7 +56,7 @@ Underlying lock instance
 Lock timeout in seconds
 		"""
 
-		if (self.timeout == None or self.timeout <= 0):
+		if (self.timeout is None or self.timeout <= 0):
 		#
 			self.timeout = int(Settings.get("pas_global_socket_data_timeout", 30))
 		#
@@ -83,7 +83,7 @@ Read data from socket.
 			if (len(select([ self.socket.fileno() ], [ ], [ ], self.timeout)[0]) < 1): raise IOException("Timeout occurred before receiving data")
 			data = self.socket.recv(size - data_size)
 
-			if (_return == None): _return = data
+			if (_return is None): _return = data
 			else: _return += data
 
 			data_size += len(data)

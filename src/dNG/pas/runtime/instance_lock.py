@@ -45,7 +45,7 @@ Constructor __init__(InstanceLock)
 
 		ThreadLock.__init__(self)
 
-		self.timeout = (Settings.get("pas_global_singleton_lock_timeout", 3) if (timeout == None) else timeout)
+		self.timeout = (Settings.get("pas_global_singleton_lock_timeout", 3) if (timeout is None) else timeout)
 	#
 #
 

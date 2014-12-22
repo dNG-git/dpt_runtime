@@ -124,7 +124,7 @@ Returns the base directory for scanning and loading python files.
 :since:  v0.1.00
 		"""
 
-		if (self.base_dir == None): self.base_dir = Settings.get("path_system")
+		if (self.base_dir is None): self.base_dir = Settings.get("path_system")
 		return self.base_dir
 	#
 
@@ -181,7 +181,7 @@ Get the class name for the given common name.
 		if (autoload): module = NamedLoader._load_module(module_name, classname)
 		else: module = NamedLoader._get_module(module_name, classname)
 
-		return (None if (module == None) else getattr(module, classname, None))
+		return (None if (module is None) else getattr(module, classname, None))
 	#
 
 	@staticmethod
@@ -203,14 +203,14 @@ Returns a new instance based on its common name.
 
 		_class = NamedLoader.get_class(common_name)
 
-		if (_class == None): _return = None
+		if (_class is None): _return = None
 		else:
 		#
 			_return = _class.__new__(_class, **kwargs)
 			_return.__init__(**kwargs)
 		#
 
-		if (_return == None and required): raise IOException("{0} is not defined".format(common_name))
+		if (_return is None and required): raise IOException("{0} is not defined".format(common_name))
 		return _return
 	#
 
@@ -224,11 +224,11 @@ Get the loader instance.
 :since:  v0.1.00
 		"""
 
-		if (NamedLoader._instance == None):
+		if (NamedLoader._instance is None):
 		# Thread safety
 			with NamedLoader._lock:
 			#
-				if (NamedLoader._instance == None): NamedLoader._instance = NamedLoader()
+				if (NamedLoader._instance is None): NamedLoader._instance = NamedLoader()
 			#
 		#
 
@@ -253,7 +253,7 @@ Returns a singleton based on its common name.
 
 		_class = NamedLoader.get_class(common_name)
 
-		if (_class == None and required): raise IOException("{0} is not defined".format(common_name))
+		if (_class is None and required): raise IOException("{0} is not defined".format(common_name))
 
 		if (hasattr(_class, "get_instance")): _return = _class.get_instance(**kwargs)
 		elif (required): raise TypeException("{0} has not defined a singleton".format(common_name))
@@ -275,7 +275,7 @@ Checks if a common name is defined or can be resolved to a class name.
 :since:  v0.1.00
 		"""
 
-		return (NamedLoader.get_class(common_name, autoload) != None)
+		return (NamedLoader.get_class(common_name, autoload) is not None)
 	#
 
 	@staticmethod
@@ -294,7 +294,7 @@ Returns the inititalized Python module defined by the given name.
 
 		_return = sys.modules.get(name)
 
-		if (_return != None and classname != None and (not hasattr(_return, classname))):
+		if (_return is not None and classname is not None and (not hasattr(_return, classname))):
 		#
 			with NamedLoader._lock: _return = sys.modules.get(name)
 		#
@@ -318,7 +318,7 @@ Load the Python module defined by the given name.
 
 		_return = NamedLoader._get_module(name, classname)
 
-		if (_return == None):
+		if (_return is None):
 		#
 			package = name.rsplit(".", 1)[0]
 
@@ -363,13 +363,13 @@ Load the Python file defined by the given name.
 
 		_return = NamedLoader._get_module(name, classname)
 
-		if (_return == None):
+		if (_return is None):
 		# Thread safety
 			with NamedLoader._lock:
 			#
 				_return = sys.modules.get(name)
 
-				if (_return == None):
+				if (_return is None):
 				#
 					try:
 					#
@@ -378,7 +378,7 @@ Load the Python file defined by the given name.
 					#
 					except Exception as handled_exception:
 					#
-						if (NamedLoader._log_handler != None): NamedLoader._log_handler.error(handled_exception, context = "pas_core")
+						if (NamedLoader._log_handler is not None): NamedLoader._log_handler.error(handled_exception, context = "pas_core")
 					#
 				#
 			#
@@ -410,11 +410,11 @@ Load the Python file with "imp" defined by the given name.
 			#
 				( file_obj, file_path, description ) = imp.find_module(_file, [ path.join(NamedLoader._get_loader().get_base_dir(), _path) ])
 				_return = imp.load_module(name, file_obj, file_path, description)
-				if (file_obj != None): file_obj.close()
+				if (file_obj is not None): file_obj.close()
 			#
 			except ImportError as handled_exception:
 			#
-				if (NamedLoader._log_handler != None): NamedLoader._log_handler.debug(handled_exception, context = "pas_core")
+				if (NamedLoader._log_handler is not None): NamedLoader._log_handler.debug(handled_exception, context = "pas_core")
 			#
 		#
 
@@ -438,7 +438,7 @@ Load the Python package with "importlib" defined by the given name.
 		try: _return = import_module(name)
 		except ImportError as handled_exception:
 		#
-			if (NamedLoader._log_handler != None): NamedLoader._log_handler.debug(handled_exception, context = "pas_core")
+			if (NamedLoader._log_handler is not None): NamedLoader._log_handler.debug(handled_exception, context = "pas_core")
 		#
 
 		return _return

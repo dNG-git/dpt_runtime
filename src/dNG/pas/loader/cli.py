@@ -160,9 +160,9 @@ Executes registered callbacks for the active application.
 
 		# pylint: disable=broad-except
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.run()- (#echo(__LINE__)#)", self, context = "pas_core")
+		if (self.log_handler is not None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.run()- (#echo(__LINE__)#)", self, context = "pas_core")
 
-		if (self.arg_parser != None and hasattr(self.arg_parser, "parse_args")): args = self.arg_parser.parse_args()
+		if (self.arg_parser is not None and hasattr(self.arg_parser, "parse_args")): args = self.arg_parser.parse_args()
 		else: args = { }
 
 		self.arg_parser = None
@@ -173,7 +173,7 @@ Executes registered callbacks for the active application.
 			Cli._callbacks_run = [ ]
 
 			self.mainloop_event.set()
-			if (self.mainloop != None): self.mainloop()
+			if (self.mainloop is not None): self.mainloop()
 		#
 		except Exception as handled_exception: self.error(handled_exception)
 		finally: self.shutdown()
@@ -189,9 +189,9 @@ Register a callback for the application main loop.
 :since: v0.1.00
 		"""
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_mainloop()- (#echo(__LINE__)#)", self, context = "pas_core")
+		if (self.log_handler is not None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_mainloop()- (#echo(__LINE__)#)", self, context = "pas_core")
 
-		if (self.mainloop != None): raise ValueException("Main loop already registered")
+		if (self.mainloop is not None): raise ValueException("Main loop already registered")
 		self.mainloop = callback
 	#
 
@@ -219,7 +219,7 @@ Handles an OS signal.
 :since: v0.1.00
 		"""
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}._signal()- (#echo(__LINE__)#)", self, context = "pas_core")
+		if (self.log_handler is not None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}._signal()- (#echo(__LINE__)#)", self, context = "pas_core")
 		self.shutdown()
 	#
 
@@ -235,7 +235,7 @@ Executes registered callbacks before shutting down this application.
 
 		# pylint: disable=raising-bad-type
 
-		if (self.log_handler != None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.shutdown()- (#echo(__LINE__)#)", self, context = "pas_core")
+		if (self.log_handler is not None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.shutdown()- (#echo(__LINE__)#)", self, context = "pas_core")
 
 		Thread.set_inactive()
 
@@ -249,7 +249,7 @@ Cleanup unused objects
 		#
 
 		Cli._callbacks_shutdown = [ ]
-		if (_exception != None): raise _exception
+		if (_exception is not None): raise _exception
 	#
 
 	def _wait_for_os_pid(self, pid):
@@ -262,7 +262,7 @@ Waits for the given OS process ID to exit.
 :since: v1.0.1
 		"""
 
-		if (pid != None and pid > 0 and hasattr(os, "kill")):
+		if (pid is not None and pid > 0 and hasattr(os, "kill")):
 		#
 			for _ in range(0, 60):
 			#
@@ -318,7 +318,7 @@ Register a callback for the application main loop.
 		"""
 
 		instance = Cli.get_instance()
-		if (instance != None): instance.set_mainloop(callback)
+		if (instance is not None): instance.set_mainloop(callback)
 	#
 
 	@staticmethod
@@ -364,7 +364,7 @@ Callback function for OS signals.
 	# pylint: disable=protected-access
 
 	instance = Cli.get_instance()
-	if (instance != None): instance._signal(os_signal, stack_frame)
+	if (instance is not None): instance._signal(os_signal, stack_frame)
 #
 
 if (hasattr(signal, "SIGABRT")): signal.signal(signal.SIGABRT, _on_signal)

@@ -91,19 +91,19 @@ for at least part of the data in string.
 :since:  v0.1.01
 		"""
 
-		if (self.compressor == None): raise IOException("Gzip compressor already flushed and closed")
+		if (self.compressor is None): raise IOException("Gzip compressor already flushed and closed")
 		data = Binary.bytes(string)
 
-		if (self.size == None): compressed_data = self.compressor.compress(data)
+		if (self.size is None): compressed_data = self.compressor.compress(data)
 		else:
 		#
-			self.crc32 = (crc32(data) if (self.crc32 == None) else crc32(data, self.crc32))
+			self.crc32 = (crc32(data) if (self.crc32 is None) else crc32(data, self.crc32))
 			self.size += len(data)
 
-			compressed_data = (self.compressor.compress(data) if (self.header == None) else self.compressor.compress(data)[2:])
+			compressed_data = (self.compressor.compress(data) if (self.header is None) else self.compressor.compress(data)[2:])
 		#
 
-		if (self.header == None): _return = compressed_data
+		if (self.header is None): _return = compressed_data
 		else:
 		#
 			_return = self.header + compressed_data
@@ -125,9 +125,9 @@ remaining compressed output is returned.
 		"""
 
 		if (mode != Z_FINISH): raise IOException("Gzip flush only supports Z_FINISH")
-		if (self.compressor == None): raise IOException("Gzip compressor already flushed and closed")
+		if (self.compressor is None): raise IOException("Gzip compressor already flushed and closed")
 
-		if (self.size == None): _return = self.compressor.flush(Z_FINISH)
+		if (self.size is None): _return = self.compressor.flush(Z_FINISH)
 		else:
 		#
 			_return = (Binary.BYTES_TYPE()

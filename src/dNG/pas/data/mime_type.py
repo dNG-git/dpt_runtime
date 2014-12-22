@@ -82,7 +82,7 @@ looked up.
 
 		_return = None
 
-		if (extension != None):
+		if (extension is not None):
 		#
 			extension = (extension[1:].lower() if (extension[:1] == ".") else extension.lower())
 
@@ -94,12 +94,12 @@ looked up.
 			else:
 			#
 				mimetype = mimetypes.guess_type("file.{0}".format(extension), False)[0]
-				if (mimetype != None): _return = { "type": mimetype, "extension": extension, "class": mimetype.split("/")[0] }
+				if (mimetype is not None): _return = { "type": mimetype, "extension": extension, "class": mimetype.split("/")[0] }
 			#
 
-			if (mimetype != None and mimetype != _return['type']): _return = None
+			if (mimetype is not None and mimetype != _return['type']): _return = None
 		#
-		elif (mimetype != None):
+		elif (mimetype is not None):
 		#
 			mimetype = mimetype.lower()
 
@@ -108,7 +108,7 @@ looked up.
 				_return = self.definitions[mimetype]
 				if ("type" not in _return): _return['type'] = mimetype
 			#
-			elif (mimetypes.guess_extension(mimetype, False) != None): _return = { "type": mimetype, "class": mimetype.split("/")[0] }
+			elif (mimetypes.guess_extension(mimetype, False) is not None): _return = { "type": mimetype, "class": mimetype.split("/")[0] }
 		#
 
 		return _return
@@ -127,7 +127,7 @@ Returns the list of extensions known for the given mime type.
 
 		_return = [ ]
 
-		if (mimetype != None or mimetype in self.definitions):
+		if (mimetype is not None or mimetype in self.definitions):
 		#
 			_return = self.definitions[mimetype].get("extensions", [ ])
 			if (type(_return) != list): _return = [ _return ]
@@ -206,9 +206,9 @@ Get the MimeType singleton.
 
 		with MimeType._weakref_lock:
 		#
-			if (MimeType._weakref_instance != None): _return = MimeType._weakref_instance()
+			if (MimeType._weakref_instance is not None): _return = MimeType._weakref_instance()
 
-			if (_return == None):
+			if (_return is None):
 			#
 				_return = MimeType()
 				_return.refresh()

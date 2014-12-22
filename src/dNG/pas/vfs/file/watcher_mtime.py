@@ -91,7 +91,7 @@ Checks a given path for changes if "is_synchronous()" is true.
 
 		with self._lock:
 		#
-			if (self.watched_paths != None and _path in self.watched_paths and self.watched_paths[_path] != os.stat(_path).st_mtime):
+			if (self.watched_paths is not None and _path in self.watched_paths and self.watched_paths[_path] != os.stat(_path).st_mtime):
 			#
 				_return = True
 				url = "file:///{0}".format(quote(_path, "/"))
@@ -116,7 +116,7 @@ Frees all watcher callbacks for garbage collection.
 
 		with self._lock:
 		#
-			if (self.watched_paths != None and len(self.watched_paths) > 0):
+			if (self.watched_paths is not None and len(self.watched_paths) > 0):
 			#
 				self.watched_callbacks = None
 				self.watched_paths = None
@@ -153,8 +153,8 @@ if a callback is given but not defined for the watched path.
 
 		with self._lock:
 		#
-			_return = (self.watched_paths != None and _path in self.watched_paths)
-			if (_return and callback != None): _return = (callback in self.watched_callbacks[_path])
+			_return = (self.watched_paths is not None and _path in self.watched_paths)
+			if (_return and callback is not None): _return = (callback in self.watched_callbacks[_path])
 		#
 
 		return _return
@@ -176,7 +176,7 @@ Handles registration of filesystem watches and its callbacks.
 
 		with self._lock:
 		#
-			if (self.watched_callbacks != None):
+			if (self.watched_callbacks is not None):
 			#
 				if (_path not in self.watched_paths):
 				#
@@ -199,11 +199,11 @@ Stops all watchers.
 :since: v0.1.01
 		"""
 
-		if (WatcherMtime._instance != None):
+		if (WatcherMtime._instance is not None):
 		# Thread safety
 			with WatcherMtime._instance_lock:
 			#
-				if (WatcherMtime._instance != None): WatcherMtime._instance = None
+				if (WatcherMtime._instance is not None): WatcherMtime._instance = None
 			#
 		#
 
@@ -226,9 +226,9 @@ Handles deregistration of filesystem watches.
 
 		with self._lock:
 		#
-			if (self.watched_paths != None and _path in self.watched_paths):
+			if (self.watched_paths is not None and _path in self.watched_paths):
 			#
-				if (callback == None): self.watched_callbacks[_path] = [ ]
+				if (callback is None): self.watched_callbacks[_path] = [ ]
 				elif (callback in self.watched_callbacks[_path]): self.watched_callbacks[_path].remove(callback)
 
 				if (len(self.watched_callbacks[_path]) < 1):
@@ -253,11 +253,11 @@ Get the WatcherMtime singleton.
 :since:  v0.1.00
 		"""
 
-		if (WatcherMtime._instance == None):
+		if (WatcherMtime._instance is None):
 		# Thread safety
 			with WatcherMtime._instance_lock:
 			#
-				if (WatcherMtime._instance == None): WatcherMtime._instance = WatcherMtime()
+				if (WatcherMtime._instance is None): WatcherMtime._instance = WatcherMtime()
 			#
 		#
 

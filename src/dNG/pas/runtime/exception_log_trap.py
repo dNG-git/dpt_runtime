@@ -73,8 +73,8 @@ python.org: Exit the runtime context related to this object.
 :since:  v0.1.00
 		"""
 
-		if (exc_type != None
-		    or exc_value != None
+		if (exc_type is not None
+		    or exc_value is not None
 		   ):
 		#
 			traceback_string = "".join(traceback.format_exception(exc_type, exc_value, _traceback))

@@ -100,19 +100,20 @@ Returns the language code of this instance.
 		return self.lang
 	#
 
-	def read_file(self, file_path_name):
+	def read_file(self, file_path_name, required = False):
 	#
 		"""
 Read all translations from the given file.
 
 :param file_path_name: File path and name
+:param required: True if missing files should throw an exception
 
 :since: v0.1.00
 		"""
 
 		if (file_path_name not in self.files or JsonFileContent.is_changed(file_path_name)):
 		#
-			json_data = JsonFileContent.read(file_path_name)
+			json_data = JsonFileContent.read(file_path_name, required)
 			if (type(json_data) == dict): self.update(json_data)
 		#
 	#

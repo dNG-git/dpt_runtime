@@ -74,7 +74,7 @@ python.org: Read up to n bytes from the object and return them.
 :since: v0.1.00
 		"""
 
-		if (self.file_ptr == None): _return = (self.buffer.read() if (n < 0) else self.buffer.read(n))
+		if (self.file_ptr is None): _return = (self.buffer.read() if (n < 0) else self.buffer.read(n))
 		else: _return = (self.file_ptr.read() if (n < 0) else self.file_ptr.read(n))
 
 		return _return
@@ -90,7 +90,7 @@ python.org: Change the stream position to the given byte offset.
 :since: v0.1.00
 		"""
 
-		return (self.buffer.seek(offset) if (self.file_ptr == None) else self.file_ptr.seek(offset))
+		return (self.buffer.seek(offset) if (self.file_ptr is None) else self.file_ptr.seek(offset))
 	#
 
 	def write(self, b):
@@ -104,7 +104,7 @@ and return the number of bytes written.
 :since: v0.1.00
 		"""
 
-		if (self.file_ptr == None):
+		if (self.file_ptr is None):
 		#
 			_return = self.buffer.write(Binary.bytes(b))
 
