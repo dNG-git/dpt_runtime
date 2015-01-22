@@ -130,7 +130,7 @@ Returns the list of extensions known for the given mime type.
 		if (mimetype is not None or mimetype in self.definitions):
 		#
 			_return = self.definitions[mimetype].get("extensions", [ ])
-			if (type(_return) != list): _return = [ _return ]
+			if (type(_return) is not list): _return = [ _return ]
 		#
 
 		return _return
@@ -146,7 +146,7 @@ Refresh all mime type definitions from the file.
 
 		json_data = JsonFileContent.read("{0}/settings/core_mimetypes.json".format(Settings.get("path_data")))
 
-		if (type(json_data) == dict):
+		if (type(json_data) is dict):
 		#
 			aliases = { }
 			self.definitions = { }
@@ -165,7 +165,7 @@ Refresh all mime type definitions from the file.
 						self.definitions[mimetype]['class'] = (_class if (_class not in json_data or "class" not in json_data[_class]) else json_data[_class]['class'])
 					#
 
-					if (type(json_data[mimetype].get("extensions")) == list):
+					if (type(json_data[mimetype].get("extensions")) is list):
 					#
 						for extension in json_data[mimetype]['extensions']:
 						#

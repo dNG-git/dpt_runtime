@@ -90,12 +90,12 @@ Generate the triple MD5 hash for the data given.
 		_return = ""
 
 		data = Binary.str(data)
-		if (type(data) != str): raise TypeException("Data must be of type str")
+		if (not isinstance(data, str)): raise TypeException("Data must be of type str")
 
 		data_length = len(data)
 
 		salt = Binary.str(salt)
-		if (type(salt) != str): raise TypeException("Salt must be of type str")
+		if (type(salt) is not str): raise TypeException("Salt must be of type str")
 
 		if (data_length > 0):
 		#
@@ -146,10 +146,10 @@ given.
 		"""
 
 		salt = Binary.str(salt)
-		if (type(salt) != str): raise TypeException("Salt must be of type str")
+		if (type(salt) is not str): raise TypeException("Salt must be of type str")
 
 		pepper = Binary.str(pepper)
-		if (type(pepper) != str): raise TypeException("Pepper must be of type str")
+		if (type(pepper) is not str): raise TypeException("Pepper must be of type str")
 
 		pepper = Tmd5._align_string(salt, pepper)
 		if (len(pepper) > 0): salt = "".join(chr(ord(saltchar) ^ ord(pepperchar)) for saltchar, pepperchar in zip(salt, pepper))

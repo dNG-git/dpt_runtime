@@ -58,7 +58,7 @@ characters.
 
 		data = Binary.utf8(data)
 
-		if (type(data) == Binary.UNICODE_TYPE):
+		if (isinstance(data, Binary.UNICODE_TYPE)):
 		#
 			data_position = 0
 			data_length = len(data)
@@ -207,7 +207,7 @@ traversals. We will filter them using "filterFilePath()".
 
 		data = InputFilter.filter_control_chars(data)
 
-		if (type(data) == str):
+		if (isinstance(data, str)):
 		#
 			data = re.sub("^(\\w{3,5})://", "", data)
 

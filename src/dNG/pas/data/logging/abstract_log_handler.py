@@ -180,7 +180,7 @@ Get the formatted log message.
 		#
 			data = Binary.str(data)
 
-			if (type(data) != str): data = repr(data)
+			if (type(data) is not str): data = repr(data)
 			elif (len(args) > 0): data = data.format(*args)
 		#
 

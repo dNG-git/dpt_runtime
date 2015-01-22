@@ -114,7 +114,7 @@ Read all translations from the given file.
 		if (file_path_name not in self.files or JsonFileContent.is_changed(file_path_name)):
 		#
 			json_data = JsonFileContent.read(file_path_name, required)
-			if (type(json_data) == dict): self.update(json_data)
+			if (type(json_data) is dict): self.update(json_data)
 		#
 	#
 

@@ -82,10 +82,8 @@ Returns the unicode data representing the (maybe encoded) input data.
 
 		# global: _PY_BYTES, _PY_BYTES_TYPE, _PY_UNICODE, _PY_UNICODE_TYPE
 
-		_type = type(data)
-
-		if (str != _PY_UNICODE_TYPE and _type == str): data = _PY_UNICODE(data, charset)
-		elif (str == _PY_UNICODE_TYPE and _type == _PY_BYTES_TYPE): data = _PY_STR(data, charset)
+		if (str is not _PY_UNICODE_TYPE and isinstance(data, str)): data = _PY_UNICODE(data, charset)
+		elif (str is _PY_UNICODE_TYPE and isinstance(data, _PY_BYTES_TYPE)): data = _PY_STR(data, charset)
 
 		return data
 	#
