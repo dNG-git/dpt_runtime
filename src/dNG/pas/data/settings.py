@@ -27,6 +27,7 @@ import re
 from dNG.data.file import File
 from dNG.data.json_resource import JsonResource
 from dNG.pas.runtime.io_exception import IOException
+from dNG.pas.runtime.stacked_dict import StackedDict
 from dNG.pas.runtime.value_exception import ValueException
 from .binary import Binary
 
@@ -75,14 +76,69 @@ Constructor __init__(Settings)
 :since: v0.1.00
 		"""
 
-		self.dict = { "path_system": path.normpath("{0}/../../../..".format(Binary.str(__file__))) }
+		self.file_dict = { }
 		"""
-Underlying dict
+Underlying file-backed settings dict
+		"""
+		self.runtime_dict = StackedDict()
+		"""
+Runtime settings dict
 		"""
 
-		self.dict['path_base'] = (Binary.str(os.environ['dNGpath']) if ("dNGpath" in os.environ) else path.normpath("{0}/..".format(self.dict['path_system'])))
-		self.dict['path_data'] = (Binary.str(os.environ['dNGpathData']) if ("dNGpathData" in os.environ) else path.join(self.dict['path_base'], "data"))
-		self.dict['path_lang'] = (Binary.str(os.environ['dNGpathLang']) if ("dNGpathLang" in os.environ) else path.join(self.dict['path_base'], "lang"))
+		self.runtime_dict.add_dict(self.file_dict)
+		self._process_os_environment()
+	#
+
+	def _get_file_dict(self):
+	#
+		"""
+Returns the file-backed settings dictionary. This dictionary does not
+contain values changed at runtime.
+
+:return: (dict) Underlying file-backed settings dict
+:since:  v0.1.03
+		"""
+
+		return self.file_dict
+	#
+
+	def _get_runtime_dict(self):
+	#
+		"""
+Returns the runtime settings dictionary.
+
+:return: (dict) Runtime settings dict
+:since:  v0.1.03
+		"""
+
+		return self.runtime_dict
+	#
+
+	def _process_os_environment(self):
+	#
+		"""
+Sets path values in the runtime settings dictionary based on the OS
+environment.
+
+:since: v0.1.03
+		"""
+
+		self.runtime_dict['path_system'] = path.normpath("{0}/../../../..".format(Binary.str(__file__)))
+
+		self.runtime_dict['path_base'] = (Binary.str(os.environ['dNGpath'])
+		                                  if ("dNGpath" in os.environ) else
+		                                  path.normpath("{0}/..".format(self.runtime_dict['path_system']))
+		                                 )
+
+		self.runtime_dict['path_data'] = (Binary.str(os.environ['dNGpathData'])
+		                                  if ("dNGpathData" in os.environ) else
+		                                  path.join(self.runtime_dict['path_base'], "data")
+		                                 )
+
+		self.runtime_dict['path_lang'] = (Binary.str(os.environ['dNGpathLang'])
+		                                  if ("dNGpathLang" in os.environ) else
+		                                  path.join(self.runtime_dict['path_base'], "lang")
+		                                 )
 	#
 
 	def update(self, other):
@@ -96,24 +152,20 @@ overwriting existing keys.
 :since: v0.1.01
 		"""
 
-		self.dict.update(other)
+		self.runtime_dict.update(other)
 	#
 
-	@staticmethod
-	def _force_reinitialization():
+	def _update_file_dict(self, _dict):
 	#
 		"""
-This method creates a new settings singleton. It should only be done after
-changing the OS environment to process changes paths.
+Updates the file-backed settings dict with values from the given one.
 
-:since: v0.1.00
+:param _dict: Updated dictionary
+
+:since: v0.1.03
 		"""
 
-		with Settings._lock:
-		#
-			Settings._instance = None
-			Settings.get_instance()
-		#
+		self.file_dict.update(_dict)
 	#
 
 	@staticmethod
@@ -142,7 +194,7 @@ Returns all settings currently defined as a dict.
 :since:  v0.1.00
 		"""
 
-		return Settings.get_instance().dict
+		return Settings.get_instance()._get_runtime_dict()
 	#
 
 	@staticmethod
@@ -188,7 +240,7 @@ Get the settings singleton.
 				if (Settings._instance is None):
 				#
 					Settings._instance = Settings()
-					Settings.read_file("{0}/settings/core.json".format(Settings._instance.dict['path_data']))
+					Settings.read_file("{0}/settings/core.json".format(Settings._instance._get_runtime_dict()['path_data']))
 				#
 			#
 		#
@@ -197,10 +249,10 @@ Get the settings singleton.
 	#
 
 	@staticmethod
-	def import_json(json):
+	def _import_file_json(json):
 	#
 		"""
-Import a given JSON encoded string as an dict of settings.
+Import a given JSON encoded string as an dict of file-backed settings.
 
 :param json: JSON encoded dict of settings
 
@@ -214,7 +266,7 @@ Import a given JSON encoded string as an dict of settings.
 		json_data = json_resource.json_to_data(json)
 
 		if (json_data is None): _return = False
-		else: Settings.get_instance().update(json_data)
+		else: Settings.get_instance()._update_file_dict(json_data)
 
 		return _return
 	#
@@ -288,7 +340,7 @@ Read all settings from the given file.
 		#
 
 		if (file_content is None): _return = False
-		elif (not Settings.import_json(file_content)):
+		elif (not Settings._import_file_json(file_content)):
 		#
 			if (required): raise ValueException("{0} is not a valid JSON encoded settings file".format(file_path_name))
 			if (Settings._log_handler is not None): Settings._log_handler.warning("{0} is not a valid JSON encoded settings file", file_path_name, context = "pas_core")
@@ -297,6 +349,19 @@ Read all settings from the given file.
 		#
 
 		return _return
+	#
+
+	@staticmethod
+	def _reprocess_os_environment():
+	#
+		"""
+This method should only be called after changing the OS environment to
+process it.
+
+:since: v0.1.03
+		"""
+
+		Settings.get_instance()._process_os_environment()
 	#
 
 	@staticmethod

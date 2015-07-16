@@ -57,7 +57,7 @@ Valid JSON
 }
 		"""
 
-		self.assertTrue(Settings.import_json(json))
+		self.assertTrue(Settings._import_file_json(json))
 		self.assertEqual("world", self.settings.get("hello"))
 		self.assertEqual("that", self.settings.get("more_complex")[1])
 		self.assertEqual(1, self.settings.get("more_complex")[2])
@@ -67,7 +67,7 @@ Invalid JSON
 		"""
 
 		json = "{ 'hello': 'world' }"
-		self.assertFalse(Settings.import_json(json))
+		self.assertFalse(Settings._import_file_json(json))
 	#
 
 	def test_read_file(self):
