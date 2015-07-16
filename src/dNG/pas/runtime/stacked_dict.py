@@ -60,13 +60,13 @@ python.org: Called to implement membership test operators.
 :since:  v0.1.03
 		"""
 
-		_return = dict.__contains__(self, key)
+		_return = dict.__contains__(self, item)
 
 		if (not _return):
 		#
 			for _dict in self.stacked_dicts:
 			#
-				if (key in _dict):
+				if (item in _dict):
 				#
 					_return = True
 					break
