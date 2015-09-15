@@ -21,6 +21,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 from io import BytesIO
 from tempfile import TemporaryFile
 
+from dNG.pas.runtime.io_exception import IOException
 from .binary import Binary
 from .settings import Settings
 
@@ -54,6 +55,14 @@ Constructor __init__(ByteBuffer)
 		"""
 Internal byte buffer.
 		"""
+		self.buffer_reset = False
+		"""
+True if the buffer has been reset.
+		"""
+		self.buffer_size = 0
+		"""
+Buffer size in bytes written.
+		"""
 		self.file_ptr = None
 		"""
 External file pointer.
@@ -62,6 +71,41 @@ External file pointer.
 		"""
 Threshold to write the internal buffer to an external file.
 		"""
+	#
+
+	def _ensure_buffer_reset(self):
+	#
+		"""
+Resets the buffer ones before first read.
+
+:since: v0.1.03
+		"""
+
+		self.seek(0)
+	#
+
+	def _get_ptr(self):
+	#
+		"""
+Returns the buffer object to use.
+
+:return: (object) Buffer instance in use
+:since:  v0.1.03
+		"""
+
+		return (self.buffer if (self.file_ptr is None) else self.file_ptr)
+	#
+
+	def get_size(self):
+	#
+		"""
+Returns the current size of the buffer.
+
+:return: (int) Size written in bytes
+:since:  v0.1.03
+		"""
+
+		return self.buffer_size
 	#
 
 	def read(self, n = -1):
@@ -74,10 +118,26 @@ python.org: Read up to n bytes from the object and return them.
 :since: v0.1.00
 		"""
 
-		if (self.file_ptr is None): _return = (self.buffer.read() if (n < 0) else self.buffer.read(n))
-		else: _return = (self.file_ptr.read() if (n < 0) else self.file_ptr.read(n))
+		self._ensure_buffer_reset()
 
-		return _return
+		_ptr = self._get_ptr()
+		return (_ptr.read() if (n < 0) else _ptr.read(n))
+	#
+
+	def readline(self, limit = -1):
+	#
+		"""
+python.org: Read and return one line from the stream.
+
+:param n: If limit is specified, at most limit bytes will be read.
+
+:since: v0.1.00
+		"""
+
+		self._ensure_buffer_reset()
+
+		_ptr = self._get_ptr()
+		return (_ptr.readline() if (limit < 0) else _ptr.readline(limit))
 	#
 
 	def seek(self, offset):
@@ -90,7 +150,10 @@ python.org: Change the stream position to the given byte offset.
 :since: v0.1.00
 		"""
 
-		return (self.buffer.seek(offset) if (self.file_ptr is None) else self.file_ptr.seek(offset))
+		if (not self.buffer_reset): self.buffer_reset = True
+
+		_ptr = self._get_ptr()
+		return _ptr.seek(offset)
 	#
 
 	def write(self, b):
@@ -104,9 +167,13 @@ and return the number of bytes written.
 :since: v0.1.00
 		"""
 
+		if (self.buffer_reset): raise IOException("Can't write to a buffer that has been already read from")
+
+		b = Binary.bytes(b)
+
 		if (self.file_ptr is None):
 		#
-			_return = self.buffer.write(Binary.bytes(b))
+			_return = self.buffer.write(b)
 
 			if (self.buffer.tell() > self.file_threshold):
 			#
@@ -119,7 +186,9 @@ and return the number of bytes written.
 				self.buffer = None
 			#
 		#
-		else: _return = self.file_ptr.write(Binary.bytes(b))
+		else: _return = self.file_ptr.write(b)
+
+		self.buffer_size += _return
 
 		return _return
 	#
