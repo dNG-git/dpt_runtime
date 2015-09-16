@@ -107,7 +107,7 @@ Read data from cache.
 :param required: True if missing files should throw an exception
 
 :return: (mixed) File data; None on error
-:since: v0.1.02
+:since:  v0.1.02
 		"""
 
 		cache_instance = NamedLoader.get_singleton("dNG.pas.data.cache.Content", False)
@@ -136,7 +136,7 @@ Read data from the given file or from cache.
 			_return = file_object.read()
 			file_object.close()
 
-			_return = _return.replace("\r", "")
+			if (_return is not None): _return = _return.replace("\r", "")
 		#
 		elif (required): raise IOException("{0} not found".format(file_path_name))
 		else: LogLine.debug("{0} not found", file_path_name, context = "pas_core")

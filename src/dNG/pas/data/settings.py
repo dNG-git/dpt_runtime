@@ -331,9 +331,12 @@ Read all settings from the given file.
 				file_content = file_object.read()
 				file_object.close()
 
-				file_content = file_content.replace("\r", "")
-				file_content = Settings.RE_EXTENDED_JSON_COMMENT_LINE.sub("", file_content)
-				if (Settings._cache_instance is not None): Settings._cache_instance.set_file(file_path_name, file_content)
+				if (file_content is not None):
+				#
+					file_content = file_content.replace("\r", "")
+					file_content = Settings.RE_EXTENDED_JSON_COMMENT_LINE.sub("", file_content)
+					if (Settings._cache_instance is not None): Settings._cache_instance.set_file(file_path_name, file_content)
+				#
 			#
 			elif (required): raise IOException("{0} not found".format(file_path_name))
 			elif (Settings._log_handler is not None): Settings._log_handler.debug("{0} not found", file_path_name, context = "pas_core")

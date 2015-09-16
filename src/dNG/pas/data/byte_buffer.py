@@ -108,20 +108,22 @@ Returns the current size of the buffer.
 		return self.buffer_size
 	#
 
-	def read(self, n = -1):
+	def read(self, n = 0):
 	#
 		"""
 python.org: Read up to n bytes from the object and return them.
 
-:param n: Size in bytes
+:param n: How many bytes to read from the current position (0 means until
+          EOF)
 
-:since: v0.1.00
+:return: (bytes) Data; None if EOF
+:since:  v0.1.00
 		"""
 
 		self._ensure_buffer_reset()
 
 		_ptr = self._get_ptr()
-		return (_ptr.read() if (n < 0) else _ptr.read(n))
+		return (_ptr.read() if (n < 1) else _ptr.read(n))
 	#
 
 	def readline(self, limit = -1):
@@ -145,8 +147,9 @@ python.org: Read and return one line from the stream.
 		"""
 python.org: Change the stream position to the given byte offset.
 
-:param offset: Absolute offset in bytes
+:param offset: Seek to the given offset
 
+:return: (int) Return the new absolute position.
 :since: v0.1.00
 		"""
 
@@ -156,15 +159,29 @@ python.org: Change the stream position to the given byte offset.
 		return _ptr.seek(offset)
 	#
 
+	def tell(self):
+	#
+		"""
+python.org: Return the current stream position as an opaque number.
+
+:return: (int) Stream position
+:since:  v0.1.00
+		"""
+
+		_ptr = self._get_ptr()
+		return _ptr.tell()
+	#
+
 	def write(self, b):
 	#
 		"""
-Write the given bytes or bytearray object, b, to the underlying raw stream
-and return the number of bytes written.
+python.org: Write the given bytes or bytearray object, b, to the underlying
+raw stream and return the number of bytes written.
 
 :param b: Bytes data
 
-:since: v0.1.00
+:return: (int) Number of bytes written
+:since:  v0.1.00
 		"""
 
 		if (self.buffer_reset): raise IOException("Can't write to a buffer that has been already read from")

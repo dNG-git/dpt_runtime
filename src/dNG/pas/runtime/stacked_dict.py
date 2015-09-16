@@ -164,7 +164,7 @@ Adds the given Python dictionary to the stack.
 	#
 		"""
 python.org: Return the value for key if key is in the dictionary, else
-            default.
+default.
 
 :param key: Key
 :param default: Default return value

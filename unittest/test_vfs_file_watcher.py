@@ -103,7 +103,7 @@ UnitTest for dNG.pas.data.Binary
 	def setUp(self):
 	#
 		"""
-Python.org: Hook method for setting up the test fixture before exercising
+python.org: Hook method for setting up the test fixture before exercising
 it.
 		"""
 
@@ -114,7 +114,7 @@ it.
 	def tearDown(self):
 	#
 		"""
-Python.org: Hook method for deconstructing the test fixture after testing
+python.org: Hook method for deconstructing the test fixture after testing
 it.
 		"""
 
