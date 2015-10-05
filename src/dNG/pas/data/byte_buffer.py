@@ -81,7 +81,7 @@ Resets the buffer ones before first read.
 :since: v0.1.03
 		"""
 
-		self.seek(0)
+		if (not self.buffer_reset): self.seek(0)
 	#
 
 	def _get_ptr(self):
