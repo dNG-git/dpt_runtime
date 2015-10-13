@@ -142,10 +142,7 @@ Prints the stack trace to the given output stream or stderr.
 :since: v0.1.00
 		"""
 
-		( exc_type, exc_value, exc_traceback ) = sys.exc_info()
-
-		if (exc_traceback is None): printable_trace = ("Exception undefined: {0}".format(traceback.format_stack()))
-		else: printable_trace = "".join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+		printable_trace = traceback.format_exc()
 
 		if (out_stream is None): out_stream = sys.stderr
 		out_stream.write(printable_trace)
