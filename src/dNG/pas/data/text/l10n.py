@@ -92,20 +92,8 @@ Load the given language section.
 :since: v0.1.00
 		"""
 
-		file_id = Binary.str(file_id)
 		instance = L10n.get_instance(lang)
-
-		file_id_elements = file_id.split(".")
-		relative_file_path_name = ""
-
-		for file_id_element in file_id_elements:
-		#
-			if (file_id_element):
-			#
-				file_id_element = L10n.RE_SPECIAL_CHARACTERS.sub(" ", file_id_element)
-				relative_file_path_name += ("/" if (len(relative_file_path_name) > 0) else "") + file_id_element
-			#
-		#
+		relative_file_path_name = L10n.get_relative_file_path_name(file_id)
 
 		file_path_name = "{0}/{1}/{2}.json".format(Settings.get("path_lang"), instance.get_lang(), relative_file_path_name)
 
@@ -216,6 +204,35 @@ Get the L10n dict instance of the given or default language.
 		"""
 
 		return L10n.get_dict(lang)
+	#
+
+	@staticmethod
+	def get_relative_file_path_name(file_id):
+	#
+		"""
+Returns the relative file path and name for the file ID given.
+
+:param file_id: L10n file ID
+
+:return: (str) File path and name
+:since:  v0.1.03
+		"""
+
+		file_id = Binary.str(file_id)
+
+		file_id_elements = file_id.split(".")
+		_return = ""
+
+		for file_id_element in file_id_elements:
+		#
+			if (file_id_element):
+			#
+				file_id_element = L10n.RE_SPECIAL_CHARACTERS.sub(" ", file_id_element)
+				_return += ("/" if (len(_return) > 0) else "") + file_id_element
+			#
+		#
+
+		return _return
 	#
 
 	@staticmethod
