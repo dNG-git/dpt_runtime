@@ -52,10 +52,8 @@ Constructor __init__(L10n)
 		"""
 L10n files initialized
 		"""
-		self.lang = lang
-		"""
-L10n language code
-		"""
+
+		self['lang_code'] = lang
 	#
 
 	def __getitem__(self, key):
@@ -97,7 +95,7 @@ Returns the language code of this instance.
 :since:  v0.1.00
 		"""
 
-		return self.lang
+		return self['lang_code']
 	#
 
 	def read_file(self, file_path_name, required = False):
