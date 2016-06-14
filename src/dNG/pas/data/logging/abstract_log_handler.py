@@ -18,6 +18,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
+from threading import current_thread
 import logging
 import re
 import sys
@@ -65,6 +66,10 @@ Mapped log levels
 		self.log_handler = None
 		"""
 The configured log handler
+		"""
+		self.log_thread_id = False
+		"""
+True to add the thread ID to each log line as well
 		"""
 		self.version = "#echo(pasCoreVersion)#"
 		"""
@@ -185,7 +190,11 @@ Get the formatted log message.
 		#
 
 		if ("\n" in data or "\r" in data): data = "\"" + re.sub("[\n\r]", "\"; \"", data) + "\""
-		_return = "{0} {1} {2}".format(self.ident, data, self.version)
+
+		ident = self.ident
+		if (self.log_thread_id): ident += " [Thread {0}]".format(current_thread().ident)
+
+		_return = "{0} {1} {2}".format(ident, data, self.version)
 
 		return _return
 	#

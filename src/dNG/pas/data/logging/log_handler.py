@@ -185,6 +185,8 @@ Preserve the amount of files
 
 			LogHandler._appender_defined = True
 		#
+
+		self.log_thread_id = Settings.get("pas_core_log_thread_id", False)
 	#
 
 	def add_logger(self, name):
