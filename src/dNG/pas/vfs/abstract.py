@@ -23,8 +23,9 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 from dNG.pas.runtime.not_implemented_exception import NotImplementedException
 from dNG.pas.runtime.value_exception import ValueException
 from dNG.pas.data.binary import Binary
+from dNG.pas.data.supports_mixin import SupportsMixin
 
-class Abstract(object):
+class Abstract(SupportsMixin):
 #
 	"""
 Provides the abstract VFS implementation for an object.
@@ -84,6 +85,18 @@ python.org: Flush the write buffers of the stream if applicable.
 		raise NotImplementedException()
 	#
 
+	def get_implementing_scheme(self):
+	#
+		"""
+Returns the implementing scheme name.
+
+:return: (str) Implementing scheme name
+:since:  v0.1.04
+		"""
+
+		raise NotImplementedException()
+	#
+
 	def get_implementing_instance(self):
 	#
 		"""
@@ -115,6 +128,30 @@ Returns the size in bytes.
 
 :return: (int) Size in bytes
 :since:  v0.1.03
+		"""
+
+		raise NotImplementedException()
+	#
+
+	def get_time_created(self):
+	#
+		"""
+Returns the UNIX timestamp this object was created.
+
+:return: (int) UNIX timestamp this object was created
+:since:  v0.1.04
+		"""
+
+		raise NotImplementedException()
+	#
+
+	def get_time_updated(self):
+	#
+		"""
+Returns the UNIX timestamp this object was updated.
+
+:return: (int) UNIX timestamp this object was updated
+:since:  v0.1.04
 		"""
 
 		raise NotImplementedException()
@@ -253,7 +290,7 @@ python.org: Read up to n bytes from the object and return them.
 		"""
 Scan over objects of a collection like a directory.
 
-:return: (object) Child VFS object
+:return: (list) Child VFS objects
 :since:  v0.1.03
 		"""
 
