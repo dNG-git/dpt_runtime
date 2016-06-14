@@ -72,14 +72,15 @@ instances of the class.
 :since:  v0.1.03
 		"""
 
-		if (name in ( "__class__", "_wrapped_resource" )
+		if (name == "__class__"
 		    or name not in self.__class__._FILE_WRAPPED_METHODS
 		   ): _return = object.__getattribute__(self, name)
 		else:
 		#
-			wrapped_resource = self._wrapped_resource
-			if (wrapped_resource is None): raise IOException("'{0}' not available".format(name))
-			_return = getattr(wrapped_resource, name)
+			if (self._wrapped_resource is None): self._open_wrapped_resource()
+			if (self._wrapped_resource is None): raise IOException("'{0}' not available for {1!r}".format(name, self))
+
+			_return = getattr(self._wrapped_resource, name)
 		#
 
 		return _return
@@ -98,6 +99,17 @@ python.org: Flush and close this stream.
 			try: self._wrapped_resource.close()
 			finally: self._wrapped_resource = None
 		#
+	#
+
+	def _open_wrapped_resource(self):
+	#
+		"""
+Opens the wrapped resource once needed.
+
+:since: v0.1.04
+		"""
+
+		pass
 	#
 
 	def _set_wrapped_resource(self, resource):
