@@ -159,6 +159,18 @@ Frees all watcher callbacks for garbage collection.
 		#
 	#
 
+	def get_implementing_scheme(self):
+	#
+		"""
+Returns the implementing scheme name.
+
+:return: (str) Implementing scheme name
+:since:  v0.1.04
+		"""
+
+		return "file"
+	#
+
 	def _get_path(self, url):
 	#
 		"""

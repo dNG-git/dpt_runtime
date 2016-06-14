@@ -84,6 +84,18 @@ Frees all watcher callbacks for garbage collection.
 		raise NotImplementedException()
 	#
 
+	def get_implementing_scheme(self):
+	#
+		"""
+Returns the implementing scheme name.
+
+:return: (str) Implementing scheme name
+:since:  v0.1.04
+		"""
+
+		raise NotImplementedException()
+	#
+
 	def is_synchronous(self):
 	#
 		"""
