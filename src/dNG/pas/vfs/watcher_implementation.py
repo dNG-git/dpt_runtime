@@ -66,7 +66,7 @@ Returns an VFS watcher class for the given scheme.
 
 		if (_return is None
 		    or (not issubclass(_return, AbstractWatcher))
-		   ): raise IOException("VFS watcher not defined for URI scheme '{0}'".format(scheme))
+		   ): raise IOException("VFS watcher not defined for URL scheme '{0}'".format(scheme))
 
 		return _return
 	#
@@ -86,34 +86,34 @@ Returns an VFS watcher instance for the given scheme.
 	#
 
 	@staticmethod
-	def get_scheme_from_vfs_uri(vfs_uri):
+	def get_scheme_from_vfs_url(vfs_url):
 	#
 		"""
-Returns the scheme of the VFS URI given.
+Returns the scheme of the VFS URL given.
 
-:param vfs_uri: VFS URI to extract the scheme from.
+:param vfs_url: VFS URL to extract the scheme from.
 
-:return: (str) VFS URI scheme
+:return: (str) VFS URL scheme
 :since:  v0.1.04
 		"""
 
-		vfs_uri = Binary.str(vfs_uri)
+		vfs_url = Binary.str(vfs_url)
 
-		vfs_uri_data = vfs_uri.split("://", 1)
-		if (len(vfs_uri_data) == 1): raise ValueException("VFS URI '{0}' is invalid".format(vfs_uri))
+		vfs_url_data = vfs_url.split("://", 1)
+		if (len(vfs_url_data) == 1): raise ValueException("VFS URL '{0}' is invalid".format(vfs_url))
 
-		return vfs_uri_data[0]
+		return vfs_url_data[0]
 	#
 
 	@staticmethod
-	def get_scheme_from_vfs_uri_if_supported(vfs_uri):
+	def get_scheme_from_vfs_url_if_supported(vfs_url):
 	#
 		"""
-Returns the scheme of the VFS URI given if it is supported.
+Returns the scheme of the VFS URL given if it is supported.
 
-:param vfs_uri: VFS URI to extract the scheme from.
+:param vfs_url: VFS URL to extract the scheme from.
 
-:return: (str) VFS URI scheme if supported; None otherwise
+:return: (str) VFS URL scheme if supported; None otherwise
 :since:  v0.1.04
 		"""
 
@@ -121,7 +121,7 @@ Returns the scheme of the VFS URI given if it is supported.
 
 		try:
 		#
-			scheme = WatcherImplementation.get_scheme_from_vfs_uri(vfs_uri)
+			scheme = WatcherImplementation.get_scheme_from_vfs_url(vfs_url)
 
 			if (NamedLoader.is_defined("dNG.pas.vfs.{0}.Watcher".format(scheme.replace("-", "_")))):
 			#

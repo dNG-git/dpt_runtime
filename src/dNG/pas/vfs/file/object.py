@@ -84,32 +84,32 @@ True to open the file read-only
 		self.supported_features['flush'] = self._supports_flush
 	#
 
-	def _ensure_directory_readable(self, vfs_uri, dir_path_name):
+	def _ensure_directory_readable(self, vfs_url, dir_path_name):
 	#
 		"""
 Ensures that the given directory path readable.
 
-:param vfs_uri: VFS URI
+:param vfs_url: VFS URL
 :param dir_path_name: Directory path and name
 
 :since: v0.1.04
 		"""
 
-		if (not os.access(dir_path_name, os.X_OK)): raise IOException("VFS URI '{0}' is invalid".format(vfs_uri))
+		if (not os.access(dir_path_name, os.X_OK)): raise IOException("VFS URL '{0}' is invalid".format(vfs_url))
 	#
 
-	def _ensure_directory_writable(self, vfs_uri, dir_path_name):
+	def _ensure_directory_writable(self, vfs_url, dir_path_name):
 	#
 		"""
 Ensures that the given directory path writable.
 
-:param vfs_uri: VFS URI
+:param vfs_url: VFS URL
 :param dir_path_name: Directory path and name
 
 :since: v0.1.04
 		"""
 
-		if (not os.access(dir_path_name, os.X_OK)): raise IOException("VFS URI '{0}' is invalid".format(vfs_uri))
+		if (not os.access(dir_path_name, os.X_OK)): raise IOException("VFS URL '{0}' is invalid".format(vfs_url))
 	#
 
 	def close(self):
@@ -251,12 +251,12 @@ Returns the type of this object.
 		return _return
 	#
 
-	def get_uri(self):
+	def get_url(self):
 	#
 		"""
-Returns the URI of this VFS object.
+Returns the URL of this VFS object.
 
-:return: (str) VFS URI
+:return: (str) VFS URL
 :since:  v0.1.03
 		"""
 
@@ -288,44 +288,44 @@ Returns true if the object is available.
 		return _return
 	#
 
-	def new(self, _type, vfs_uri):
+	def new(self, _type, vfs_url):
 	#
 		"""
 Creates a new VFS object.
 
 :param _type: VFS object type
-:param vfs_uri: VFS URI
+:param vfs_url: VFS URL
 
 :since: v0.1.04
 		"""
 
-		if (_type == Object.TYPE_DIRECTORY): self._new_directory(vfs_uri)
-		elif (_type == Object.TYPE_FILE): self._new_file(vfs_uri)
+		if (_type == Object.TYPE_DIRECTORY): self._new_directory(vfs_url)
+		elif (_type == Object.TYPE_FILE): self._new_file(vfs_url)
 		else: raise OperationNotSupportedException()
 	#
 
-	def _new_file(self, vfs_uri):
+	def _new_file(self, vfs_url):
 	#
 		"""
 Creates a new VFS file object.
 
-:param vfs_uri: VFS URI
+:param vfs_url: VFS URL
 
 :since: v0.1.04
 		"""
 
-		file_path_name = unquote(Abstract._get_id_from_vfs_uri(vfs_uri))
-		self._ensure_directory_writable(vfs_uri, path.dirname(file_path_name))
+		file_path_name = unquote(Abstract._get_id_from_vfs_url(vfs_url))
+		self._ensure_directory_writable(vfs_url, path.dirname(file_path_name))
 
-		self._open_file(vfs_uri, file_path_name)
+		self._open_file(vfs_url, file_path_name)
 	#
 
-	def open(self, vfs_uri, readonly = False):
+	def open(self, vfs_url, readonly = False):
 	#
 		"""
 Opens a VFS object.
 
-:param vfs_uri: VFS URI
+:param vfs_url: VFS URL
 :param readonly: Open object in readonly mode
 
 :since: v0.1.04
@@ -335,33 +335,33 @@ Opens a VFS object.
 		    or self.file_path_name is not None
 		   ): raise IOException("Can't create new VFS object on already opened instance")
 
-		object_path_name = unquote(Abstract._get_id_from_vfs_uri(vfs_uri))
+		object_path_name = unquote(Abstract._get_id_from_vfs_url(vfs_url))
 
-		if (path.isdir(object_path_name)): self._open_directory(vfs_uri, object_path_name)
-		else: self._open_file(vfs_uri, object_path_name, readonly)
+		if (path.isdir(object_path_name)): self._open_directory(vfs_url, object_path_name)
+		else: self._open_file(vfs_url, object_path_name, readonly)
 	#
 
-	def _open_directory(self, vfs_uri, dir_path_name):
+	def _open_directory(self, vfs_url, dir_path_name):
 	#
 		"""
 Opens a VFS directory object.
 
-:param vfs_uri: VFS URI
+:param vfs_url: VFS URL
 :param dir_path_name: Directory path and name
 
 :since: v0.1.04
 		"""
 
-		self._ensure_directory_readable(vfs_uri, dir_path_name)
+		self._ensure_directory_readable(vfs_url, dir_path_name)
 		self.dir_path_name = path.abspath(dir_path_name)
 	#
 
-	def _open_file(self, vfs_uri, file_path_name, readonly = True):
+	def _open_file(self, vfs_url, file_path_name, readonly = True):
 	#
 		"""
 Opens (and creates) a VFS file object.
 
-:param vfs_uri: VFS URI
+:param vfs_url: VFS URL
 :param file_path_name: File path and name
 :param readonly: Open file in readonly mode
 
@@ -401,7 +401,7 @@ Scan over objects of a collection like a directory.
 		_return = [ ]
 
 		entry_list = os.listdir(self.dir_path_name)
-		dir_path_uri = self.get_uri()
+		dir_path_url = self.get_url()
 
 		for entry in entry_list:
 		#
@@ -411,7 +411,7 @@ Scan over objects of a collection like a directory.
 
 				try:
 				#
-					vfs_child_object.open("{0}/{1}".format(dir_path_uri, entry))
+					vfs_child_object.open("{0}/{1}".format(dir_path_url, entry))
 					_return.append(vfs_child_object)
 				#
 				except IOException as handled_exception: LogLine.error(handled_exception, context = "pas_core")

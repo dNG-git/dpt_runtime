@@ -65,7 +65,7 @@ Returns an VFS object class for the given scheme.
 
 		if (_return is None
 		    or (not issubclass(_return, Abstract))
-		   ): raise IOException("VFS object not defined for URI scheme '{0}'".format(scheme))
+		   ): raise IOException("VFS object not defined for URL scheme '{0}'".format(scheme))
 
 		return _return
 	#
@@ -85,45 +85,45 @@ Returns an VFS object instance for the given scheme.
 	#
 
 	@staticmethod
-	def load_vfs_uri(vfs_uri, readonly = False):
+	def load_vfs_url(vfs_url, readonly = False):
 	#
 		"""
-Returns the initialized object instance for the given VFS URI.
+Returns the initialized object instance for the given VFS URL.
 
-:param vfs_uri: VFS URI
+:param vfs_url: VFS URL
 :param readonly: Open object in readonly mode
 
 :return: (object) VFS object instance
 :since:  v0.1.03
 		"""
 
-		vfs_uri = Binary.str(vfs_uri)
-		scheme = Abstract._get_scheme_from_vfs_uri(vfs_uri)
+		vfs_url = Binary.str(vfs_url)
+		scheme = Abstract._get_scheme_from_vfs_url(vfs_url)
 
 		_return = Implementation.get_instance(scheme)
-		_return.open(vfs_uri, readonly)
+		_return.open(vfs_url, readonly)
 
 		return _return
 	#
 
 	@staticmethod
-	def new_vfs_uri(_type, vfs_uri):
+	def new_vfs_url(_type, vfs_url):
 	#
 		"""
-Returns a new object instance for the given VFS URI.
+Returns a new object instance for the given VFS URL.
 
 :param _type: VFS object type
-:param vfs_uri: VFS URI
+:param vfs_url: VFS URL
 
 :return: (object) VFS object instance
 :since:  v0.1.03
 		"""
 
-		vfs_uri = Binary.str(vfs_uri)
-		scheme = Abstract._get_scheme_from_vfs_uri(vfs_uri)
+		vfs_url = Binary.str(vfs_url)
+		scheme = Abstract._get_scheme_from_vfs_url(vfs_url)
 
 		_return = Implementation.get_instance(scheme)
-		_return.new(_type, vfs_uri)
+		_return.new(_type, vfs_url)
 
 		return _return
 	#

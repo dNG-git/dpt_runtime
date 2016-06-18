@@ -169,12 +169,12 @@ Returns the type of this object.
 		raise NotImplementedException()
 	#
 
-	def get_uri(self):
+	def get_url(self):
 	#
 		"""
-Returns the URI of this VFS object.
+Returns the URL of this VFS object.
 
-:return: (str) VFS URI
+:return: (str) VFS URL
 :since:  v0.1.03
 		"""
 
@@ -241,13 +241,13 @@ Returns true if the object is available.
 		raise NotImplementedException()
 	#
 
-	def new(self, _type, vfs_uri):
+	def new(self, _type, vfs_url):
 	#
 		"""
 Creates a new VFS object.
 
 :param _type: VFS object type
-:param vfs_uri: VFS URI
+:param vfs_url: VFS URL
 
 :since: v0.1.03
 		"""
@@ -255,12 +255,12 @@ Creates a new VFS object.
 		raise NotImplementedException()
 	#
 
-	def open(self, vfs_uri, readonly = False):
+	def open(self, vfs_url, readonly = False):
 	#
 		"""
 Opens a VFS object.
 
-:param vfs_uri: VFS URI
+:param vfs_url: VFS URL
 :param readonly: Open object in readonly mode
 
 :since: v0.1.03
@@ -354,22 +354,22 @@ raw stream and return the number of bytes written.
 	#
 
 	@staticmethod
-	def _get_id_from_vfs_uri(vfs_uri):
+	def _get_id_from_vfs_url(vfs_url):
 	#
 		"""
-Returns the ID part of the VFS URI given.
+Returns the ID part of the VFS URL given.
 
-:return: (str) VFS URI ID
+:return: (str) VFS URL ID
 :since:  v0.1.03
 		"""
 
-		vfs_uri = Binary.str(vfs_uri)
-		if (type(vfs_uri) is not str): raise ValueException("VFS URI given is invalid")
+		vfs_url = Binary.str(vfs_url)
+		if (type(vfs_url) is not str): raise ValueException("VFS URL given is invalid")
 
-		vfs_uri_data = vfs_uri.split("://", 1)
-		if (len(vfs_uri_data) == 1): raise ValueException("VFS URI '{0}' is invalid".format(vfs_uri))
+		vfs_url_data = vfs_url.split("://", 1)
+		if (len(vfs_url_data) == 1): raise ValueException("VFS URL '{0}' is invalid".format(vfs_url))
 
-		_return = vfs_uri_data[1]
+		_return = vfs_url_data[1]
 
 		if (_return in ( "", "/" )): _return = ""
 		else: _return = (_return[1:] if (_return[:1] == "/") else _return).strip()
@@ -378,21 +378,21 @@ Returns the ID part of the VFS URI given.
 	#
 
 	@staticmethod
-	def _get_scheme_from_vfs_uri(vfs_uri):
+	def _get_scheme_from_vfs_url(vfs_url):
 	#
 		"""
-Returns the scheme of the VFS URI given.
+Returns the scheme of the VFS URL given.
 
-:return: (str) VFS URI scheme
+:return: (str) VFS URL scheme
 :since:  v0.1.03
 		"""
 
-		if (type(vfs_uri) is not str): raise ValueException("VFS URI given is invalid")
+		if (type(vfs_url) is not str): raise ValueException("VFS URL given is invalid")
 
-		vfs_uri_data = vfs_uri.split("://", 1)
-		if (len(vfs_uri_data) == 1): raise ValueException("VFS URI '{0}' is invalid".format(vfs_uri))
+		vfs_url_data = vfs_url.split("://", 1)
+		if (len(vfs_url_data) == 1): raise ValueException("VFS URL '{0}' is invalid".format(vfs_url))
 
-		return vfs_uri_data[0]
+		return vfs_url_data[0]
 	#
 #
 
