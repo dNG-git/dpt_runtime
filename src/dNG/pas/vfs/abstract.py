@@ -20,10 +20,11 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 # pylint: disable=unused-argument
 
-from dNG.pas.runtime.not_implemented_exception import NotImplementedException
-from dNG.pas.runtime.value_exception import ValueException
 from dNG.pas.data.binary import Binary
 from dNG.pas.data.supports_mixin import SupportsMixin
+from dNG.pas.runtime.io_exception import IOException
+from dNG.pas.runtime.not_implemented_exception import NotImplementedException
+from dNG.pas.runtime.value_exception import ValueException
 
 class Abstract(SupportsMixin):
 #
@@ -91,7 +92,7 @@ python.org: Flush the write buffers of the stream if applicable.
 Returns the implementing scheme name.
 
 :return: (str) Implementing scheme name
-:since:  v0.1.04
+:since:  v0.2.00
 		"""
 
 		raise NotImplementedException()
@@ -107,6 +108,19 @@ Returns the implementing instance.
 		"""
 
 		raise NotImplementedException()
+	#
+
+	def get_mimetype(self):
+	#
+		"""
+Returns the mime type of this VFS object.
+
+:return: (str) VFS object mime type
+:since:  v0.2.00
+		"""
+
+		if (not self.is_valid()): raise IOException("VFS object not opened")
+		return ("text/directory" if (self.is_directory()) else "application/octet-stream")
 	#
 
 	def get_name(self):
@@ -139,7 +153,7 @@ Returns the size in bytes.
 Returns the UNIX timestamp this object was created.
 
 :return: (int) UNIX timestamp this object was created
-:since:  v0.1.04
+:since:  v0.2.00
 		"""
 
 		raise NotImplementedException()
@@ -151,7 +165,7 @@ Returns the UNIX timestamp this object was created.
 Returns the UNIX timestamp this object was updated.
 
 :return: (int) UNIX timestamp this object was updated
-:since:  v0.1.04
+:since:  v0.2.00
 		"""
 
 		raise NotImplementedException()

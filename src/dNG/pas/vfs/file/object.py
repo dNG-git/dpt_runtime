@@ -20,12 +20,13 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 from os import path
 import os
-from dNG.pas.data.logging.log_line import LogLine
 
 try: from urllib.parse import quote, unquote
 except ImportError: from urllib import quote, unquote
 
 from dNG.data.file import File
+from dNG.pas.data.mime_type import MimeType
+from dNG.pas.data.logging.log_line import LogLine
 from dNG.pas.runtime.io_exception import IOException
 from dNG.pas.runtime.operation_not_supported_exception import OperationNotSupportedException
 from dNG.pas.vfs.abstract import Abstract
@@ -40,7 +41,7 @@ Provides the VFS implementation for 'file' objects.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.1.04
+:since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
 	"""
@@ -62,7 +63,7 @@ File IO methods implemented by an wrapped resource.
 		"""
 Constructor __init__(Object)
 
-:since: v0.1.04
+:since: v0.2.00
 		"""
 
 		Abstract.__init__(self)
@@ -92,7 +93,7 @@ Ensures that the given directory path readable.
 :param vfs_url: VFS URL
 :param dir_path_name: Directory path and name
 
-:since: v0.1.04
+:since: v0.2.00
 		"""
 
 		if (not os.access(dir_path_name, os.X_OK)): raise IOException("VFS URL '{0}' is invalid".format(vfs_url))
@@ -106,7 +107,7 @@ Ensures that the given directory path writable.
 :param vfs_url: VFS URL
 :param dir_path_name: Directory path and name
 
-:since: v0.1.04
+:since: v0.2.00
 		"""
 
 		if (not os.access(dir_path_name, os.X_OK)): raise IOException("VFS URL '{0}' is invalid".format(vfs_url))
@@ -117,7 +118,7 @@ Ensures that the given directory path writable.
 		"""
 python.org: Flush and close this stream.
 
-:since: v0.1.04
+:since: v0.2.00
 		"""
 
 		if (self.dir_path_name is not None): self.dir_path_name = None
@@ -134,7 +135,7 @@ python.org: Flush and close this stream.
 Returns the implementing instance.
 
 :return: (mixed) Implementing instance
-:since:  v0.1.04
+:since:  v0.2.00
 		"""
 
 		_return = None
@@ -155,10 +156,34 @@ Returns the implementing instance.
 Returns the implementing scheme name.
 
 :return: (str) Implementing scheme name
-:since:  v0.1.04
+:since:  v0.2.00
 		"""
 
 		return "file"
+	#
+
+	def get_mimetype(self):
+	#
+		"""
+Returns the mime type of this VFS object.
+
+:return: (str) VFS object mime type
+:since:  v0.2.00
+		"""
+
+		_return = None
+
+		if (self.dir_path_name is not None): _return = "text/directory"
+		elif (self.file_path_name is not None):
+		#
+			file_data = path.splitext(self.file_path_name)
+			mimetype_definition = MimeType.get_instance().get(file_data[1][1:])
+
+			_return = ("application/octet-stream" if (mimetype_definition is None) else mimetype_definition['type'])
+		#
+		else: raise IOException("VFS object not opened")
+
+		return _return
 	#
 
 	def get_name(self):
@@ -167,7 +192,7 @@ Returns the implementing scheme name.
 Returns the name of this VFS object.
 
 :return: (str) VFS object name
-:since:  v0.1.04
+:since:  v0.2.00
 		"""
 
 		_return = None
@@ -185,7 +210,7 @@ Returns the name of this VFS object.
 Returns the size in bytes.
 
 :return: (int) Size in bytes
-:since:  v0.1.04
+:since:  v0.2.00
 		"""
 
 		_return = None
@@ -203,7 +228,7 @@ Returns the size in bytes.
 Returns the UNIX timestamp this object was created.
 
 :return: (int) UNIX timestamp this object was created
-:since:  v0.1.04
+:since:  v0.2.00
 		"""
 
 		_return = None
@@ -221,7 +246,7 @@ Returns the UNIX timestamp this object was created.
 Returns the UNIX timestamp this object was updated.
 
 :return: (int) UNIX timestamp this object was updated
-:since:  v0.1.04
+:since:  v0.2.00
 		"""
 
 		_return = None
@@ -239,7 +264,7 @@ Returns the UNIX timestamp this object was updated.
 Returns the type of this object.
 
 :return: (int) Object type
-:since:  v0.1.04
+:since:  v0.2.00
 		"""
 
 		_return = None
@@ -257,7 +282,7 @@ Returns the type of this object.
 Returns the URL of this VFS object.
 
 :return: (str) VFS URL
-:since:  v0.1.03
+:since:  v0.2.00
 		"""
 
 		object_id = None
@@ -276,7 +301,7 @@ Returns the URL of this VFS object.
 Returns true if the object is available.
 
 :return: (bool) True on success
-:since:  v0.1.04
+:since:  v0.2.00
 		"""
 
 		_return = False
@@ -296,7 +321,7 @@ Creates a new VFS object.
 :param _type: VFS object type
 :param vfs_url: VFS URL
 
-:since: v0.1.04
+:since: v0.2.00
 		"""
 
 		if (_type == Object.TYPE_DIRECTORY): self._new_directory(vfs_url)
@@ -311,7 +336,7 @@ Creates a new VFS file object.
 
 :param vfs_url: VFS URL
 
-:since: v0.1.04
+:since: v0.2.00
 		"""
 
 		file_path_name = unquote(Abstract._get_id_from_vfs_url(vfs_url))
@@ -328,7 +353,7 @@ Opens a VFS object.
 :param vfs_url: VFS URL
 :param readonly: Open object in readonly mode
 
-:since: v0.1.04
+:since: v0.2.00
 		"""
 
 		if (self.dir_path_name is not None
@@ -349,7 +374,7 @@ Opens a VFS directory object.
 :param vfs_url: VFS URL
 :param dir_path_name: Directory path and name
 
-:since: v0.1.04
+:since: v0.2.00
 		"""
 
 		self._ensure_directory_readable(vfs_url, dir_path_name)
@@ -365,7 +390,7 @@ Opens (and creates) a VFS file object.
 :param file_path_name: File path and name
 :param readonly: Open file in readonly mode
 
-:since: v0.1.04
+:since: v0.2.00
 		"""
 
 		self.file_path_name = path.abspath(file_path_name)
@@ -377,7 +402,7 @@ Opens (and creates) a VFS file object.
 		"""
 Opens the wrapped resource once needed for an file IO request.
 
-:since: v0.1.04
+:since: v0.2.00
 		"""
 
 		if (self.file_path_name is None): raise IOException("VFS object not opened")
@@ -392,7 +417,7 @@ Opens the wrapped resource once needed for an file IO request.
 Scan over objects of a collection like a directory.
 
 :return: (list) Child VFS objects
-:since:  v0.1.04
+:since:  v0.2.00
 		"""
 
 		if (self.file_path_name is not None): raise IOException("VFS object can not be scanned")
@@ -427,7 +452,7 @@ Scan over objects of a collection like a directory.
 Returns false if flushing buffers is not supported.
 
 :return: (bool) True if flushing buffers is supported
-:since:  v0.1.04
+:since:  v0.2.00
 		"""
 
 		return (self._wrapped_resource is not None)
