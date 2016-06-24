@@ -106,7 +106,7 @@ python.org: Flush and close this stream.
 		"""
 Opens the wrapped resource once needed.
 
-:since: v0.1.04
+:since: v0.2.00
 		"""
 
 		pass

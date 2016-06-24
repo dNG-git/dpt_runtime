@@ -90,7 +90,7 @@ Frees all watcher callbacks for garbage collection.
 Returns the implementing scheme name.
 
 :return: (str) Implementing scheme name
-:since:  v0.1.04
+:since:  v0.2.00
 		"""
 
 		raise NotImplementedException()
