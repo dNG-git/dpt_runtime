@@ -83,6 +83,7 @@ True to open the file read-only
 		"""
 
 		self.supported_features['flush'] = self._supports_flush
+		self.supported_features['implementing_instance'] = self._supports_implementing_instance
 	#
 
 	def _ensure_directory_readable(self, vfs_url, dir_path_name):
@@ -452,6 +453,18 @@ Scan over objects of a collection like a directory.
 Returns false if flushing buffers is not supported.
 
 :return: (bool) True if flushing buffers is supported
+:since:  v0.2.00
+		"""
+
+		return (self._wrapped_resource is not None)
+	#
+
+	def _supports_implementing_instance(self):
+	#
+		"""
+Returns false if no underlying, implementing instance can be returned.
+
+:return: (bool) True if an implementing instance can be returned.
 :since:  v0.2.00
 		"""
 
