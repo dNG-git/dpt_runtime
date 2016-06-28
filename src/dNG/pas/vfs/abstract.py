@@ -103,11 +103,12 @@ Returns the implementing scheme name.
 		"""
 Returns the implementing instance.
 
-:return: (mixed) Implementing instance
+:return: (mixed) Implementing instance or "None"
 :since:  v0.1.03
 		"""
 
-		raise NotImplementedException()
+		if (not self.is_valid()): raise IOException("VFS object not opened")
+		return None
 	#
 
 	def get_mimetype(self):
@@ -377,7 +378,6 @@ Returns the ID part of the VFS URL given.
 :since:  v0.1.03
 		"""
 
-		vfs_url = Binary.str(vfs_url)
 		if (type(vfs_url) is not str): raise ValueException("VFS URL given is invalid")
 
 		vfs_url_data = vfs_url.split("://", 1)
