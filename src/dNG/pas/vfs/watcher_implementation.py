@@ -98,6 +98,7 @@ Returns the scheme of the VFS URL given.
 		"""
 
 		vfs_url = Binary.str(vfs_url)
+		if (type(vfs_url) is not str): raise ValueException("VFS URL given is invalid")
 
 		vfs_url_data = vfs_url.split("://", 1)
 		if (len(vfs_url_data) == 1): raise ValueException("VFS URL '{0}' is invalid".format(vfs_url))
