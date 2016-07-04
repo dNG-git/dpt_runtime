@@ -20,7 +20,6 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 # pylint: disable=unused-argument
 
-from dNG.pas.data.binary import Binary
 from dNG.pas.data.supports_mixin import SupportsMixin
 from dNG.pas.runtime.io_exception import IOException
 from dNG.pas.runtime.not_implemented_exception import NotImplementedException
