@@ -128,7 +128,7 @@ Initializes the pyinotify instance.
 :since: v0.1.01
 		"""
 
-		self.pyinotify_instance = ThreadedNotifier(self, WatcherPyinotifyCallback(self), timeout = 5)
+		self.pyinotify_instance = ThreadedNotifier(self, WatcherPyinotifyCallback(self), timeout = 5000)
 		self.pyinotify_instance.start()
 	#
 
