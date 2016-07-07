@@ -87,7 +87,7 @@ try: from urllib.parse import quote
 except ImportError: from urllib import quote
 
 from dNG.data.file import File
-from dNG.pas.vfs.file.watcher import Watcher
+from dNG.vfs.file.watcher import Watcher
 
 try: from pyinotify import WatchManager
 except ImportError: WatchManager = None
@@ -95,7 +95,7 @@ except ImportError: WatchManager = None
 class TestVfsFileWatcher(unittest.TestCase):
 #
 	"""
-UnitTest for dNG.pas.data.Binary
+UnitTest for dNG.data.Binary
 
 :since: v0.1.01
 	"""

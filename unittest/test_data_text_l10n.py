@@ -22,12 +22,12 @@ from os import path
 import sys
 import unittest
 
-from dNG.pas.data.text.l10n import L10n
+from dNG.data.text.l10n import L10n
 
 class TestDataTextL10n(unittest.TestCase):
 #
 	"""
-UnitTest for dNG.pas.data.text.L10n
+UnitTest for dNG.data.text.L10n
 
 :since: v0.1.01
 	"""

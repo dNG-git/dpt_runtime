@@ -22,13 +22,13 @@ from os import path
 import sys
 import unittest
 
-from dNG.pas.data.binary import Binary
-from dNG.pas.data.text.input_filter import InputFilter
+from dNG.data.binary import Binary
+from dNG.data.text.input_filter import InputFilter
 
 class TestDataTextInputFilter(unittest.TestCase):
 #
 	"""
-UnitTest for dNG.pas.data.text.InputFilter
+UnitTest for dNG.data.text.InputFilter
 
 :since: v0.1.01
 	"""

@@ -22,12 +22,12 @@ from os import path
 import sys
 import unittest
 
-from dNG.pas.data.text.tmd5 import Tmd5
+from dNG.data.text.tmd5 import Tmd5
 
 class TestDataTextTmd5(unittest.TestCase):
 #
 	"""
-UnitTest for dNG.pas.data.text.Tmd5
+UnitTest for dNG.data.text.Tmd5
 
 :since: v0.1.01
 	"""

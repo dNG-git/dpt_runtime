@@ -22,12 +22,12 @@ from os import path
 import sys
 import unittest
 
-from dNG.pas.data.settings import Settings
+from dNG.data.settings import Settings
 
 class TestDataSettings(unittest.TestCase):
 #
 	"""
-UnitTest for dNG.pas.data.Settings
+UnitTest for dNG.data.Settings
 
 :since: v0.1.01
 	"""

@@ -39,12 +39,12 @@ except NameError:
 	_PY_UNICODE_TYPE = str
 #
 
-from dNG.pas.data.binary import Binary
+from dNG.data.binary import Binary
 
 class TestDataBinary(unittest.TestCase):
 #
 	"""
-UnitTest for dNG.pas.data.Binary
+UnitTest for dNG.data.Binary
 
 :since: v0.1.01
 	"""
