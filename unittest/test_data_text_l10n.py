@@ -23,6 +23,7 @@ import sys
 import unittest
 
 from dNG.data.text.l10n import L10n
+from dNG.module.named_loader import NamedLoader
 
 class TestDataTextL10n(unittest.TestCase):
 #
@@ -34,6 +35,9 @@ UnitTest for dNG.data.text.L10n
 
 	def setUp(self):
 	#
+		cache_instance = NamedLoader.get_singleton("dNG.data.cache.Content", False)
+		if (cache_instance is not None): cache_instance.disable()
+
 		self.de_dict = L10n.get_dict("de")
 		L10n.init("core", "de")
 		L10n.init("core", "en")

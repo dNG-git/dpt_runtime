@@ -48,10 +48,16 @@ Returns a formatted number.
 
 		_return = ""
 
-		normalized_number = (str(round(number))
-		                     if (fractional_digits < 0) else
-		                     "{0:.{1:d}f}".format(number, fractional_digits)
-		                    )
+		if (fractional_digits == 0): normalized_number = str(int(round(number)))
+		else:
+		#
+			normalized_number_format = ("{{0:.{0:d}f}}".format(fractional_digits)
+			                            if (fractional_digits > 0) else
+			                            "{0:f}"
+			                           )
+
+			normalized_number = normalized_number_format.format(number)
+		#
 
 		digits = normalized_number.split(".")
 
