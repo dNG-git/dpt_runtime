@@ -19,7 +19,9 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 """
 
 import sys
-import traceback
+
+try: import traceback
+except ImportError: traceback = None
 
 class TracedException(RuntimeError):
 #
@@ -47,7 +49,7 @@ Constructor __init__(TracedException)
 :since: v0.2.00
 		"""
 
-		RuntimeError.__init__(self, value)
+		super(TracedException, self).__init__(value)
 
 		self.exc_cause = _exception
 		"""
@@ -117,7 +119,10 @@ Returns the stack trace.
 :since:  v0.2.00
 		"""
 
-		return "".join(traceback.format_exception(self.exc_type, self.exc_value, self.exc_traceback))
+		return ("{0!r}\n {1!r}\n {2!r}".format(self.exc_type, self.exc_value, self.exc_traceback)
+		        if (traceback is None) else
+		        "".join(traceback.format_exception(self.exc_type, self.exc_value, self.exc_traceback))
+		       )
 	#
 
 	def print_stack_trace(self, out_stream = None):
@@ -145,7 +150,10 @@ Prints the stack trace to the given output stream or stderr.
 :since: v0.2.00
 		"""
 
-		printable_trace = traceback.format_exc()
+		printable_trace = ("{0!r}\n {1!r}\n {2!r}".format(sys.exc_info()[:3])
+		                   if (traceback is None) else
+		                   traceback.format_exc()
+		                  )
 
 		if (out_stream is None): out_stream = sys.stderr
 		out_stream.write(printable_trace)
