@@ -126,11 +126,13 @@ environment.
 :since: v0.2.00
 		"""
 
-		self.runtime_dict['path_system'] = path.normpath("{0}/../../..".format(Binary.str(__file__)))
+		system_path = path.abspath(__file__)
+		for _ in range(3): system_path = path.dirname(system_path)
+		self.runtime_dict['path_system'] = Binary.str(path.normpath(system_path))
 
 		self.runtime_dict['path_base'] = (Binary.str(os.environ['dNGpath'])
 		                                  if ("dNGpath" in os.environ) else
-		                                  path.normpath("{0}/..".format(self.runtime_dict['path_system']))
+		                                  path.dirname(self.runtime_dict['path_system'])
 		                                 )
 
 		self.runtime_dict['path_data'] = (Binary.str(os.environ['dNGpathData'])
