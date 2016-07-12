@@ -57,7 +57,7 @@ class _NotImplementedClass(object):
 	"""
 The "_NotImplementedClass" is used in connection with the
 "_NotImplementedMetaClass" to raise "dNG.runtime.NotImplementedException"
-for all constructor and class method calls.
+for all class and instance method calls.
 
 :author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
@@ -68,12 +68,17 @@ for all constructor and class method calls.
              Mozilla Public License, v. 2.0
 	"""
 
-	def __init__(self, *args, **kwargs):
+	def __getattr__(self, name):
 	#
 		"""
-Constructor __init__(_NotImplementedClass)
+python.org: Called when an attribute lookup has not found the attribute in
+the usual places (i.e. it is not an instance attribute nor is it found in the
+class tree for self).
 
-:since: v0.2.00
+:param name: Attribute name
+
+:return: (mixed) Instance attribute
+:since:  v0.2.00
 		"""
 
 		raise NotImplementedException()
