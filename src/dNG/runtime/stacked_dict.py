@@ -41,7 +41,7 @@ Constructor __init__(StackedDict)
 :since: v0.2.00
 		"""
 
-		dict.__init__(self, *args, **kwargs)
+		super(StackedDict, self).__init__(*args, **kwargs)
 
 		self.stacked_dicts = [ ]
 		"""
@@ -123,6 +123,8 @@ python.org: Called to implement evaluation of self[key].
 				#
 					is_found = True
 					_return = _dict[key]
+
+					break
 				#
 			#
 		#
