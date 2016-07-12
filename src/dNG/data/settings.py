@@ -19,10 +19,12 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 """
 
 from os import path
-from threading import RLock
 from weakref import proxy
 import os
 import re
+
+try: from threading import RLock
+except ImportError: RLock = None
 
 from dNG.runtime.io_exception import IOException
 from dNG.runtime.stacked_dict import StackedDict
@@ -59,7 +61,7 @@ Cache instance
 	"""
 Settings instance
 	"""
-	_lock = RLock()
+	_lock = (None if (RLock is None) else RLock())
 	"""
 Thread safety lock
 	"""
@@ -235,18 +237,31 @@ Get the settings singleton.
 		"""
 
 		if (Settings._instance is None):
-		# Thread safety
-			with Settings._lock:
+		#
+			if (Settings._lock is None): Settings._new_instance()
+			else:
 			#
-				if (Settings._instance is None):
-				#
-					Settings._instance = Settings()
-					Settings.read_file("{0}/settings/core.json".format(Settings._instance._get_runtime_dict()['path_data']))
+				with Settings._lock:
+				# Thread safety
+					if (Settings._instance is None): Settings._new_instance()
 				#
 			#
 		#
 
 		return Settings._instance
+	#
+
+	@staticmethod
+	def _new_instance():
+	#
+		"""
+Initializes a new settings singleton instance.
+
+:since: v0.2.00
+		"""
+
+		Settings._instance = Settings()
+		Settings.read_file("{0}/settings/core.json".format(Settings._instance._get_runtime_dict()['path_data']))
 	#
 
 	@staticmethod
