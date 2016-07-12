@@ -41,11 +41,16 @@ Constructor __init__(StackedDict)
 :since: v0.2.00
 		"""
 
-		super(StackedDict, self).__init__(*args, **kwargs)
+		_super = super(StackedDict, self)
+		_super.__init__(*args, **kwargs)
 
 		self.stacked_dicts = [ ]
 		"""
 Stacked additional dicts to be looked in.
+		"""
+		self._super = _super
+		"""
+Parent of the implemented dict instance.
 		"""
 	#
 
@@ -60,7 +65,7 @@ python.org: Called to implement membership test operators.
 :since:  v0.2.00
 		"""
 
-		_return = dict.__contains__(self, item)
+		_return = (item in self.keys())
 
 		if (not _return):
 		#
@@ -86,7 +91,7 @@ python.org: Return an iterator object.
 :since:  v0.2.00
 		"""
 
-		for key in dict.__iter__(self): yield key
+		for key in self.keys(): yield key
 
 		for _dict in self.stacked_dicts:
 		#
@@ -109,9 +114,9 @@ python.org: Called to implement evaluation of self[key].
 
 		is_found = False
 
-		if (dict.__contains__(self, key)):
+		if (key in self.keys()):
 		#
-			_return = dict.__getitem__(self, key)
+			_return = self._super.__getitem__(key)
 			is_found = True
 		#
 
