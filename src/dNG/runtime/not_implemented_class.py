@@ -20,11 +20,11 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 from .not_implemented_exception import NotImplementedException
 
-class NotImplementedClass(NotImplementedException):
+class _NotImplementedMetaClass(type):
 #
 	"""
-The "NotImplementedClass" is used for features not available or implemented
-on a specific installation.
+The "_NotImplementedMetaClass" is used as a Python 2 and Python 3 compatible
+metaclass to raise "dNG.runtime.NotImplementedException" for class methods.
 
 :author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
@@ -34,17 +34,6 @@ on a specific installation.
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
 	"""
-
-	def __init__(self, *args, **kwargs):
-	#
-		"""
-Constructor __init__(NotImplementedClass)
-
-:since: v0.2.00
-		"""
-
-		raise NotImplementedException()
-	#
 
 	def __getattr__(self, name):
 	#
@@ -62,5 +51,47 @@ class tree for self).
 		raise NotImplementedException()
 	#
 #
+
+class _NotImplementedClass(object):
+#
+	"""
+The "_NotImplementedClass" is used in connection with the
+"_NotImplementedMetaClass" to raise "dNG.runtime.NotImplementedException"
+for all constructor and class method calls.
+
+:author:     direct Netware Group et al.
+:copyright:  direct Netware Group - All rights reserved
+:package:    pas
+:subpackage: core
+:since:      v0.2.00
+:license:    https://www.direct-netware.de/redirect?licenses;mpl2
+             Mozilla Public License, v. 2.0
+	"""
+
+	def __init__(self, *args, **kwargs):
+	#
+		"""
+Constructor __init__(_NotImplementedClass)
+
+:since: v0.2.00
+		"""
+
+		raise NotImplementedException()
+	#
+#
+
+NotImplementedClass = _NotImplementedMetaClass(_NotImplementedClass.__name__[1:], ( _NotImplementedClass, ), { })
+"""
+The "NotImplementedClass" is used for features not available or implemented
+on a specific installation.
+
+:author:     direct Netware Group et al.
+:copyright:  direct Netware Group - All rights reserved
+:package:    pas
+:subpackage: core
+:since:      v0.2.00
+:license:    https://www.direct-netware.de/redirect?licenses;mpl2
+             Mozilla Public License, v. 2.0
+"""
 
 ##j## EOF
