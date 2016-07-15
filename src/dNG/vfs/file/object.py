@@ -82,6 +82,7 @@ File path and name set for "TYPE_FILE"
 True to open the file read-only
 		"""
 
+		self.supported_features['filesystem_path_name'] = True
 		self.supported_features['flush'] = self._supports_flush
 		self.supported_features['implementing_instance'] = self._supports_implementing_instance
 		self.supported_features['time_created'] = True
@@ -130,6 +131,24 @@ python.org: Flush and close this stream.
 			try: FileLikeWrapperMixin.close(self)
 			finally: self.file_path_name = None
 		#
+	#
+
+	def get_filesystem_path_name(self):
+	#
+		"""
+Returns the path and name for the VFS object in the system filesystem.
+
+:return: (str) System filesystem path and name of the VFS object
+:since:  v0.2.00
+		"""
+
+		_return = None
+
+		if (self.dir_path_name is not None): self.dir_path_name
+		elif (self.file_path_name is not None): self.file_path_name
+		else: raise IOException("VFS object not opened")
+
+		return _return
 	#
 
 	def get_implementing_instance(self):
