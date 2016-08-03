@@ -20,13 +20,14 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 # pylint: disable=unused-argument
 
+from dNG.data.file_like_copy_mixin import FileLikeCopyMixin
 from dNG.data.supports_mixin import SupportsMixin
 from dNG.runtime.io_exception import IOException
 from dNG.runtime.not_implemented_exception import NotImplementedException
 from dNG.runtime.operation_not_supported_exception import OperationNotSupportedException
 from dNG.runtime.value_exception import ValueException
 
-class Abstract(SupportsMixin):
+class Abstract(FileLikeCopyMixin, SupportsMixin):
 #
 	"""
 Provides the abstract VFS implementation for an object.
@@ -52,6 +53,18 @@ File type
 	"""
 Link type
 	"""
+
+	def __init__(self):
+	#
+		"""
+Constructor __init__(Abstract)
+
+:since: v0.2.00
+		"""
+
+		FileLikeCopyMixin.__init__(self)
+		SupportsMixin.__init__(self)
+	#
 
 	def __del__(self):
 	#
