@@ -85,6 +85,7 @@ True to open the file read-only
 		self.supported_features['filesystem_path_name'] = True
 		self.supported_features['flush'] = self._supports_flush
 		self.supported_features['implementing_instance'] = self._supports_implementing_instance
+		self.supported_features['seek'] = self._supports_seek
 		self.supported_features['time_created'] = True
 		self.supported_features['time_updated'] = True
 	#
@@ -477,7 +478,7 @@ Returns false if flushing buffers is not supported.
 :since:  v0.2.00
 		"""
 
-		return (self._wrapped_resource is not None)
+		return (self.file_path_name is not None)
 	#
 
 	def _supports_implementing_instance(self):
@@ -490,6 +491,18 @@ Returns false if no underlying, implementing instance can be returned.
 		"""
 
 		return (self._wrapped_resource is not None)
+	#
+
+	def _supports_seek(self):
+	#
+		"""
+Returns false if seek is not supported.
+
+:return: (bool) True if seek is supported
+:since:  v0.2.00
+		"""
+
+		return (self.file_path_name is not None)
 	#
 #
 
