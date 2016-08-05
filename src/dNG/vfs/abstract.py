@@ -304,7 +304,7 @@ python.org: Read up to n bytes from the object and return them.
 
 :param n: How many bytes to read from the current position (0 means until
           EOF)
-:param timeout: Timeout to use (defaults to construction time value)
+:param timeout: Timeout to use (if supported by implementation)
 
 :return: (bytes) Data; None if EOF
 :since:  v0.2.00
@@ -419,7 +419,7 @@ Returns the scheme of the VFS URL given.
 		vfs_url_data = vfs_url.split("://", 1)
 		if (len(vfs_url_data) == 1): raise ValueException("VFS URL '{0}' is invalid".format(vfs_url))
 
-		return vfs_url_data[0]
+		return vfs_url_data[0].lower()
 	#
 #
 
