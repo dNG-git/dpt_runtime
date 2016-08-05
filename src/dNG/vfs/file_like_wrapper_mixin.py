@@ -101,6 +101,18 @@ python.org: Flush and close this stream.
 		#
 	#
 
+	def _is_wrapped_resource_open(self):
+	#
+		"""
+Returns true if a wrapped resource has been opened for this object.
+
+:return: (bool) True if wrapped resource has been opened
+:since:  v0.2.00
+		"""
+
+		return (self._wrapped_resource is not None)
+	#
+
 	def _open_wrapped_resource(self):
 	#
 		"""
