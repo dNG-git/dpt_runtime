@@ -286,7 +286,7 @@ Creates a new VFS object.
 	def open(self, vfs_url, readonly = False):
 	#
 		"""
-Opens a VFS object.
+Opens a VFS object. The handle is set at the beginning of the object.
 
 :param vfs_url: VFS URL
 :param readonly: Open object in readonly mode
