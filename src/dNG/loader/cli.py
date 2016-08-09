@@ -24,7 +24,6 @@ from errno import EINVAL, ESRCH
 from time import sleep
 from weakref import ref
 import os
-import threading
 
 try: import signal
 except ImportError: pass
@@ -61,6 +60,7 @@ if (_mode == _IMPLEMENTATION_PYTHON):
 #
 
 from dNG.data.traced_exception import TracedException
+from dNG.runtime.event import Event
 from dNG.runtime.exception_log_trap import ExceptionLogTrap
 from dNG.runtime.thread import Thread
 from dNG.runtime.value_exception import ValueException
@@ -128,7 +128,7 @@ happened.
 		"""
 Callable main loop without arguments
 		"""
-		self.mainloop_event = threading.Event()
+		self.mainloop_event = Event()
 		"""
 Mainloop event
 		"""
