@@ -371,7 +371,7 @@ Creates a new VFS file object.
 	def open(self, vfs_url, readonly = False):
 	#
 		"""
-Opens a VFS object.
+Opens a VFS object. The handle is set at the beginning of the object.
 
 :param vfs_url: VFS URL
 :param readonly: Open object in readonly mode
@@ -430,8 +430,10 @@ Opens the wrapped resource once needed for an file IO request.
 
 		if (self.file_path_name is None): raise IOException("VFS object not opened")
 
+		file_mode = ("r+b" if (self.file_readonly) else "w+b")
+
 		_file = File()
-		if (_file.open(self.file_path_name, self.file_readonly)): self._set_wrapped_resource(_file)
+		if (_file.open(self.file_path_name, self.file_readonly, file_mode)): self._set_wrapped_resource(_file)
 	#
 
 	def scan(self):
@@ -478,7 +480,7 @@ Returns false if flushing buffers is not supported.
 :since:  v0.2.00
 		"""
 
-		return (self.file_path_name is not None)
+		return (self.file_path_name is not None and (not self.file_readonly))
 	#
 
 	def _supports_implementing_instance(self):
