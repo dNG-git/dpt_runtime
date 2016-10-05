@@ -40,6 +40,8 @@ class ResultEvent(Event):
 		"""
 Constructor __init__(ResultEvent)
 
+:param timeout: Default timeout in seconds to wait for results
+
 :since: v0.2.00
 		"""
 
@@ -53,12 +55,14 @@ Result set
 		"""
 Flag indicating that a result was set.
 		"""
+
+		if (timeout is not None): self.timeout = timeout
 	#
 
 	def clear(self):
 	#
 		"""
-python.org: Reset the internal flag to false. 
+python.org: Reset the internal flag to false.
 
 :since: v0.2.00
 		"""
