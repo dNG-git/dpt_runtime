@@ -55,32 +55,21 @@ Constructor __init__(TracedException)
 		"""
 Inner exception if given
 		"""
-		self.exc_type = self.__class__
+		self.exc_trace_list = None
 		"""
-Exception type
-		"""
-		self.exc_value = self
-		"""
-Exception value
-		"""
-		self.exc_traceback = None
-		"""
-Exception traceback
+Exception traceback list
 		"""
 
-		exc_type = None
-		exc_value = None
+		exc_traceback = getattr(self, "__traceback__", None)
 
-		if (hasattr(self, "__traceback__")): exc_traceback = self.__traceback__
-		else: ( exc_type, exc_value, exc_traceback ) = sys.exc_info()
-
-		if (exc_value is not None):
+		if (traceback is not None):
 		#
-			self.exc_type = exc_type
-			self.exc_value = exc_value
+			self.exc_trace_list = (traceback.format_stack()[:-1]
+			                       if (exc_traceback is None) else
+			                       traceback.format_tb(exc_traceback)
+			                      )
 		#
-
-		if (exc_traceback is not None): self.exc_traceback = exc_traceback
+		elif (exc_traceback is not None): self.exc_trace_list = [ repr(exc_traceback) ]
 	#
 
 	def __str__(self):
@@ -95,7 +84,7 @@ representation of an object.
 		"""
 
 		_return = RuntimeError.__str__(self)
-		return (_return if (self.exc_cause is None) else "{0}\n{1}".format(_return, repr(self.exc_cause)))
+		return (_return if (self.exc_cause is None) else "{0} ({1!r})".format(_return, self.exc_cause))
 	#
 
 	def get_cause(self):
@@ -119,10 +108,12 @@ Returns the stack trace.
 :since:  v0.2.00
 		"""
 
-		return ("{0!r}\n {1!r}\n {2!r}".format(self.exc_type, self.exc_value, self.exc_traceback)
-		        if (traceback is None) else
-		        "".join(traceback.format_exception(self.exc_type, self.exc_value, self.exc_traceback))
-		       )
+		_return = "{0!r}: {1!s}\n".format(self.__class__, self)
+
+		if (self.exc_trace_list is not None): _return = "{0}{1}".format(_return, "".join(self.exc_trace_list))
+		if (self.exc_cause is not None): _return = "{0}{1}".format(_return, repr(self.exc_cause))
+
+		return _return
 	#
 
 	def print_stack_trace(self, out_stream = None):
@@ -139,6 +130,24 @@ Prints the stack trace to the given output stream or stderr.
 		out_stream.write(self.get_printable_trace())
 	#
 
+	def with_traceback(self, tb):
+	#
+		"""
+python.org: This method sets tb as the new traceback for the exception and
+returns the exception object.
+
+:param tb: New traceback for the exception
+
+:return: (object) Manipulated exception instance
+:since:  v0.2.00
+		"""
+
+		self.exc_trace_list = ([ repr(tb) ] if (traceback is None) else traceback.format_tb(tb))
+		RuntimeError.with_traceback(self, tb)
+
+		return self
+	#
+
 	@staticmethod
 	def print_current_stack_trace(out_stream = None):
 	#
@@ -150,7 +159,7 @@ Prints the stack trace to the given output stream or stderr.
 :since: v0.2.00
 		"""
 
-		printable_trace = ("{0!r}\n {1!r}\n {2!r}".format(sys.exc_info()[:3])
+		printable_trace = ("{0!r}: {1!s}\n{2!r}".format(sys.exc_info()[:3])
 		                   if (traceback is None) else
 		                   traceback.format_exc()
 		                  )
