@@ -145,8 +145,8 @@ Returns the path and name for the VFS object in the system filesystem.
 
 		_return = None
 
-		if (self.dir_path_name is not None): self.dir_path_name
-		elif (self.file_path_name is not None): self.file_path_name
+		if (self.dir_path_name is not None): _return = self.dir_path_name
+		elif (self.file_path_name is not None): _return = self.file_path_name
 		else: raise IOException("VFS object not opened")
 
 		return _return
