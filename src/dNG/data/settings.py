@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -35,8 +34,7 @@ from .file import File
 from .json_resource import JsonResource
 
 class Settings(object):
-#
-	"""
+    """
 The settings singleton provides a central configuration facility.
 
 :author:     direct Netware Group et al.
@@ -46,137 +44,130 @@ The settings singleton provides a central configuration facility.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	RE_EXTENDED_JSON_COMMENT_LINE = re.compile("^\\s*#.*$", re.M)
-	"""
+    RE_EXTENDED_JSON_COMMENT_LINE = re.compile("^\\s*#.*$", re.M)
+    """
 Comments in (invalid) JSON setting files are replaced before getting parsed.
-	"""
+    """
 
-	_cache_instance = None
-	"""
+    _cache_instance = None
+    """
 Cache instance
-	"""
-	_instance = None
-	"""
+    """
+    _instance = None
+    """
 Settings instance
-	"""
-	_lock = (None if (RLock is None) else RLock())
-	"""
+    """
+    _lock = (None if (RLock is None) else RLock())
+    """
 Thread safety lock
-	"""
-	_log_handler = None
-	"""
+    """
+    _log_handler = None
+    """
 The LogHandler is called whenever debug messages should be logged or errors
 happened.
-	"""
+    """
 
-	def __init__(self):
-	#
-		"""
+    def __init__(self):
+        """
 Constructor __init__(Settings)
 
 :since: v0.2.00
-		"""
+        """
 
-		self.file_dict = { }
-		"""
+        self.file_dict = { }
+        """
 Underlying file-backed settings dict
-		"""
-		self.runtime_dict = StackedDict()
-		"""
+        """
+        self.runtime_dict = StackedDict()
+        """
 Runtime settings dict
-		"""
+        """
 
-		self.runtime_dict.add_dict(self.file_dict)
-		self._process_os_environment()
-	#
+        self.runtime_dict.add_dict(self.file_dict)
+        self._process_os_environment()
+    #
 
-	def _get_file_dict(self):
-	#
-		"""
+    def _get_file_dict(self):
+        """
 Returns the file-backed settings dictionary. This dictionary does not
 contain values changed at runtime.
 
 :return: (dict) Underlying file-backed settings dict
 :since:  v0.2.00
-		"""
+        """
 
-		return self.file_dict
-	#
+        return self.file_dict
+    #
 
-	def _get_runtime_dict(self):
-	#
-		"""
+    def _get_runtime_dict(self):
+        """
 Returns the runtime settings dictionary.
 
 :return: (dict) Runtime settings dict
 :since:  v0.2.00
-		"""
+        """
 
-		return self.runtime_dict
-	#
+        return self.runtime_dict
+    #
 
-	def _process_os_environment(self):
-	#
-		"""
+    def _process_os_environment(self):
+        """
 Sets path values in the runtime settings dictionary based on the OS
 environment.
 
 :since: v0.2.00
-		"""
+        """
 
-		system_path = path.abspath(__file__)
-		for _ in range(3): system_path = path.dirname(system_path)
-		self.runtime_dict['path_system'] = Binary.str(path.normpath(system_path))
+        system_path = path.abspath(__file__)
+        for _ in range(3): system_path = path.dirname(system_path)
+        self.runtime_dict['path_system'] = Binary.str(path.normpath(system_path))
 
-		self.runtime_dict['path_base'] = (Binary.str(os.environ['dNGpath'])
-		                                  if ("dNGpath" in os.environ) else
-		                                  path.dirname(self.runtime_dict['path_system'])
-		                                 )
+        self.runtime_dict['path_base'] = (Binary.str(os.environ['dNGpath'])
+                                          if ("dNGpath" in os.environ) else
+                                          path.dirname(self.runtime_dict['path_system'])
+                                         )
 
-		self.runtime_dict['path_data'] = (Binary.str(os.environ['dNGpathData'])
-		                                  if ("dNGpathData" in os.environ) else
-		                                  path.join(self.runtime_dict['path_base'], "data")
-		                                 )
+        self.runtime_dict['path_data'] = (Binary.str(os.environ['dNGpathData'])
+                                          if ("dNGpathData" in os.environ) else
+                                          path.join(self.runtime_dict['path_base'], "data")
+                                         )
 
-		self.runtime_dict['path_lang'] = (Binary.str(os.environ['dNGpathLang'])
-		                                  if ("dNGpathLang" in os.environ) else
-		                                  path.join(self.runtime_dict['path_base'], "lang")
-		                                 )
-	#
+        self.runtime_dict['path_lang'] = (Binary.str(os.environ['dNGpathLang'])
+                                          if ("dNGpathLang" in os.environ) else
+                                          path.join(self.runtime_dict['path_base'], "lang")
+                                         )
+    #
 
-	def update(self, other):
-	#
-		"""
+    def update(self, other):
+        """
 python.org: Update the dictionary with the key/value pairs from other,
 overwriting existing keys.
 
 :param other: Other dictionary
 
 :since: v0.2.00
-		"""
+        """
 
-		self.runtime_dict.update(other)
-	#
+        self.runtime_dict.update(other)
+    #
 
-	def _update_file_dict(self, _dict):
-	#
-		"""
+    def _update_file_dict(self, _dict):
+        """
 Updates the file-backed settings dict with values from the given one.
 
 :param _dict: Updated dictionary
 
 :since: v0.2.00
-		"""
+        """
 
-		self.file_dict.update(_dict)
-	#
+        self.file_dict.update(_dict)
+    #
 
-	@staticmethod
-	def get(key, default = None):
-	#
-		"""
+    @staticmethod
+    def get(key, default = None):
+        """
 Returns the value with the specified key.
 
 :param key: Settings key
@@ -184,28 +175,26 @@ Returns the value with the specified key.
 
 :return: (mixed) Value
 :since:  v0.2.00
-		"""
+        """
 
-		return Settings.get_dict().get(key, default)
-	#
+        return Settings.get_dict().get(key, default)
+    #
 
-	@staticmethod
-	def get_dict():
-	#
-		"""
+    @staticmethod
+    def get_dict():
+        """
 Returns all settings currently defined as a dict.
 
 :return: (dict) Settings dict
 :since:  v0.2.00
-		"""
+        """
 
-		return Settings.get_instance()._get_runtime_dict()
-	#
+        return Settings.get_instance()._get_runtime_dict()
+    #
 
-	@staticmethod
-	def get_lang_associated(key, lang, default = None):
-	#
-		"""
+    @staticmethod
+    def get_lang_associated(key, lang, default = None):
+        """
 Returns the value associated with the given language. Otherwise the default
 one with the specified key is returned. Default is used if both values are
 not defined.
@@ -216,114 +205,106 @@ not defined.
 
 :return: (mixed) Value
 :since:  v0.2.00
-		"""
+        """
 
-		_dict = Settings.get_dict()
+        _dict = Settings.get_dict()
 
-		key_with_lang = "{0}_{1}".format(key, lang)
-		_return = (_dict[key_with_lang] if (key_with_lang in _dict) else None)
+        key_with_lang = "{0}_{1}".format(key, lang)
+        _return = (_dict[key_with_lang] if (key_with_lang in _dict) else None)
 
-		if (_return is None): _return = (_dict[key] if (key in _dict) else default)
+        if (_return is None): _return = (_dict[key] if (key in _dict) else default)
 
-		return _return
-	#
+        return _return
+    #
 
-	@staticmethod
-	def get_instance():
-	#
-		"""
+    @staticmethod
+    def get_instance():
+        """
 Get the settings singleton.
 
 :return: (Settings) Object on success
 :since:  v0.2.00
-		"""
+        """
 
-		if (Settings._instance is None):
-		#
-			if (Settings._lock is None): Settings._new_instance()
-			else:
-			#
-				with Settings._lock:
-				# Thread safety
-					if (Settings._instance is None): Settings._new_instance()
-				#
-			#
-		#
+        if (Settings._instance is None):
+            if (Settings._lock is None): Settings._new_instance()
+            else:
+                with Settings._lock:
+                    # Thread safety
+                    if (Settings._instance is None): Settings._new_instance()
+                #
+            #
+        #
 
-		return Settings._instance
-	#
+        return Settings._instance
+    #
 
-	@staticmethod
-	def _new_instance():
-	#
-		"""
+    @staticmethod
+    def _new_instance():
+        """
 Initializes a new settings singleton instance.
 
 :since: v0.2.00
-		"""
+        """
 
-		Settings._instance = Settings()
-		Settings.read_file("{0}/settings/core.json".format(Settings._instance._get_runtime_dict()['path_data']))
-	#
+        Settings._instance = Settings()
+        Settings.read_file("{0}/settings/core.json".format(Settings._instance._get_runtime_dict()['path_data']))
+    #
 
-	@staticmethod
-	def _import_file_json(json):
-	#
-		"""
+    @staticmethod
+    def _import_file_json(json):
+        """
 Import a given JSON encoded string as an dict of file-backed settings.
 
 :param json: JSON encoded dict of settings
 
 :return: (bool) True on success
 :since:  v0.2.00
-		"""
+        """
 
-		_return = True
+        _return = True
 
-		json_resource = JsonResource()
-		json_data = json_resource.json_to_data(json)
+        json_resource = JsonResource()
+        json_data = json_resource.json_to_data(json)
 
-		if (json_data is None): _return = False
-		else: Settings.get_instance()._update_file_dict(json_data)
+        if (json_data is None): _return = False
+        else: Settings.get_instance()._update_file_dict(json_data)
 
-		return _return
-	#
+        return _return
+    #
 
-	@staticmethod
-	def is_defined(key):
-	#
-		"""
+    @staticmethod
+    def is_defined(key):
+        """
 Checks if a given key is a defined setting.
 
 :param key: Settings key
 
 :return: (bool) True if defined
 :since:  v0.2.00
-		"""
+        """
 
-		return (key in Settings.get_dict())
-	#
+        return (key in Settings.get_dict())
+    #
 
-	@staticmethod
-	def is_file_known(file_path_name):
-	#
-		"""
+    @staticmethod
+    def is_file_known(file_path_name):
+        """
 Return true if the given file path and name is cached.
 
 :param file_path_name: File path and name of the settings file
 
 :return: (bool) True if currently cached
 :since:  v0.2.00
-		"""
+        """
 
-		file_path_name = path.normpath(file_path_name)
-		return (False if (Settings._cache_instance is None) else Settings._cache_instance.is_file_known(file_path_name))
-	#
+        file_path_name = path.normpath(file_path_name)
+        return (False if (Settings._cache_instance is None) else Settings._cache_instance.is_file_known(file_path_name))
+    #
 
-	@staticmethod
-	def read_file(file_path_name, required = False):
-	#
-		"""
+    @staticmethod
+    def read_file(file_path_name, required = False):
+        """
 Read all settings from the given file.
 
 :param file_path_name: File path and name of the settings file
@@ -331,108 +312,98 @@ Read all settings from the given file.
 
 :return: (bool) True on success
 :since:  v0.2.00
-		"""
+        """
 
-		# pylint: disable=maybe-no-member
+        # pylint: disable=maybe-no-member
 
-		_return = True
+        _return = True
 
-		file_path_name = path.normpath(file_path_name)
-		file_content = (None if (Settings._cache_instance is None) else Settings._cache_instance.get_file(file_path_name))
+        file_path_name = path.normpath(file_path_name)
+        file_content = (None if (Settings._cache_instance is None) else Settings._cache_instance.get_file(file_path_name))
 
-		if (file_content is None):
-		#
-			file_object = File()
+        if (file_content is None):
+            file_object = File()
 
-			if (file_object.open(file_path_name, True, "r")):
-			#
-				file_content = file_object.read()
-				file_object.close()
+            if (file_object.open(file_path_name, True, "r")):
+                file_content = file_object.read()
+                file_object.close()
 
-				if (file_content is not None):
-				#
-					file_content = file_content.replace("\r", "")
-					file_content = Settings.RE_EXTENDED_JSON_COMMENT_LINE.sub("", file_content)
-					if (Settings._cache_instance is not None): Settings._cache_instance.set_file(file_path_name, file_content)
-				#
-			#
-			elif (required): raise IOException("{0} not found".format(file_path_name))
-			elif (Settings._log_handler is not None): Settings._log_handler.debug("{0} not found", file_path_name, context = "pas_core")
-		#
+                if (file_content is not None):
+                    file_content = file_content.replace("\r", "")
+                    file_content = Settings.RE_EXTENDED_JSON_COMMENT_LINE.sub("", file_content)
+                    if (Settings._cache_instance is not None): Settings._cache_instance.set_file(file_path_name, file_content)
+                #
+            elif (required): raise IOException("{0} not found".format(file_path_name))
+            elif (Settings._log_handler is not None): Settings._log_handler.debug("{0} not found", file_path_name, context = "pas_core")
+        #
 
-		if (file_content is None): _return = False
-		elif (not Settings._import_file_json(file_content)):
-		#
-			if (required): raise ValueException("{0} is not a valid JSON encoded settings file".format(file_path_name))
-			if (Settings._log_handler is not None): Settings._log_handler.warning("{0} is not a valid JSON encoded settings file", file_path_name, context = "pas_core")
+        if (file_content is None): _return = False
+        elif (not Settings._import_file_json(file_content)):
+            if (required): raise ValueException("{0} is not a valid JSON encoded settings file".format(file_path_name))
+            if (Settings._log_handler is not None): Settings._log_handler.warning("{0} is not a valid JSON encoded settings file", file_path_name, context = "pas_core")
 
-			_return = False
-		#
+            _return = False
+        #
 
-		return _return
-	#
+        return _return
+    #
 
-	@staticmethod
-	def _reprocess_os_environment():
-	#
-		"""
+    @staticmethod
+    def _reprocess_os_environment():
+        """
 This method should only be called after changing the OS environment to
 process it.
 
 :since: v0.2.00
-		"""
+        """
 
-		Settings.get_instance()._process_os_environment()
-	#
+        Settings.get_instance()._process_os_environment()
+    #
 
-	@staticmethod
-	def set(key, value = None):
-	#
-		"""
+    @staticmethod
+    def set(key, value = None):
+        """
 Sets the value for the specified key.
 
 :param key: Settings key
 :param value: Value
 
 :since: v0.2.00
-		"""
+        """
 
-		Settings.get_dict()[key] = value
-	#
+        Settings.get_dict()[key] = value
+    #
 
-	@staticmethod
-	def set_cache_instance(cache_instance):
-	#
-		"""
+    @staticmethod
+    def set_cache_instance(cache_instance):
+        """
 Sets the cache instance.
 
 :param cache_instance: Cache instance to use
 
 :since: v0.2.00
-		"""
+        """
 
-		if (Settings._log_handler is not None): Settings._log_handler.debug("#echo(__FILEPATH__)# -Settings.set_cache_instance()- (#echo(__LINE__)#)", context = "pas_core")
-		Settings._cache_instance = proxy(cache_instance)
-	#
+        if (Settings._log_handler is not None): Settings._log_handler.debug("#echo(__FILEPATH__)# -Settings.set_cache_instance()- (#echo(__LINE__)#)", context = "pas_core")
+        Settings._cache_instance = proxy(cache_instance)
+    #
 
-	@staticmethod
-	def set_log_handler(log_handler):
-	#
-		"""
+    @staticmethod
+    def set_log_handler(log_handler):
+        """
 Sets the LogHandler.
 
 :param log_handler: LogHandler to use
 
 :since: v0.2.00
-		"""
+        """
 
-		Settings._log_handler = proxy(log_handler)
-	#
+        Settings._log_handler = proxy(log_handler)
+    #
 
-	@staticmethod
-	def write_file(file_path_name, template_path_name):
-	#
-		"""
+    @staticmethod
+    def write_file(file_path_name, template_path_name):
+        """
 Write all settings to the given file using the given template.
 
 :param file_path_name: File path and name of the settings file
@@ -441,10 +412,8 @@ Write all settings to the given file using the given template.
 
 :return: (bool) True on success
 :since:  v0.2.00
-		"""
+        """
 
-		return False
-	#
+        return False
+    #
 #
-
-##j## EOF

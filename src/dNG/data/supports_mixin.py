@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -19,8 +18,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 """
 
 class SupportsMixin(object):
-#
-	"""
+    """
 This mixin allows asking if a specific feature is supported by the current
 instance.
 
@@ -31,46 +29,41 @@ instance.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	def __init__(self):
-	#
-		"""
+    def __init__(self):
+        """
 Constructor __init__(SupportsMixin)
 
 :since: v0.1.00
-		"""
+        """
 
-		self.supported_features = { }
-		"""
+        self.supported_features = { }
+        """
 Dictionary of supported features of this instance. The value is either a
 boolean or a callback.
-		"""
-	#
+        """
+    #
 
-	def is_supported(self, feature):
-	#
-		"""
+    def is_supported(self, feature):
+        """
 Returns true if the feature requested is supported by this instance.
 
 :param feature: Feature name string
 
 :return: (bool) True if supported
 :since:  v0.2.00
-		"""
+        """
 
-		_return = False
+        _return = False
 
-		if (feature in self.supported_features):
-		#
-			_return = (self.supported_features[feature]
-			           if (type(self.supported_features[feature]) is bool) else
-			           self.supported_features[feature]()
-			          )
-		#
+        if (feature in self.supported_features):
+            _return = (self.supported_features[feature]
+                       if (type(self.supported_features[feature]) is bool) else
+                       self.supported_features[feature]()
+                      )
+        #
 
-		return _return
-	#
+        return _return
+    #
 #
-
-##j## EOF

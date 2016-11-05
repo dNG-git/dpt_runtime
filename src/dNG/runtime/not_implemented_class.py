@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -21,8 +20,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 from .not_implemented_exception import NotImplementedException
 
 class _NotImplementedMetaClass(type):
-#
-	"""
+    """
 The "_NotImplementedMetaClass" is used as a Python 2 and Python 3 compatible
 metaclass to raise "dNG.runtime.NotImplementedException" for class methods.
 
@@ -33,11 +31,10 @@ metaclass to raise "dNG.runtime.NotImplementedException" for class methods.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	def __getattr__(self, name):
-	#
-		"""
+    def __getattr__(self, name):
+        """
 python.org: Called when an attribute lookup has not found the attribute in
 the usual places (i.e. it is not an instance attribute nor is it found in the
 class tree for self).
@@ -46,15 +43,14 @@ class tree for self).
 
 :return: (mixed) Instance attribute
 :since:  v0.2.00
-		"""
+        """
 
-		raise NotImplementedException()
-	#
+        raise NotImplementedException()
+    #
 #
 
 class _NotImplementedClass(object):
-#
-	"""
+    """
 The "_NotImplementedClass" is used in connection with the
 "_NotImplementedMetaClass" to raise "dNG.runtime.NotImplementedException"
 for all class and instance method calls.
@@ -66,11 +62,10 @@ for all class and instance method calls.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	def __getattr__(self, name):
-	#
-		"""
+    def __getattr__(self, name):
+        """
 python.org: Called when an attribute lookup has not found the attribute in
 the usual places (i.e. it is not an instance attribute nor is it found in the
 class tree for self).
@@ -79,10 +74,10 @@ class tree for self).
 
 :return: (mixed) Instance attribute
 :since:  v0.2.00
-		"""
+        """
 
-		raise NotImplementedException()
-	#
+        raise NotImplementedException()
+    #
 #
 
 NotImplementedClass = _NotImplementedMetaClass(_NotImplementedClass.__name__[1:], ( _NotImplementedClass, ), { })
@@ -98,5 +93,3 @@ on a specific installation.
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
 """
-
-##j## EOF

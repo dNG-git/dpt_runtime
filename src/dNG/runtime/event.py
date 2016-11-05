@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -23,8 +22,7 @@ from threading import Event as _Event
 from dNG.data.settings import Settings
 
 class Event(_Event):
-#
-	"""
+    """
 python.org  An event manages a flag that can be set to true with the set()
 method and reset to false with the clear() method.
 
@@ -38,27 +36,25 @@ called without specifing one.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	def __init__(self, *args, **kwargs):
-	#
-		"""
+    def __init__(self, *args, **kwargs):
+        """
 Constructor __init__(ResultEvent)
 
 :since: v0.2.00
-		"""
+        """
 
-		super(Event, self).__init__(*args, **kwargs)
+        super(Event, self).__init__(*args, **kwargs)
 
-		self.timeout = Settings.get("pas_global_event_timeout", 10)
-		"""
+        self.timeout = Settings.get("pas_global_event_timeout", 10)
+        """
 Event waiting timeout in seconds
-		"""
-	#
+        """
+    #
 
-	def wait(self, timeout = None):
-	#
-		"""
+    def wait(self, timeout = None):
+        """
 python.org: Block until the internal flag is true.
 
 :param timeout: Timeout value in seconds. If zero or below the call blocks
@@ -69,13 +65,11 @@ python.org: Block until the internal flag is true.
          starts, so it will always return True except if a timeout is given
          and the operation times out
 :since: v0.2.00
-		"""
+        """
 
-		if (timeout is None): timeout = self.timeout
-		elif (timeout <= 0): timeout = None
+        if (timeout is None): timeout = self.timeout
+        elif (timeout <= 0): timeout = None
 
-		return _Event.wait(self, timeout)
-	#
+        return _Event.wait(self, timeout)
+    #
 #
-
-##j## EOF

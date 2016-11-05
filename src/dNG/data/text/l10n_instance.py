@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -24,8 +23,7 @@ from dNG.data.cache.json_file_content import JsonFileContent
 from .number_formatter import NumberFormatter
 
 class L10nInstance(dict):
-#
-	"""
+    """
 L10n (localization) methods on top of an dict.
 
 :author:     direct Netware Group et al.
@@ -35,45 +33,42 @@ L10n (localization) methods on top of an dict.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	def __init__(self, lang):
-	#
-		"""
+    def __init__(self, lang):
+        """
 Constructor __init__(L10n)
 
 :param lang: Language code
 
 :since: v0.2.00
-		"""
+        """
 
-		dict.__init__(self)
+        dict.__init__(self)
 
-		self.files = [ ]
-		"""
+        self.files = [ ]
+        """
 L10n files initialized
-		"""
+        """
 
-		self['lang_code'] = lang
-	#
+        self['lang_code'] = lang
+    #
 
-	def __getitem__(self, key):
-	#
-		"""
+    def __getitem__(self, key):
+        """
 python.org: Called to implement evaluation of self[key].
 
 :param key: L10n key
 
 :return: (str) L10n value
 :since:  v0.2.00
-		"""
+        """
 
-		return Binary.str(dict.__getitem__(self, key))
-	#
+        return Binary.str(dict.__getitem__(self, key))
+    #
 
-	def format_number(self, number, fractional_digits = -1):
-	#
-		"""
+    def format_number(self, number, fractional_digits = -1):
+        """
 Returns a formatted number.
 
 :param number: Number as int or float
@@ -82,44 +77,40 @@ Returns a formatted number.
 
 :return: (str) Formatted value
 :since:  v0.2.00
-		"""
+        """
 
-		return NumberFormatter.format(number, self['lang_number_format'], fractional_digits)
-	#
+        return NumberFormatter.format(number, self['lang_number_format'], fractional_digits)
+    #
 
-	def get_lang(self):
-	#
-		"""
+    def get_lang(self):
+        """
 Returns the language code of this instance.
 
 :return: (str) Language code
 :since:  v0.2.00
-		"""
+        """
 
-		return self['lang_code']
-	#
+        return self['lang_code']
+    #
 
-	def read_file(self, file_path_name, required = False):
-	#
-		"""
+    def read_file(self, file_path_name, required = False):
+        """
 Read all translations from the given file.
 
 :param file_path_name: File path and name
 :param required: True if missing files should throw an exception
 
 :since: v0.2.00
-		"""
+        """
 
-		if (file_path_name not in self.files or JsonFileContent.is_changed(file_path_name)):
-		#
-			json_data = JsonFileContent.read(file_path_name, required)
-			if (type(json_data) is dict): self.update(json_data)
-		#
-	#
+        if (file_path_name not in self.files or JsonFileContent.is_changed(file_path_name)):
+            json_data = JsonFileContent.read(file_path_name, required)
+            if (type(json_data) is dict): self.update(json_data)
+        #
+    #
 
-	def write_file(self, file_path_name, template_path_name):
-	#
-		"""
+    def write_file(self, file_path_name, template_path_name):
+        """
 Write all translations to the given file using the given template.
 
 :param file_path_name: File path and name of the translation file
@@ -128,10 +119,8 @@ Write all translations to the given file using the given template.
 
 :return: (bool) True on success
 :since:  v0.2.00
-		"""
+        """
 
-		return False
-	#
+        return False
+    #
 #
-
-##j## EOF

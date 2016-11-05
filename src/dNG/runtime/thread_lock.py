@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -26,8 +25,7 @@ from dNG.data.settings import Settings
 from .io_exception import IOException
 
 class ThreadLock(object):
-#
-	"""
+    """
 "ThreadLock" implements a timeout aware ContextManager capable thread lock.
 
 :author:     direct Netware Group et al.
@@ -37,135 +35,118 @@ class ThreadLock(object):
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	def __init__(self, timeout = None):
-	#
-		"""
+    def __init__(self, timeout = None):
+        """
 Constructor __init__(ThreadLock)
 
 :since: v0.2.00
-		"""
+        """
 
-		self.event = None
-		"""
+        self.event = None
+        """
 Underlying event instance
-		"""
-		self.lock = RLock()
-		"""
+        """
+        self.lock = RLock()
+        """
 Underlying lock instance
-		"""
-		self.timeout = (Settings.get("pas_global_thread_lock_timeout", 10) if (timeout is None) else timeout)
-		"""
+        """
+        self.timeout = (Settings.get("pas_global_thread_lock_timeout", 10) if (timeout is None) else timeout)
+        """
 Lock timeout in seconds
-		"""
-	#
+        """
+    #
 
-	def __enter__(self):
-	#
-		"""
+    def __enter__(self):
+        """
 python.org: Enter the runtime context related to this object.
 
 :since: v0.2.00
-		"""
+        """
 
-		self.acquire()
-	#
+        self.acquire()
+    #
 
-	def __exit__(self, exc_type, exc_value, traceback):
-	#
-		"""
+    def __exit__(self, exc_type, exc_value, traceback):
+        """
 python.org: Exit the runtime context related to this object.
 
 :return: (bool) True to suppress exceptions
 :since:  v0.2.00
-		"""
+        """
 
-		self.release()
-		return False
-	#
+        self.release()
+        return False
+    #
 
-	def acquire(self):
-	#
-		"""
+    def acquire(self):
+        """
 Acquire a lock.
 
 :since: v0.2.00
-		"""
+        """
 
-		# pylint: disable=unexpected-keyword-arg
+        # pylint: disable=unexpected-keyword-arg
 
-		try:
-		#
-			if (not self.lock.acquire(timeout = self.timeout)): raise IOException("Timeout occurred while acquiring lock")
-		#
-		except TypeError:
-		#
-			if (self.event is None):
-			#
-				self.event = Event()
-				self.event.set()
-			#
+        try:
+            if (not self.lock.acquire(timeout = self.timeout)): raise IOException("Timeout occurred while acquiring lock")
+        except TypeError:
+            if (self.event is None):
+                self.event = Event()
+                self.event.set()
+            #
 
-			if (self.lock.acquire(False)): self.event.clear()
-			else:
-			#
-				timeout = self.timeout
+            if (self.lock.acquire(False)): self.event.clear()
+            else:
+                timeout = self.timeout
 
-				while (timeout > 0):
-				#
-					_time = time()
-					self.event.wait(timeout)
+                while (timeout > 0):
+                    _time = time()
+                    self.event.wait(timeout)
 
-					if (self.lock.acquire(False)):
-					#
-						self.event.clear()
-						break
-					#
-					else: timeout -= (time() - _time)
-				#
+                    if (self.lock.acquire(False)):
+                        self.event.clear()
+                        break
+                    else: timeout -= (time() - _time)
+                #
 
-				if (timeout <= 0): raise IOException("Timeout occurred while acquiring lock")
-			#
-		#
-	#
+                if (timeout <= 0): raise IOException("Timeout occurred while acquiring lock")
+            #
+        #
+    #
 
-	def get_timeout(self):
-	#
-		"""
+    def get_timeout(self):
+        """
 Returns the lock timeout in seconds.
 
 :return: (float) Timeout value
 :since:  v0.2.00
-		"""
+        """
 
-		return self.timeout
-	#
+        return self.timeout
+    #
 
-	def release(self):
-	#
-		"""
+    def release(self):
+        """
 Release a lock.
 
 :since: v0.2.00
-		"""
+        """
 
-		self.lock.release()
-		if (self.event is not None): self.event.set()
-	#
+        self.lock.release()
+        if (self.event is not None): self.event.set()
+    #
 
-	def set_timeout(self, timeout):
-	#
-		"""
+    def set_timeout(self, timeout):
+        """
 Sets a new lock timeout.
 
 :param timeout: New timeout value in seconds
 
 :since: v0.2.00
-		"""
+        """
 
-		self.timeout = timeout
-	#
+        self.timeout = timeout
+    #
 #
-
-##j## EOF

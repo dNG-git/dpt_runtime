@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -19,8 +18,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 """
 
 class NumberFormatter(object):
-#
-	"""
+    """
 "NumberFormatter" provides a static method to format numbers.
 
 :author:     direct Netware Group et al.
@@ -30,12 +28,11 @@ class NumberFormatter(object):
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	@staticmethod
-	def format(number, _format, fractional_digits = -1):
-	#
-		"""
+    @staticmethod
+    def format(number, _format, fractional_digits = -1):
+        """
 Returns a formatted number.
 
 :param number: Number as int or float
@@ -44,53 +41,44 @@ Returns a formatted number.
 
 :return: (str) Formatted value
 :since:  v0.2.00
-		"""
+        """
 
-		_return = ""
+        _return = ""
 
-		if (fractional_digits == 0): normalized_number = str(int(round(number)))
-		else:
-		#
-			normalized_number_format = ("{{0:.{0:d}f}}".format(fractional_digits)
-			                            if (fractional_digits > 0) else
-			                            "{0:f}"
-			                           )
+        if (fractional_digits == 0): normalized_number = str(int(round(number)))
+        else:
+            normalized_number_format = ("{{0:.{0:d}f}}".format(fractional_digits)
+                                        if (fractional_digits > 0) else
+                                        "{0:f}"
+                                       )
 
-			normalized_number = normalized_number_format.format(number)
-		#
+            normalized_number = normalized_number_format.format(number)
+        #
 
-		digits = normalized_number.split(".")
+        digits = normalized_number.split(".")
 
-		if (len(digits) == 2): digit_position = -1
-		else:
-		#
-			_format = _format[:-2]
-			digit_position = 0
-		#
+        if (len(digits) == 2): digit_position = -1
+        else:
+            _format = _format[:-2]
+            digit_position = 0
+        #
 
-		digits_length = len(digits[0])
+        digits_length = len(digits[0])
 
-		for format_char in _format[::-1]:
-		#
-			if (digit_position == -1):
-			#
-				digit_position += 1
-				if (len(digits) == 2): _return = digits[1]
-			#
-			elif (format_char == "#"):
-			#
-				digit_position += 1
-				_return = digits[0][-1 * digit_position] + _return
-			#
-			else: _return = format_char + _return
+        for format_char in _format[::-1]:
+            if (digit_position == -1):
+                digit_position += 1
+                if (len(digits) == 2): _return = digits[1]
+            elif (format_char == "#"):
+                digit_position += 1
+                _return = digits[0][-1 * digit_position] + _return
+            else: _return = format_char + _return
 
-			if (digits_length == digit_position): break
-		#
+            if (digits_length == digit_position): break
+        #
 
-		if (digits_length > digit_position): _return = digits[0][:-1 * digit_position] + _return
+        if (digits_length > digit_position): _return = digits[0][:-1 * digit_position] + _return
 
-		return _return
-	#
+        return _return
+    #
 #
-
-##j## EOF

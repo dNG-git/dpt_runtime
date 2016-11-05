@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -23,8 +22,7 @@ from .text.l10n import L10n
 from .traced_exception import TracedException
 
 class TranslatableException(TracedException):
-#
-	"""
+    """
 "TranslatableException" gets a l10n message ID to translate the exception
 message to the selected language.
 
@@ -35,11 +33,10 @@ message to the selected language.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	def __init__(self, l10n_id, value = None, _exception = None):
-	#
-		"""
+    def __init__(self, l10n_id, value = None, _exception = None):
+        """
 Constructor __init__(TranslatableException)
 
 :param l10n_id: L10n translatable key (prefixed with "errors_")
@@ -47,32 +44,29 @@ Constructor __init__(TranslatableException)
 :param _exception: Inner exception
 
 :since: v0.2.00
-		"""
+        """
 
-		self.l10n_message = L10n.get("errors_{0}".format(l10n_id), l10n_id)
-		"""
+        self.l10n_message = L10n.get("errors_{0}".format(l10n_id), l10n_id)
+        """
 Translated message
-		"""
+        """
 
-		if (value is None): value = self.l10n_message
+        if (value is None): value = self.l10n_message
 
-		TracedException.__init__(self, value, _exception)
-	#
+        TracedException.__init__(self, value, _exception)
+    #
 
-	def __format__(self, format_spec):
-	#
-		"""
+    def __format__(self, format_spec):
+        """
 python.org: Convert a value to a "formatted" representation, as controlled by
 format_spec.
 
 :param format_spec: String format specification
 
 :since: v0.2.00
-		"""
+        """
 
-		if (format_spec == "l10n_message"): return Binary.str(self.l10n_message)
-		else: TracedException.__format__(self, format_spec)
-	#
+        if (format_spec == "l10n_message"): return Binary.str(self.l10n_message)
+        else: TracedException.__format__(self, format_spec)
+    #
 #
-
-##j## EOF

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -25,8 +24,7 @@ import hashlib
 from dNG.data.binary import Binary
 
 class Md5(object):
-#
-	"""
+    """
 Abstraction layer for the one-line MD5 hasing method.
 
 :author:     direct Netware Group et al.
@@ -36,22 +34,19 @@ Abstraction layer for the one-line MD5 hasing method.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	@staticmethod
-	def hash(data):
-	#
-		"""
+    @staticmethod
+    def hash(data):
+        """
 Generate the MD5 hash for the data given.
 
 :param data: Input string
 
 :return: (str) MD5 string
 :since:  v0.2.00
-		"""
+        """
 
-		return hashlib.md5(Binary.bytes(data)).hexdigest()
-	#
+        return hashlib.md5(Binary.bytes(data)).hexdigest()
+    #
 #
-
-##j## EOF

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -21,8 +20,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 from collections import Iterator as _Iterator
 
 class Iterator(_Iterator):
-#
-	"""
+    """
 "Iterator" provides an iterator class that is compatible with Python 2.x and
 newer.
 
@@ -33,19 +31,16 @@ newer.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	def next(self):
-	#
-		"""
+    def next(self):
+        """
 python.org: Return the next item from the container. (Python 2.x)
 
 :return: (object) Result object
 :since:  v0.2.00
-		"""
+        """
 
-		return self.__next__()
-	#
+        return self.__next__()
+    #
 #
-
-##j## EOF

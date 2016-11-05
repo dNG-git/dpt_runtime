@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -21,8 +20,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 from dNG.data.traced_exception import TracedException
 
 class ValueException(TracedException):
-#
-	"""
+    """
 This exception is replacing "ValueError" and provides the current stack
 trace.
 
@@ -33,9 +31,7 @@ trace.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	pass
+    pass
 #
-
-##j## EOF

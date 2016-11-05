@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -23,8 +22,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 from dNG.runtime.not_implemented_exception import NotImplementedException
 
 class AbstractWatcher(object):
-#
-	"""
+    """
 Abstract watcher for change events.
 
 :author:     direct Netware Group et al.
@@ -34,84 +32,78 @@ Abstract watcher for change events.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	EVENT_TYPE_CREATED = 1
-	"""
+    EVENT_TYPE_CREATED = 1
+    """
 Created event
-	"""
-	EVENT_TYPE_DELETED = 2
-	"""
+    """
+    EVENT_TYPE_DELETED = 2
+    """
 Deleted event
-	"""
-	EVENT_TYPE_MODIFIED = 3
-	"""
+    """
+    EVENT_TYPE_MODIFIED = 3
+    """
 Created event
-	"""
+    """
 
-	def check(self, url):
-	#
-		"""
+    def check(self, url):
+        """
 Checks a given URL for changes if "is_synchronous()" is true.
 
 :param url: Resource URL
 
 :since: v0.2.00
-		"""
+        """
 
-		raise NotImplementedException()
-	#
+        raise NotImplementedException()
+    #
 
-	def disable(self):
-	#
-		"""
+    def disable(self):
+        """
 Disables this watcher and frees all callbacks for garbage collection.
 
 :since: v0.2.00
-		"""
+        """
 
-		raise NotImplementedException()
-	#
+        raise NotImplementedException()
+    #
 
-	def free(self):
-	#
-		"""
+    def free(self):
+        """
 Frees all watcher callbacks for garbage collection.
 
 :since: v0.2.00
-		"""
+        """
 
-		raise NotImplementedException()
-	#
+        raise NotImplementedException()
+    #
 
-	def get_implementing_scheme(self):
-	#
-		"""
+    def get_implementing_scheme(self):
+        """
 Returns the implementing scheme name.
 
 :return: (str) Implementing scheme name
 :since:  v0.2.00
-		"""
+        """
 
-		raise NotImplementedException()
-	#
+        raise NotImplementedException()
+    #
 
-	def is_synchronous(self):
-	#
-		"""
+    def is_synchronous(self):
+        """
 Returns true if changes are only detected after "check()" has been
 called.
 
 :return: (bool) True if changes are not detected automatically
 :since:  v0.2.00
-		"""
+        """
 
-		return True
-	#
+        return True
+    #
 
-	def is_watched(self, url, callback = None):
-	#
-		"""
+    def is_watched(self, url, callback = None):
+        """
 Returns true if the resource URL is already watched. It will return false
 if a callback is given but not defined for the watched URL.
 
@@ -121,14 +113,13 @@ if a callback is given but not defined for the watched URL.
 :return: (bool) True if watched with the defined callback or any if not
          defined.
 :since:  v0.2.00
-		"""
+        """
 
-		raise NotImplementedException()
-	#
+        raise NotImplementedException()
+    #
 
-	def register(self, url, callback):
-	#
-		"""
+    def register(self, url, callback):
+        """
 Handles registration of resource URL watches and its callbacks.
 
 :param url: Resource URL to be watched
@@ -136,25 +127,23 @@ Handles registration of resource URL watches and its callbacks.
 
 :return: (bool) True on success
 :since:  v0.2.00
-		"""
+        """
 
-		raise NotImplementedException()
-	#
+        raise NotImplementedException()
+    #
 
-	def stop(self):
-	#
-		"""
+    def stop(self):
+        """
 Stops all watchers.
 
 :since: v0.2.00
-		"""
+        """
 
-		pass
-	#
+        pass
+    #
 
-	def unregister(self, url, callback):
-	#
-		"""
+    def unregister(self, url, callback):
+        """
 Handles deregistration of resource URL watches.
 
 :param url: Resource URL watched
@@ -162,10 +151,8 @@ Handles deregistration of resource URL watches.
 
 :return: (bool) True on success
 :since:  v0.2.00
-		"""
+        """
 
-		raise NotImplementedException()
-	#
+        raise NotImplementedException()
+    #
 #
-
-##j## EOF

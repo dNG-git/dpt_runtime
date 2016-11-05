@@ -25,8 +25,7 @@ from dNG.data.logging.log_line import LogLine
 from .exception_log_trap import ExceptionLogTrap
 
 class Thread(_Thread):
-#
-	"""
+    """
 "Thread" represents a deactivatable Thread implementation.
 
 :author:     direct Netware Group et al.
@@ -36,47 +35,42 @@ class Thread(_Thread):
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	_active = True
-	"""
+    _active = True
+    """
 True if new non-daemon threads are allowed to be started.
-	"""
+    """
 
-	def run(self):
-	#
-		"""
+    def run(self):
+        """
 python.org: Method representing the thread’s activity.
 
 :since: v0.2.00
-		"""
+        """
 
-		with ExceptionLogTrap("pas_core"): _Thread.run(self)
-	#
+        with ExceptionLogTrap("pas_core"): _Thread.run(self)
+    #
 
-	def start(self):
-	#
-		"""
+    def start(self):
+        """
 python.org: Start the thread's activity.
 
 :since: v0.2.00
-		"""
+        """
 
-		if (self.daemon or Thread._active): _Thread.start(self)
-		else: LogLine.debug("{0!r} prevented new non-daemon thread", self, context = "pas_core")
-	#
+        if (self.daemon or Thread._active): _Thread.start(self)
+        else: LogLine.debug("{0!r} prevented new non-daemon thread", self, context = "pas_core")
+    #
 
-	@staticmethod
-	def set_inactive():
-	#
-		"""
+    @staticmethod
+    def set_inactive():
+        """
 Prevents new non-daemon threads to be started.
 
 :since: v0.2.00
-		"""
+        """
 
-		Thread._active = False
-	#
+        Thread._active = False
+    #
 #
-
-##j## EOF

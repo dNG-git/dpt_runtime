@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -23,8 +22,7 @@ from dNG.data.settings import Settings
 from .thread_lock import ThreadLock
 
 class InstanceLock(ThreadLock):
-#
-	"""
+    """
 "InstanceLock" is used to protect manipulation of a singleton.
 
 :author:     direct Netware Group et al.
@@ -34,20 +32,17 @@ class InstanceLock(ThreadLock):
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	def __init__(self, timeout = None):
-	#
-		"""
+    def __init__(self, timeout = None):
+        """
 Constructor __init__(InstanceLock)
 
 :since: v0.2.00
-		"""
+        """
 
-		ThreadLock.__init__(self)
+        ThreadLock.__init__(self)
 
-		self.timeout = (Settings.get("pas_global_singleton_lock_timeout", 3) if (timeout is None) else timeout)
-	#
+        self.timeout = (Settings.get("pas_global_singleton_lock_timeout", 3) if (timeout is None) else timeout)
+    #
 #
-
-##j## EOF

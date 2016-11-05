@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -21,8 +20,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 from .type_exception import TypeException
 
 class NotImplementedException(TypeException):
-#
-	"""
+    """
 This exception is replacing "NotImplementedError" and provides the current
 stack trace.
 
@@ -33,21 +31,18 @@ stack trace.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	def __init__(self, value = "Not implemented", _exception = None):
-	#
-		"""
+    def __init__(self, value = "Not implemented", _exception = None):
+        """
 Constructor __init__(NotImplementedException)
 
 :param value: Exception message value
 :param _exception: Inner exception
 
 :since: v0.2.00
-		"""
+        """
 
-		TypeException.__init__(self, value, _exception)
-	#
+        TypeException.__init__(self, value, _exception)
+    #
 #
-
-##j## EOF

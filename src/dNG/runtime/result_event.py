@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -19,11 +18,11 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 """
 
 from .event import Event
+
 from .io_exception import IOException
 
 class ResultEvent(Event):
-#
-	"""
+    """
 "ResultEvent" implements a result delivering event.
 
 :author:     direct Netware Group et al.
@@ -33,95 +32,87 @@ class ResultEvent(Event):
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
-	"""
+    """
 
-	def __init__(self, timeout = None):
-	#
-		"""
+    def __init__(self, timeout = None):
+        """
 Constructor __init__(ResultEvent)
 
 :param timeout: Default timeout in seconds to wait for results
 
 :since: v0.2.00
-		"""
+        """
 
-		Event.__init__(self)
+        Event.__init__(self)
 
-		self.result = None
-		"""
+        self.result = None
+        """
 Result set
-		"""
-		self.result_set = False
-		"""
+        """
+        self.result_set = False
+        """
 Flag indicating that a result was set.
-		"""
+        """
 
-		if (timeout is not None): self.timeout = timeout
-	#
+        if (timeout is not None): self.timeout = timeout
+    #
 
-	def clear(self):
-	#
-		"""
+    def clear(self):
+        """
 python.org: Reset the internal flag to false.
 
 :since: v0.2.00
-		"""
+        """
 
-		if (self.result_set): raise IOException("A ResultEvent can not be cleared after a result was set.")
-		Event.clear(self)
-	#
+        if (self.result_set): raise IOException("A ResultEvent can not be cleared after a result was set.")
+        Event.clear(self)
+    #
 
-	def get_result(self):
-	#
-		"""
+    def get_result(self):
+        """
 Returns the result being set previously.
 
 :return: (mixed) Result set
 :since:  v0.2.00
-		"""
+        """
 
-		if (not self.result_set): raise IOException("No result has been set for this ResultEvent.")
-		return self.result
-	#
+        if (not self.result_set): raise IOException("No result has been set for this ResultEvent.")
+        return self.result
+    #
 
-	def is_result_set(self):
-	#
-		"""
+    def is_result_set(self):
+        """
 Returns true after a result has been set.
 
 :return: (bool) True if a result is set
 :since:  v0.2.00
-		"""
+        """
 
-		return self.result_set
-	#
+        return self.result_set
+    #
 
-	def set(self):
-	#
-		"""
+    def set(self):
+        """
 python.org: Set the internal flag to true.
 
 :since: v0.2.00
-		"""
+        """
 
-		self.set_result(None)
-	#
+        self.set_result(None)
+    #
 
-	def set_result(self, result):
-	#
-		"""
+    def set_result(self, result):
+        """
 Sets a result for this event and notifies all waiting threads afterwards.
 
 :param result: Result
 
 :since: v0.2.00
-		"""
+        """
 
-		self.result = result
-		self.result_set = True
+        self.result = result
+        self.result_set = True
 
-		Event.set(self)
-	#
+        Event.set(self)
+    #
 #
-
-##j## EOF
