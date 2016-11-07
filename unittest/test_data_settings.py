@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -19,77 +18,67 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 """
 
 from os import path
-import sys
 import unittest
 
 from dNG.data.settings import Settings
 
 class TestDataSettings(unittest.TestCase):
-#
-	"""
+    """
 UnitTest for dNG.data.Settings
 
 :since: v0.1.01
-	"""
+    """
 
-	def setUp(self): self.settings = Settings.get_instance()
+    def setUp(self): self.settings = Settings.get_instance()
 
-	def test_paths(self):
-	#
-		path_base = path.abspath("..")
+    def test_paths(self):
+        path_base = path.abspath("..")
 
-		self.assertEqual(path_base, self.settings.get("path_base"))
-		self.assertEqual("{0}/data".format(path_base), self.settings.get("path_data"))
-		self.assertEqual("{0}/lang".format(path_base), self.settings.get("path_lang"))
-		self.assertEqual("{0}/src".format(path_base), self.settings.get("path_system"))
-	#
+        self.assertEqual(path_base, self.settings.get("path_base"))
+        self.assertEqual("{0}/data".format(path_base), self.settings.get("path_data"))
+        self.assertEqual("{0}/lang".format(path_base), self.settings.get("path_lang"))
+        self.assertEqual("{0}/src".format(path_base), self.settings.get("path_system"))
+    #
 
-	def test_import_json(self):
-	#
-		"""
+    def test_import_json(self):
+        """
 Valid JSON
-		"""
+        """
 
-		json = """
+        json = """
 {
 "hello": "world",
 "more_complex": [ "this", "that", true, 1 ]
 }
-		"""
+        """
 
-		self.assertTrue(Settings._import_file_json(json))
-		self.assertEqual("world", self.settings.get("hello"))
-		self.assertEqual("that", self.settings.get("more_complex")[1])
-		self.assertEqual(1, self.settings.get("more_complex")[2])
+        self.assertTrue(Settings._import_file_json(json))
+        self.assertEqual("world", self.settings.get("hello"))
+        self.assertEqual("that", self.settings.get("more_complex")[1])
+        self.assertEqual(1, self.settings.get("more_complex")[2])
 
-		"""
+        """
 Invalid JSON
-		"""
+        """
 
-		json = "{ 'hello': 'world' }"
-		self.assertFalse(Settings._import_file_json(json))
-	#
+        json = "{ 'hello': 'world' }"
+        self.assertFalse(Settings._import_file_json(json))
+    #
 
-	def test_read_file(self):
-	#
-		Settings.read_file("{0}/settings/core.json".format(self.settings.get("pas_data")))
-		self.assertEqual("en", self.settings.get("core_lang"))
-	#
+    def test_read_file(self):
+        Settings.read_file("{0}/settings/core.json".format(self.settings.get("pas_data")))
+        self.assertEqual("en", self.settings.get("core_lang"))
+    #
 
-	def test_value(self):
-	#
-		self.assertIsNone(self.settings.get("test_value"))
-		self.assertEqual("", self.settings.get("test_value", ""))
+    def test_value(self):
+        self.assertIsNone(self.settings.get("test_value"))
+        self.assertEqual("", self.settings.get("test_value", ""))
 
-		self.settings.set("test_value", "set works")
-		self.assertEqual("set works", self.settings.get("test_value"))
-	#
+        self.settings.set("test_value", "set works")
+        self.assertEqual("set works", self.settings.get("test_value"))
+    #
 #
 
 if (__name__ == "__main__"):
+    unittest.main()
 #
-	sys.path.append(path.normpath("../src"))
-	unittest.main()
-#
-
-##j## EOF
