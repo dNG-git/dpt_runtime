@@ -21,7 +21,7 @@ from threading import Event as _Event
 
 from dNG.data.settings import Settings
 
-class Event(_Event):
+class Event(object):
     """
 python.org  An event manages a flag that can be set to true with the set()
 method and reset to false with the clear() method.
@@ -45,12 +45,45 @@ Constructor __init__(ResultEvent)
 :since: v0.2.00
         """
 
-        super(Event, self).__init__(*args, **kwargs)
-
+        self._event = _Event(*args, **kwargs)
+        """
+Encapsulated event implementation
+        """
         self.timeout = Settings.get("pas_global_event_timeout", 10)
         """
 Event waiting timeout in seconds
         """
+    #
+
+    def clear(self):
+        """
+python.org: Reset the internal flag to false.
+
+:since: v0.2.00
+        """
+
+        self._event.clear()
+    #
+
+    def is_set(self):
+        """
+python.org: Return true if and only if the internal flag is true.
+
+:return: (bool) True if set
+:since:  v0.2.00
+        """
+
+        return self._event.is_set()
+    #
+
+    def set(self):
+        """
+python.org: Set the internal flag to true.
+
+:since: v0.2.00
+        """
+
+        self._event.set()
     #
 
     def wait(self, timeout = None):
@@ -70,6 +103,6 @@ python.org: Block until the internal flag is true.
         if (timeout is None): timeout = self.timeout
         elif (timeout <= 0): timeout = None
 
-        return _Event.wait(self, timeout)
+        return self._event.wait(timeout)
     #
 #
