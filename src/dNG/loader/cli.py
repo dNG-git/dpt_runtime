@@ -248,9 +248,10 @@ Waits for the given OS process ID to exit.
             for _ in range(0, 60):
                 try:
                     os.kill(pid, 0)
+                    sleep(0.5)
                 except OSError as handled_exception:
                     if (handled_exception.errno not in ( EINVAL, ESRCH )): raise
-                    sleep(0.5)
+                    break
                 #
             #
         #
