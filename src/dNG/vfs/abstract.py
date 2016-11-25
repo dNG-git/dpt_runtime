@@ -39,7 +39,7 @@ Provides the abstract VFS implementation for an object.
              Mozilla Public License, v. 2.0
     """
 
-    TYPE_DIRECTORY = 2
+    TYPE_DIRECTORY = 1 << 1
     """
 Directory (or collection like) type
     """
@@ -47,7 +47,7 @@ Directory (or collection like) type
     """
 File type
     """
-    TYPE_LINK = 4
+    TYPE_LINK = 1 << 2
     """
 Link type
     """
