@@ -71,9 +71,9 @@ class LogHandler(AbstractLogHandler):
              Mozilla Public License, v. 2.0
     """
 
-    _appender_defined = False
+    _log_handler = None
     """
-Append log file handlers only once
+Log file handler responsible for Python module "logging"
     """
     _weakref_instance = None
     """
@@ -131,7 +131,7 @@ Preserve the amount of files
         self.logger = logging.getLogger(self.ident)
         self.logger.setLevel(DEBUG)
 
-        if (not LogHandler._appender_defined):
+        if (LogHandler._log_handler is None):
             log_file_path_name = Settings.get("pas_core_log_path_name")
 
             if (Settings.is_defined("pas_core_log_path_name")):
@@ -172,7 +172,9 @@ Preserve the amount of files
                 else: logger_root.addHandler(self.log_handler)
             #
 
-            LogHandler._appender_defined = True
+            LogHandler._log_handler = self.log_handler
+        else:
+            self.log_handler = LogHandler._log_handler
         #
 
         self.log_thread_id = Settings.get("pas_core_log_thread_id", False)
