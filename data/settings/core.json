@@ -6,6 +6,6 @@
 # unsupported JSON parser.
 
 {
- # Default language used if not specified
- "core_lang": "en"
+    # Default language used if not specified
+    "core_lang": "en"
 }
