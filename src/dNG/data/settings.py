@@ -17,6 +17,8 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
+# pylint: disable=import-error
+
 from os import path
 from weakref import proxy
 import os
@@ -189,6 +191,8 @@ Returns all settings currently defined as a dict.
 :since:  v0.2.00
         """
 
+        # pylint: disable=protected-access
+
         return Settings.get_instance()._get_runtime_dict()
     #
 
@@ -247,6 +251,8 @@ Initializes a new settings singleton instance.
 :since: v0.2.00
         """
 
+        # pylint: disable=protected-access
+
         Settings._instance = Settings()
         Settings.read_file("{0}/settings/core.json".format(Settings._instance._get_runtime_dict()['path_data']))
     #
@@ -261,6 +267,8 @@ Import a given JSON encoded string as an dict of file-backed settings.
 :return: (bool) True on success
 :since:  v0.2.00
         """
+
+        # pylint: disable=protected-access
 
         _return = True
 
@@ -314,7 +322,7 @@ Read all settings from the given file.
 :since:  v0.2.00
         """
 
-        # pylint: disable=maybe-no-member
+        # pylint: disable=maybe-no-member, protected-access
 
         _return = True
 
@@ -357,6 +365,8 @@ process it.
 :since: v0.2.00
         """
 
+        # pylint: disable=protected-access
+
         Settings.get_instance()._process_os_environment()
     #
 
@@ -397,6 +407,8 @@ Sets the LogHandler.
 
 :since: v0.2.00
         """
+
+        # pylint: disable=protected-access
 
         Settings._log_handler = proxy(log_handler)
     #

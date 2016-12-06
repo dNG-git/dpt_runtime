@@ -68,6 +68,8 @@ instances of the class.
 :since:  v0.2.00
         """
 
+        # pylint: disable=protected-access
+
         if (name == "__class__"
             or name not in self.__class__._FILE_WRAPPED_METHODS
            ): _return = object.__getattribute__(self, name)

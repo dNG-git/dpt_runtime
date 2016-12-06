@@ -25,6 +25,11 @@ from weakref import proxy
 import re
 import sys
 
+from dNG.data.settings import Settings
+from dNG.runtime.io_exception import IOException
+from dNG.runtime.thread_lock import ThreadLock
+from dNG.runtime.type_exception import TypeException
+
 _MODE_IMP = 1
 """
 Use "imp" based methods for import
@@ -40,11 +45,6 @@ try:
     from importlib import import_module
     _mode = _MODE_IMPORT_MODULE
 except ImportError: import imp
-
-from dNG.data.settings import Settings
-from dNG.runtime.io_exception import IOException
-from dNG.runtime.thread_lock import ThreadLock
-from dNG.runtime.type_exception import TypeException
 
 class NamedLoader(object):
     """

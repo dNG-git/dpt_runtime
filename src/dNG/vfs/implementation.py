@@ -93,6 +93,8 @@ Returns the initialized object instance for the given VFS URL.
 :since:  v0.2.00
         """
 
+        # pylint: disable=protected-access
+
         vfs_url = Binary.str(vfs_url)
         scheme = Abstract._get_scheme_from_vfs_url(vfs_url)
 
@@ -113,6 +115,8 @@ Returns a new object instance for the given VFS URL.
 :return: (object) VFS object instance
 :since:  v0.2.00
         """
+
+        # pylint: disable=protected-access
 
         vfs_url = Binary.str(vfs_url)
         scheme = Abstract._get_scheme_from_vfs_url(vfs_url)

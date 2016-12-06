@@ -19,7 +19,6 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 # pylint: disable=import-error,no-name-in-module
 
-from pyinotify import ProcessEvent
 from weakref import ref
 
 try: from urllib.parse import quote
@@ -27,6 +26,8 @@ except ImportError: from urllib import quote
 
 from dNG.runtime.exception_log_trap import ExceptionLogTrap
 from dNG.vfs.abstract_watcher import AbstractWatcher
+
+from pyinotify import ProcessEvent
 
 class WatcherPyinotifyCallback(ProcessEvent):
     """

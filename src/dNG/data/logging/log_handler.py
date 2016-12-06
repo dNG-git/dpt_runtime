@@ -84,8 +84,6 @@ LogHandler weakref instance
 Thread safety weakref lock
     """
 
-    # pylint: disable=maybe-no-member
-
     def __init__(self):
         """
 Constructor __init__(LogHandler)
@@ -94,6 +92,7 @@ Constructor __init__(LogHandler)
         """
 
         # global: _api_type, _API_JAVA
+        # pylint: disable=no-member, protected-access
 
         AbstractLogHandler.__init__(self)
 
@@ -189,6 +188,7 @@ Add the logger name given to the active log handler.
         """
 
         # global: _api_type, _API_JAVA
+        # pylint: disable=no-member
 
         if (_api_type == _API_JAVA): logging.getLogger(name).addAppender(self.log_handler)
         else: AbstractLogHandler.add_logger(self, name)
@@ -204,7 +204,7 @@ Debug message method
 :since: v0.2.00
         """
 
-        # pylint: disable=star-args
+        # pylint: disable=protected-access
 
         context = kwargs.get("context", "global")
         if (self._get_implementation_level(context) == DEBUG): self._write(DEBUG, data, *args)
@@ -220,7 +220,7 @@ Error message method
 :since: v0.2.00
         """
 
-        # pylint: disable=star-args
+        # pylint: disable=protected-access
 
         context = kwargs.get("context", "global")
         if (self._get_implementation_level(context) != NOTSET): self._write(ERROR, data, *args)
@@ -236,7 +236,7 @@ Info message method
 :since: v0.2.00
         """
 
-        # pylint: disable=star-args
+        # pylint: disable=protected-access
 
         level = self._get_implementation_level(kwargs.get("context", "global"))
         if (level in ( DEBUG, INFO)): self._write(INFO, data, *args)
@@ -273,7 +273,7 @@ Warning message method
 :since: v0.2.00
         """
 
-        # pylint: disable=star-args
+        # pylint: disable=protected-access
 
         level = self._get_implementation_level(kwargs.get("context", "global"))
         if (level not in ( ERROR, NOTSET)): self._write(WARNING, data, *args)
@@ -288,8 +288,6 @@ Warning message method
 
 :since: v0.2.00
         """
-
-        # pylint: disable=star-args
 
         exception = isinstance(data, BaseException)
         message = strftime(self.log_format_datetime)

@@ -17,6 +17,8 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
+# pylint: disable=invalid-name
+
 from .not_implemented_exception import NotImplementedException
 
 class _NotImplementedMetaClass(type):

@@ -29,6 +29,8 @@ from dNG.data.logging.log_line import LogLine
 from dNG.runtime.thread_lock import ThreadLock
 from dNG.vfs.abstract_watcher import AbstractWatcher
 
+from .watcher_mtime import WatcherMtime
+
 _IMPLEMENTATION_INOTIFY = 1
 """
 pyinotify implementation
@@ -50,8 +52,6 @@ except ImportError:
     _mode = _IMPLEMENTATION_MTIME
     WatcherPyinotify = None
 #
-
-from .watcher_mtime import WatcherMtime
 
 class Watcher(AbstractWatcher):
     """

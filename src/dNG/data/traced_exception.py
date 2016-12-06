@@ -132,8 +132,10 @@ returns the exception object.
 :since:  v0.2.00
         """
 
+        # pylint: disable=no-member
+
         self.exc_trace_list = ([ repr(tb) ] if (traceback is None) else traceback.format_tb(tb))
-        RuntimeError.with_traceback(self, tb)
+        if (hasattr(RuntimeError, "with_traceback")): RuntimeError.with_traceback(self, tb)
 
         return self
     #
@@ -147,6 +149,8 @@ Prints the stack trace to the given output stream or stderr.
 
 :since: v0.2.00
         """
+
+        # pylint: disable=too-few-format-args
 
         printable_trace = ("{0!r}: {1!s}\n{2!r}".format(sys.exc_info()[:3])
                            if (traceback is None) else

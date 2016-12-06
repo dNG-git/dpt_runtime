@@ -41,6 +41,8 @@ python.org: Return the next item from the container. (Python 2.x)
 :since:  v0.2.00
         """
 
+        # pylint: disable=no-member
+
         return self.__next__()
     #
 #

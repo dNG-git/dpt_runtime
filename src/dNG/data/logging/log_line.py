@@ -44,8 +44,6 @@ Debug message method
 :since: v0.2.00
         """
 
-        # pylint: disable=star-args
-
         log_handler = NamedLoader.get_singleton("dNG.data.logging.LogHandler", False)
         if (log_handler is not None): log_handler.debug(data, *args, **kwargs)
     #
@@ -60,8 +58,6 @@ Error message method
 
 :since: v0.2.00
         """
-
-        # pylint: disable=star-args
 
         log_handler = NamedLoader.get_singleton("dNG.data.logging.LogHandler", False)
         if (log_handler is not None): log_handler.error(data, *args, **kwargs)
@@ -78,8 +74,6 @@ Info message method
 :since: v0.2.00
         """
 
-        # pylint: disable=star-args
-
         log_handler = NamedLoader.get_singleton("dNG.data.logging.LogHandler", False)
         if (log_handler is not None): log_handler.info(data, *args, **kwargs)
     #
@@ -94,8 +88,6 @@ Warning message method
 
 :since: v0.2.00
         """
-
-        # pylint: disable=star-args
 
         log_handler = NamedLoader.get_singleton("dNG.data.logging.LogHandler", False)
         if (log_handler is not None): log_handler.warning(data, *args, **kwargs)

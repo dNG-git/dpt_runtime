@@ -27,6 +27,12 @@ import os
 try: import signal
 except ImportError: signal = None
 
+from dNG.data.traced_exception import TracedException
+from dNG.runtime.event import Event
+from dNG.runtime.exception_log_trap import ExceptionLogTrap
+from dNG.runtime.thread import Thread
+from dNG.runtime.value_exception import ValueException
+
 _IMPLEMENTATION_JAVA = 1
 """
 Java based Python implementation
@@ -52,12 +58,6 @@ if (_mode == _IMPLEMENTATION_PYTHON):
         _mode = _IMPLEMENTATION_MONO
     except ImportError: pass
 #
-
-from dNG.data.traced_exception import TracedException
-from dNG.runtime.event import Event
-from dNG.runtime.exception_log_trap import ExceptionLogTrap
-from dNG.runtime.thread import Thread
-from dNG.runtime.value_exception import ValueException
 
 class Cli(object):
     """

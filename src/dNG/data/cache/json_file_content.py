@@ -17,6 +17,8 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
+# pylint: disable=import-error, no-name-in-module
+
 from dNG.data.json_resource import JsonResource
 from dNG.data.logging.log_line import LogLine
 from dNG.module.named_loader import NamedLoader

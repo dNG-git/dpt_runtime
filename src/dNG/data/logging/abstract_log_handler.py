@@ -95,8 +95,6 @@ Debug message method
 :since: v0.2.00
         """
 
-        # pylint: disable=star-args
-
         raise NotImplementedException()
     #
 
@@ -109,8 +107,6 @@ Error message method
 
 :since: v0.2.00
         """
-
-        # pylint: disable=star-args
 
         raise NotImplementedException()
     #
@@ -160,7 +156,7 @@ Get the formatted log message.
 :since:  v0.2.00
         """
 
-        # pylint: disable=broad-except,star-args
+        # pylint: disable=broad-except
 
         if (isinstance(data, TracedException)): data = data.get_printable_trace()
         elif (isinstance(data, BaseException)):
@@ -195,8 +191,6 @@ Info message method
 
 :since: v0.2.00
         """
-
-        # pylint: disable=star-args
 
         raise NotImplementedException()
     #
@@ -235,8 +229,6 @@ Warning message method
 
 :since: v0.2.00
         """
-
-        # pylint: disable=star-args
 
         raise NotImplementedException()
     #

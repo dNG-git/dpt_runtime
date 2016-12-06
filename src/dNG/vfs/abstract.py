@@ -52,6 +52,8 @@ File type
 Link type
     """
 
+    # pylint: disable=invalid-name
+
     def __init__(self):
         """
 Constructor __init__(Abstract)
