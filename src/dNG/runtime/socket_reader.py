@@ -40,7 +40,7 @@ operations from blocking and non-blocking sockets.
 
     def __init__(self, socket, timeout = None):
         """
-Constructor __init__(ThreadLock)
+Constructor __init__(SocketReader)
 
 :since: v0.2.00
         """
@@ -65,23 +65,31 @@ Read data from socket.
 
 :param size: Size to receive
 
-:return: (bytes) Socket data received
+:return: (bytes) Socket data received; Socket reached EOF (closed) if
+         len(returned) < size
 :since: v0.2.00
         """
 
         _return = None
 
         data_size = 0
+        is_socket_valid = True
         timeout_time = time() + self.timeout
 
-        while (data_size < size and time() < timeout_time):
-            if (len(select([ self.socket.fileno() ], [ ], [ ], self.timeout)[0]) < 1): raise IOException("Timeout occurred before receiving data")
+        while (is_socket_valid and data_size < size and time() < timeout_time):
+            socket_fd = self.socket.fileno()
+
+            if (socket_fd < 0): raise IOException("Connection reset by peer")
+            if (len(select([ socket_fd ], [ ], [ ], self.timeout)[0]) < 1): raise IOException("Timeout occurred before receiving data")
+
             data = self.socket.recv(size - data_size)
+            data_size_received = len(data)
 
             if (_return is None): _return = data
-            else: _return += data
+            elif (data_size_received > 0): _return += data
 
-            data_size += len(data)
+            data_size += data_size_received
+            if (data_size_received == 0): is_socket_valid = False
         #
 
         return _return
