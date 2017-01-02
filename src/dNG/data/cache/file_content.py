@@ -76,8 +76,6 @@ Read data from the given file or from cache.
 :since:  v0.2.00
         """
 
-        # pylint: disable=maybe-no-member
-
         _return = FileContent._read_cache(file_path_name, required)
 
         if (_return is None):

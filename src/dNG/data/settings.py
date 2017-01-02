@@ -322,7 +322,7 @@ Read all settings from the given file.
 :since:  v0.2.00
         """
 
-        # pylint: disable=maybe-no-member, protected-access
+        # pylint: disable=protected-access
 
         _return = True
 
