@@ -17,6 +17,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
+from copy import copy
 from weakref import ref
 
 from dNG.data.settings import Settings
@@ -98,6 +99,8 @@ Get the content from cache for the given file path and name.
                     self.history.insert(0, file_path_name)
                 #
             #
+
+            if (_return is not None and hasattr(_return, "copy")): _return = _return.copy()
         #
 
         return _return
@@ -122,6 +125,7 @@ Fill the cache for the given file path and name with the given cache entry.
 
 :param file_path_name: File path and name
 :param cache_entry: Cached entry data
+:param cache_entry_size: Size of the cached entry data
 
 :since: v0.2.00
         """
