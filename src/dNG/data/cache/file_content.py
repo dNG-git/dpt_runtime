@@ -132,4 +132,20 @@ Read data from the given file or from cache.
 
         return _return
     #
+
+    @staticmethod
+    def _set_cache(file_path_name, cache_entry, cache_entry_size = None):
+        """
+Fill the cache for the given file path and name with the given cache entry.
+
+:param file_path_name: File path and name
+:param cache_entry: Cached entry data
+:param cache_entry_size: Size of the cached entry data
+
+:since: v0.2.00
+        """
+
+        cache_instance = NamedLoader.get_singleton("dNG.data.cache.Content", False)
+        if (cache_instance is not None): cache_instance.set_file(file_path_name, cache_entry, cache_entry_size)
+    #
 #
