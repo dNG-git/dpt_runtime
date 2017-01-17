@@ -19,19 +19,21 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 # pylint: disable=import-error,no-name-in-module,unused-argument
 
+from logging import StreamHandler
 from os import path
 
+from dNG.module.named_loader import NamedLoader
 from dNG.runtime.instance_lock import InstanceLock
 from dNG.runtime.thread_lock import ThreadLock
 
-from pyinotify import ThreadedNotifier, WatchManager
+import pyinotify
 
 try: from pyinotify import IN_ATTRIB, IN_CLOSE_WRITE, IN_CREATE, IN_DELETE, IN_DELETE_SELF, IN_MODIFY, IN_MOVE_SELF, IN_MOVED_FROM, IN_MOVED_TO
 except ImportError: from pyinotify.EventsCodes import IN_ATTRIB, IN_CLOSE_WRITE, IN_CREATE, IN_DELETE, IN_DELETE_SELF, IN_MODIFY, IN_MOVE_SELF, IN_MOVED_FROM, IN_MOVED_TO
 
 from .watcher_pyinotify_callback import WatcherPyinotifyCallback
 
-class WatcherPyinotify(WatchManager):
+class WatcherPyinotify(pyinotify.WatchManager):
     """
 "file:///" watcher using pyinotify's ThreadedNotifier.
 
@@ -60,7 +62,7 @@ Constructor __init__(WatcherPyinotify)
 :since: v0.2.00
         """
 
-        WatchManager.__init__(self)
+        pyinotify.WatchManager.__init__(self)
 
         self._lock = ThreadLock()
         """
@@ -122,7 +124,7 @@ Initializes the pyinotify instance.
 :since: v0.2.00
         """
 
-        self.pyinotify_instance = ThreadedNotifier(self, WatcherPyinotifyCallback(self), timeout = 5000)
+        self.pyinotify_instance = pyinotify.ThreadedNotifier(self, WatcherPyinotifyCallback(self), timeout = 5000)
         self.pyinotify_instance.start()
     #
 
@@ -290,7 +292,20 @@ Get the WatcherPyinotify singleton.
         if (WatcherPyinotify._instance is None):
             with WatcherPyinotify._instance_lock:
                 # Thread safety
-                if (WatcherPyinotify._instance is None): WatcherPyinotify._instance = WatcherPyinotify()
+                if (WatcherPyinotify._instance is None):
+                    log_handler = NamedLoader.get_singleton("dNG.data.logging.LogHandler", False)
+
+                    if (log_handler is not None):
+                        pyinotify.log.handlers = [ handler
+                                                   for handler in pyinotify.log.handlers
+                                                   if not isinstance(handler, StreamHandler)
+                                                 ]
+
+                        log_handler.add_logger("pyinotify")
+                    #
+
+                    WatcherPyinotify._instance = WatcherPyinotify()
+                #
             #
         #
 
