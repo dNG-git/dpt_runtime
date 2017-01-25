@@ -76,9 +76,9 @@ Directory path and name set for "TYPE_DIRECTORY"
         """
 File path and name set for "TYPE_FILE"
         """
-        self.file_readonly = None
+        self.object_readonly = None
         """
-True to open the file read-only
+True to open the object and nested ones read-only
         """
 
         self.supported_features['filesystem_path_name'] = True
@@ -364,11 +364,11 @@ Opens a VFS object. The handle is set at the beginning of the object.
 
         object_path_name = unquote(Abstract._get_id_from_vfs_url(vfs_url))
 
-        if (path.isdir(object_path_name)): self._open_directory(vfs_url, object_path_name)
+        if (path.isdir(object_path_name)): self._open_directory(vfs_url, object_path_name, readonly)
         else: self._open_file(vfs_url, object_path_name, readonly)
     #
 
-    def _open_directory(self, vfs_url, dir_path_name):
+    def _open_directory(self, vfs_url, dir_path_name, readonly = False):
         """
 Opens a VFS directory object.
 
@@ -379,7 +379,9 @@ Opens a VFS directory object.
         """
 
         self._ensure_directory_readable(vfs_url, dir_path_name)
+
         self.dir_path_name = path.abspath(dir_path_name)
+        self.object_readonly = readonly
     #
 
     def _open_file(self, vfs_url, file_path_name, readonly = True):
@@ -394,7 +396,7 @@ Opens (and creates) a VFS file object.
         """
 
         self.file_path_name = path.abspath(file_path_name)
-        self.file_readonly = readonly
+        self.object_readonly = readonly
     #
 
     def _open_wrapped_resource(self):
@@ -406,10 +408,10 @@ Opens the wrapped resource once needed for an file IO request.
 
         if (self.file_path_name is None): raise IOException("VFS object not opened")
 
-        file_mode = ("r+b" if (self.file_readonly) else "w+b")
+        file_mode = ("rb" if (self.object_readonly) else "r+b")
 
         _file = File()
-        if (_file.open(self.file_path_name, self.file_readonly, file_mode)): self._set_wrapped_resource(_file)
+        if (_file.open(self.file_path_name, self.object_readonly, file_mode)): self._set_wrapped_resource(_file)
     #
 
     def scan(self):
@@ -433,7 +435,7 @@ Scan over objects of a collection like a directory.
                 vfs_child_object = Object()
 
                 try:
-                    vfs_child_object.open("{0}/{1}".format(dir_path_url, entry))
+                    vfs_child_object.open("{0}/{1}".format(dir_path_url, entry), self.object_readonly)
                     _return.append(vfs_child_object)
                 except IOException as handled_exception: LogLine.error(handled_exception, context = "pas_core")
             #
@@ -450,7 +452,7 @@ Returns false if flushing buffers is not supported.
 :since:  v0.2.00
         """
 
-        return (self.file_path_name is not None and (not self.file_readonly))
+        return (self.file_path_name is not None and (not self.object_readonly))
     #
 
     def _supports_implementing_instance(self):
