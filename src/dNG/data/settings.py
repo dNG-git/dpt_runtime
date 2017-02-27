@@ -27,6 +27,9 @@ import re
 try: from threading import RLock
 except ImportError: RLock = None
 
+try: from appdirs import AppDirs
+except ImportError: AppDirs = None
+
 from dNG.runtime.io_exception import IOException
 from dNG.runtime.stacked_dict import StackedDict
 from dNG.runtime.value_exception import ValueException
@@ -131,10 +134,18 @@ environment.
                                           path.dirname(self.runtime_dict['path_system'])
                                          )
 
-        self.runtime_dict['path_data'] = (Binary.str(os.environ['dNGpathData'])
-                                          if ("dNGpathData" in os.environ) else
-                                          path.join(self.runtime_dict['path_base'], "data")
-                                         )
+        path_data = (Binary.str(os.environ['dNGpathData']) if ("dNGpathData" in os.environ) else None)
+
+        if (path_data is None and AppDirs is not None):
+            app_name = (Binary.str(os.environ['dNGapp']) if ("dNGapp" in os.environ) else "pas")
+
+            app_dirs = AppDirs(app_name, "dNG")
+            if (os.access(app_dirs.site_data_dir, (os.R_OK | os.X_OK))): path_data = app_dirs.site_data_dir
+        #
+
+        if (path_data is None): path_data = path.join(self.runtime_dict['path_base'], "data")
+
+        self.runtime_dict['path_data'] = path_data
 
         self.runtime_dict['path_lang'] = (Binary.str(os.environ['dNGpathLang'])
                                           if ("dNGpathLang" in os.environ) else
