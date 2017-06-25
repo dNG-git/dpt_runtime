@@ -311,7 +311,7 @@ Returns true if the object is available.
 
         _return = False
 
-        if (self._wrapped_resource is not None): _return = self._wrapped_resource.is_resource_valid()
+        if (self._wrapped_resource is not None): _return = self._wrapped_resource.is_valid()
         elif (self.dir_path_name is not None): _return = os.access(self.dir_path_name, os.X_OK)
         elif (self.file_path_name is not None): _return = os.access(self.file_path_name, os.R_OK)
 
