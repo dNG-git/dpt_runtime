@@ -83,6 +83,18 @@ instances of the class.
         return _return
     #
 
+    @property
+    def _is_wrapped_resource_open(self):
+        """
+Returns true if a wrapped resource has been opened for this object.
+
+:return: (bool) True if wrapped resource has been opened
+:since:  v1.0.0
+        """
+
+        return (self._wrapped_resource is not None)
+    #
+
     def close(self):
         """
 python.org: Flush and close this stream.
@@ -94,17 +106,6 @@ python.org: Flush and close this stream.
             try: self._wrapped_resource.close()
             finally: self._wrapped_resource = None
         #
-    #
-
-    def _is_wrapped_resource_open(self):
-        """
-Returns true if a wrapped resource has been opened for this object.
-
-:return: (bool) True if wrapped resource has been opened
-:since:  v0.2.00
-        """
-
-        return (self._wrapped_resource is not None)
     #
 
     def _open_wrapped_resource(self):

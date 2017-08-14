@@ -92,7 +92,7 @@ Load the given language section.
         instance = L10n.get_instance(lang)
         relative_file_path_name = L10n.get_relative_file_path_name(file_id)
 
-        file_path_name = "{0}/{1}/{2}.json".format(Settings.get("path_lang"), instance.get_lang(), relative_file_path_name)
+        file_path_name = "{0}/{1}/{2}.json".format(Settings.get("path_lang"), instance.lang, relative_file_path_name)
 
         try: instance.read_file(file_path_name, True)
         except ( IOException, ValueException ):

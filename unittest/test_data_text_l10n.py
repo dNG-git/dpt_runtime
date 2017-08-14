@@ -20,7 +20,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 import unittest
 
 from dNG.data.text.l10n import L10n
-from dNG.module.named_loader import NamedLoader
+from dNG.runtime.named_loader import NamedLoader
 
 class TestDataTextL10n(unittest.TestCase):
     """

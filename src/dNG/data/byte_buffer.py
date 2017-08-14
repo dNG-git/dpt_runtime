@@ -51,24 +51,48 @@ Constructor __init__(ByteBuffer)
 
         self.buffer = BytesIO()
         """
-Internal byte buffer.
+Internal byte buffer
+        """
+        self.buffer_file = None
+        """
+External file handle
         """
         self.buffer_reset = False
         """
-True if the buffer has been reset.
+True if the buffer has been reset
         """
         self.buffer_size = 0
         """
-Buffer size in bytes written.
+Buffer size in bytes written
         """
-        self.file_ptr = None
+        self.file_threshold = int(Settings.get("pas_core_byte_buffer_file_threshold", 5242880))
         """
-External file pointer.
+Threshold to write the internal buffer to an external file
         """
-        self.file_threshold = int(Settings.get("pas_core_byte_file_ptr_file_threshold", 5242880))
+    #
+
+    @property
+    def handle(self):
         """
-Threshold to write the internal buffer to an external file.
+Returns the buffer object to use.
+
+:return: (object) Buffer instance in use
+:since:  v1.0.0
         """
+
+        return (self.buffer if (self.buffer_file is None) else self.buffer_file)
+    #
+
+    @property
+    def size(self):
+        """
+Returns the current size of the buffer.
+
+:return: (int) Size written in bytes
+:since:  v1.0.0
+        """
+
+        return self.buffer_size
     #
 
     def _ensure_buffer_reset(self):
@@ -79,28 +103,6 @@ Resets the buffer ones before first read.
         """
 
         if (not self.buffer_reset): self.seek(0)
-    #
-
-    def _get_ptr(self):
-        """
-Returns the buffer object to use.
-
-:return: (object) Buffer instance in use
-:since:  v0.2.00
-        """
-
-        return (self.buffer if (self.file_ptr is None) else self.file_ptr)
-    #
-
-    def get_size(self):
-        """
-Returns the current size of the buffer.
-
-:return: (int) Size written in bytes
-:since:  v0.2.00
-        """
-
-        return self.buffer_size
     #
 
     def read(self, n = 0):
@@ -116,8 +118,8 @@ python.org: Read up to n bytes from the object and return them.
 
         self._ensure_buffer_reset()
 
-        _ptr = self._get_ptr()
-        return (_ptr.read() if (n < 1) else _ptr.read(n))
+        handle = self.handle
+        return (handle.read() if (n < 1) else handle.read(n))
     #
 
     def readline(self, limit = -1):
@@ -131,8 +133,8 @@ python.org: Read and return one line from the stream.
 
         self._ensure_buffer_reset()
 
-        _ptr = self._get_ptr()
-        return (_ptr.readline() if (limit < 0) else _ptr.readline(limit))
+        handle = self.handle
+        return (handle.readline() if (limit < 0) else handle.readline(limit))
     #
 
     def seek(self, offset):
@@ -146,9 +148,7 @@ python.org: Change the stream position to the given byte offset.
         """
 
         if (not self.buffer_reset): self.buffer_reset = True
-
-        _ptr = self._get_ptr()
-        return _ptr.seek(offset)
+        return self.handle.seek(offset)
     #
 
     def tell(self):
@@ -159,8 +159,7 @@ python.org: Return the current stream position as an opaque number.
 :since:  v0.2.00
         """
 
-        _ptr = self._get_ptr()
-        return _ptr.tell()
+        return self.handle.tell()
     #
 
     def write(self, b):
@@ -178,19 +177,19 @@ raw stream and return the number of bytes written.
 
         b = Binary.bytes(b)
 
-        if (self.file_ptr is None):
+        if (self.buffer_file is None):
             _return = self.buffer.write(b)
 
             if (self.buffer.tell() > self.file_threshold):
-                self.file_ptr = TemporaryFile()
+                self.buffer_file = TemporaryFile()
 
                 self.buffer.seek(0)
-                self.file_ptr.write(self.buffer.read())
+                self.buffer_file.write(self.buffer.read())
 
                 self.buffer.close()
                 self.buffer = None
             #
-        else: _return = self.file_ptr.write(b)
+        else: _return = self.buffer_file.write(b)
 
         self.buffer_size += _return
 

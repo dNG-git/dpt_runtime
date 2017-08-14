@@ -55,7 +55,7 @@ common name.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -86,7 +86,7 @@ Constructor __init__(NamedLoader)
 :since: v0.2.00
         """
 
-        self.base_dir = Settings.get("pas_global_modules_base_dir")
+        self._base_dir = Settings.get("pas_global_modules_base_dir")
         """
 Base directory we search for python files.
         """
@@ -94,6 +94,32 @@ Base directory we search for python files.
         """
 Underlying configuration array
         """
+    #
+
+    @property
+    def base_dir(self):
+        """
+Returns the base directory for scanning and loading python files.
+
+:return: (str) Relative path
+:since:  v1.0.0
+        """
+
+        if (self._base_dir is None): self._base_dir = Settings.get("path_system")
+        return self._base_dir
+    #
+
+    @base_dir.setter
+    def base_dir(self, base_dir):
+        """
+Sets the base directory for scanning and loading python files.
+
+:param base_dir: Path
+
+:since: v1.0.0
+        """
+
+        self._base_dir = base_dir
     #
 
     def get(self, common_name):
@@ -109,18 +135,6 @@ Returns the registered class name for the specified common name.
         return (self.config[common_name] if (common_name in self.config) else None)
     #
 
-    def get_base_dir(self):
-        """
-Returns the base directory for scanning and loading python files.
-
-:return: (str) Relative path
-:since:  v0.2.00
-        """
-
-        if (self.base_dir is None): self.base_dir = Settings.get("path_system")
-        return self.base_dir
-    #
-
     def is_registered(self, common_name):
         """
 Checks if a given common name is known.
@@ -132,20 +146,6 @@ Checks if a given common name is known.
         """
 
         return (common_name in self.config)
-    #
-
-    def set_base_dir(self, base_dir):
-        """
-Sets the base directory for scanning and loading python files.
-
-:param common_name: Common name
-
-:param base_dir: Path
-
-:since: v0.2.00
-        """
-
-        self.base_dir = base_dir
     #
 
     @staticmethod
@@ -378,7 +378,7 @@ Load the Python file with "imp" defined by the given name.
 
         with _load_py_file_imp_lock():
             try:
-                ( file_obj, file_path, description ) = imp.find_module(_file, [ path.join(NamedLoader._get_loader().get_base_dir(), _path) ])
+                ( file_obj, file_path, description ) = imp.find_module(_file, [ path.join(NamedLoader._get_loader().base_dir, _path) ])
                 _return = imp.load_module(name, file_obj, file_path, description)
                 if (file_obj is not None): file_obj.close()
             except ImportError as handled_exception:

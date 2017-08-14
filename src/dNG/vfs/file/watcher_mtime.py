@@ -72,6 +72,19 @@ Dict with latest modified timestamps
         """
     #
 
+    @property
+    def is_synchronous(self):
+        """
+Returns true if changes are only detected after "check()" has been
+called.
+
+:return: (bool) True if changes are not detected automatically
+:since:  v0.2.00
+        """
+
+        return True
+    #
+
     def check(self, _path):
         """
 Checks a given path for changes if "is_synchronous()" is true.
@@ -112,18 +125,6 @@ Frees all watcher callbacks for garbage collection.
                 self.watched_paths = None
             #
         #
-    #
-
-    def is_synchronous(self):
-        """
-Returns true if changes are only detected after "check()" has been
-called.
-
-:return: (bool) True if changes are not detected automatically
-:since:  v0.2.00
-        """
-
-        return True
     #
 
     def is_watched(self, _path, callback = None):

@@ -37,6 +37,19 @@ class WatcherPyinotifySync(WatcherPyinotify):
              Mozilla Public License, v. 2.0
     """
 
+    @property
+    def is_synchronous(self):
+        """
+Returns true if changes are only detected after "check()" has been
+called.
+
+:return: (bool) True if changes are not detected automatically
+:since:  v1.0.0
+        """
+
+        return True
+    #
+
     def check(self, _path):
         """
 Checks a given path for changes if "is_synchronous()" is true.
@@ -64,18 +77,6 @@ Initializes the pyinotify instance.
         """
 
         self.pyinotify_instance = Notifier(self, WatcherPyinotifyCallback(self), timeout = 5)
-    #
-
-    def is_synchronous(self):
-        """
-Returns true if changes are only detected after "check()" has been
-called.
-
-:return: (bool) True if changes are not detected automatically
-:since:  v0.2.00
-        """
-
-        return True
     #
 
     def stop(self):

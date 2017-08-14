@@ -283,8 +283,7 @@ Import a given JSON encoded string as an dict of file-backed settings.
 
         _return = True
 
-        json_resource = JsonResource()
-        json_data = json_resource.json_to_data(json)
+        json_data = JsonResource.json_to_data(json)
 
         if (json_data is None): _return = False
         else: Settings.get_instance()._update_file_dict(json_data)

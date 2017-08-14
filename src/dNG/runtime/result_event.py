@@ -45,7 +45,7 @@ Constructor __init__(ResultEvent)
 
         Event.__init__(self)
 
-        self.result = None
+        self._result = None
         """
 Result set
         """
@@ -57,29 +57,7 @@ Flag indicating that a result was set.
         if (timeout is not None): self.timeout = timeout
     #
 
-    def clear(self):
-        """
-python.org: Reset the internal flag to false.
-
-:since: v0.2.00
-        """
-
-        if (self.result_set): raise IOException("A ResultEvent can not be cleared after a result was set.")
-        Event.clear(self)
-    #
-
-    def get_result(self):
-        """
-Returns the result being set previously.
-
-:return: (mixed) Result set
-:since:  v0.2.00
-        """
-
-        if (not self.result_set): raise IOException("No result has been set for this ResultEvent.")
-        return self.result
-    #
-
+    @property
     def is_result_set(self):
         """
 Returns true after a result has been set.
@@ -89,6 +67,30 @@ Returns true after a result has been set.
         """
 
         return self.result_set
+    #
+
+    @property
+    def result(self):
+        """
+Returns the result being set previously.
+
+:return: (mixed) Result set
+:since:  v0.2.00
+        """
+
+        if (not self.result_set): raise IOException("No result has been set for this ResultEvent.")
+        return self._result
+    #
+
+    def clear(self):
+        """
+python.org: Reset the internal flag to false.
+
+:since: v0.2.00
+        """
+
+        if (self.result_set): raise IOException("A ResultEvent can not be cleared after a result was set.")
+        Event.clear(self)
     #
 
     def set(self):
@@ -110,7 +112,7 @@ Sets a result for this event and notifies all waiting threads afterwards.
 :since: v0.2.00
         """
 
-        self.result = result
+        self._result = result
         self.result_set = True
 
         Event.set(self)

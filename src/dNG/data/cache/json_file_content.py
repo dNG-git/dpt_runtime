@@ -21,7 +21,6 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 from dNG.data.json_resource import JsonResource
 from dNG.data.logging.log_line import LogLine
-from dNG.module.named_loader import NamedLoader
 from dNG.runtime.value_exception import ValueException
 
 from .file_content import FileContent
@@ -57,7 +56,7 @@ Read data from the given file or from cache.
             file_content = FileContent._read_file(file_path_name, required)
 
             if (file_content is not None):
-                _return = JsonResource().json_to_data(file_content)
+                _return = JsonResource.json_to_data(file_content)
 
                 if (_return is None):
                     if (required): raise ValueException("{0} is not a valid JSON encoded file".format(file_path_name))

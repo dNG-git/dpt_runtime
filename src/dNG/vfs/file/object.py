@@ -89,6 +89,220 @@ True to open the object and nested ones read-only
         self.supported_features['time_updated'] = True
     #
 
+    @property
+    def filesystem_path_name(self):
+        """
+Returns the path and name for the VFS object in the system filesystem.
+
+:return: (str) System filesystem path and name of the VFS object
+:since:  v1.0.0
+        """
+
+        _return = None
+
+        if (self.dir_path_name is not None): _return = self.dir_path_name
+        elif (self.file_path_name is not None): _return = self.file_path_name
+        else: raise IOException("VFS object not opened")
+
+        return _return
+    #
+
+    @property
+    def implementing_instance(self):
+        """
+Returns the implementing instance.
+
+:return: (mixed) Implementing instance
+:since:  v1.0.0
+        """
+
+        _return = None
+
+        if (self._wrapped_resource is None
+            and self.file_path_name is not None
+            ): self._open_wrapped_resource()
+
+        if (self._wrapped_resource is not None): _return = self._wrapped_resource
+        elif (self.dir_path_name is None): raise IOException("VFS object not opened")
+
+        return _return
+    #
+
+    @property
+    def implementing_scheme(self):
+        """
+Returns the implementing scheme name.
+
+:return: (str) Implementing scheme name
+:since:  v1.0.0
+        """
+
+        return "file"
+    #
+
+    @property
+    def is_valid(self):
+        """
+Returns true if the object is available.
+
+:return: (bool) True on success
+:since:  v1.0.0
+        """
+
+        _return = False
+
+        if (self._wrapped_resource is not None): _return = self._wrapped_resource.is_valid
+        elif (self.dir_path_name is not None): _return = os.access(self.dir_path_name, os.X_OK)
+        elif (self.file_path_name is not None): _return = os.access(self.file_path_name, os.R_OK)
+
+        return _return
+    #
+
+    @property
+    def mimetype(self):
+        """
+Returns the mime type of this VFS object.
+
+:return: (str) VFS object mime type
+:since:  v1.0.0
+        """
+
+        _return = None
+
+        if (self.dir_path_name is not None): _return = "text/directory"
+        elif (self.file_path_name is not None):
+            file_data = path.splitext(self.file_path_name)
+            mimetype_definition = MimeType.get_instance().get(file_data[1][1:])
+
+            _return = ("application/octet-stream" if (mimetype_definition is None) else mimetype_definition['type'])
+        else: raise IOException("VFS object not opened")
+
+        return _return
+    #
+
+    @property
+    def name(self):
+        """
+Returns the name of this VFS object.
+
+:return: (str) VFS object name
+:since:  v1.0.0
+        """
+
+        _return = None
+
+        if (self.dir_path_name is not None): _return = path.basename(self.dir_path_name)
+        elif (self.file_path_name is not None): _return = path.basename(self.file_path_name)
+        else: raise IOException("VFS object not opened")
+
+        return _return
+    #
+
+    @property
+    def size(self):
+        """
+Returns the size in bytes.
+
+:return: (int) Size in bytes
+:since:  v1.0.0
+        """
+
+        _return = None
+
+        if (self.dir_path_name is not None): _return = 0
+        elif (self.file_path_name is not None): _return = os.stat(self.file_path_name).st_size
+        else: raise IOException("VFS object not opened")
+
+        return _return
+    #
+
+    @property
+    def time_created(self):
+        """
+Returns the UNIX timestamp this object was created.
+
+:return: (int) UNIX timestamp this object was created
+:since:  v1.0.0
+        """
+
+        _return = None
+
+        if (self.dir_path_name is not None): _return = os.stat(self.dir_path_name).st_ctime
+        elif (self.file_path_name is not None): _return = os.stat(self.file_path_name).st_ctime
+        else: raise IOException("VFS object not opened")
+
+        return _return
+    #
+
+    @property
+    def time_updated(self):
+        """
+Returns the UNIX timestamp this object was updated.
+
+:return: (int) UNIX timestamp this object was updated
+:since:  v1.0.0
+        """
+
+        _return = None
+
+        if (self.dir_path_name is not None): _return = os.stat(self.dir_path_name).st_mtime
+        elif (self.file_path_name is not None): _return = os.stat(self.file_path_name).st_mtime
+        else: raise IOException("VFS object not opened")
+
+        return _return
+    #
+
+    @property
+    def type(self):
+        """
+Returns the type of this object.
+
+:return: (int) Object type
+:since:  v1.0.0
+        """
+
+        _return = None
+
+        if (self.dir_path_name is not None): _return = Object.TYPE_DIRECTORY
+        elif (self.file_path_name is not None): _return = Object.TYPE_FILE
+        else: raise IOException("VFS object not opened")
+
+        return _return
+    #
+
+    @property
+    def url(self):
+        """
+Returns the URL of this VFS object.
+
+:return: (str) VFS URL
+:since:  v1.0.0
+        """
+
+        object_id = None
+
+        if (self.dir_path_name is not None): object_id = quote(self.dir_path_name)
+        elif (self.file_path_name is not None): object_id = quote(self.file_path_name)
+
+        if (object_id is None): raise IOException("VFS object not opened")
+
+        return "file:///{0}".format(object_id)
+    #
+
+    def close(self):
+        """
+python.org: Flush and close this stream.
+
+:since: v0.2.00
+        """
+
+        if (self.dir_path_name is not None): self.dir_path_name = None
+        else:
+            try: FileLikeWrapperMixin.close(self)
+            finally: self.file_path_name = None
+        #
+    #
+
     def _ensure_directory_readable(self, vfs_url, dir_path_name):
         """
 Ensures that the given directory path readable.
@@ -113,209 +327,6 @@ Ensures that the given directory path writable.
         """
 
         if (not os.access(dir_path_name, os.X_OK)): raise IOException("VFS URL '{0}' is invalid".format(vfs_url))
-    #
-
-    def close(self):
-        """
-python.org: Flush and close this stream.
-
-:since: v0.2.00
-        """
-
-        if (self.dir_path_name is not None): self.dir_path_name = None
-        else:
-            try: FileLikeWrapperMixin.close(self)
-            finally: self.file_path_name = None
-        #
-    #
-
-    def get_filesystem_path_name(self):
-        """
-Returns the path and name for the VFS object in the system filesystem.
-
-:return: (str) System filesystem path and name of the VFS object
-:since:  v0.2.00
-        """
-
-        _return = None
-
-        if (self.dir_path_name is not None): _return = self.dir_path_name
-        elif (self.file_path_name is not None): _return = self.file_path_name
-        else: raise IOException("VFS object not opened")
-
-        return _return
-    #
-
-    def get_implementing_instance(self):
-        """
-Returns the implementing instance.
-
-:return: (mixed) Implementing instance
-:since:  v0.2.00
-        """
-
-        _return = None
-
-        if (self._wrapped_resource is None
-            and self.file_path_name is not None
-           ): self._open_wrapped_resource()
-
-        if (self._wrapped_resource is not None): _return = self._wrapped_resource
-        elif (self.dir_path_name is None): raise IOException("VFS object not opened")
-
-        return _return
-    #
-
-    def get_implementing_scheme(self):
-        """
-Returns the implementing scheme name.
-
-:return: (str) Implementing scheme name
-:since:  v0.2.00
-        """
-
-        return "file"
-    #
-
-    def get_mimetype(self):
-        """
-Returns the mime type of this VFS object.
-
-:return: (str) VFS object mime type
-:since:  v0.2.00
-        """
-
-        _return = None
-
-        if (self.dir_path_name is not None): _return = "text/directory"
-        elif (self.file_path_name is not None):
-            file_data = path.splitext(self.file_path_name)
-            mimetype_definition = MimeType.get_instance().get(file_data[1][1:])
-
-            _return = ("application/octet-stream" if (mimetype_definition is None) else mimetype_definition['type'])
-        else: raise IOException("VFS object not opened")
-
-        return _return
-    #
-
-    def get_name(self):
-        """
-Returns the name of this VFS object.
-
-:return: (str) VFS object name
-:since:  v0.2.00
-        """
-
-        _return = None
-
-        if (self.dir_path_name is not None): _return = path.basename(self.dir_path_name)
-        elif (self.file_path_name is not None): _return = path.basename(self.file_path_name)
-        else: raise IOException("VFS object not opened")
-
-        return _return
-    #
-
-    def get_size(self):
-        """
-Returns the size in bytes.
-
-:return: (int) Size in bytes
-:since:  v0.2.00
-        """
-
-        _return = None
-
-        if (self.dir_path_name is not None): _return = 0
-        elif (self.file_path_name is not None): _return = os.stat(self.file_path_name).st_size
-        else: raise IOException("VFS object not opened")
-
-        return _return
-    #
-
-    def get_time_created(self):
-        """
-Returns the UNIX timestamp this object was created.
-
-:return: (int) UNIX timestamp this object was created
-:since:  v0.2.00
-        """
-
-        _return = None
-
-        if (self.dir_path_name is not None): _return = os.stat(self.dir_path_name).st_ctime
-        elif (self.file_path_name is not None): _return = os.stat(self.file_path_name).st_ctime
-        else: raise IOException("VFS object not opened")
-
-        return _return
-    #
-
-    def get_time_updated(self):
-        """
-Returns the UNIX timestamp this object was updated.
-
-:return: (int) UNIX timestamp this object was updated
-:since:  v0.2.00
-        """
-
-        _return = None
-
-        if (self.dir_path_name is not None): _return = os.stat(self.dir_path_name).st_mtime
-        elif (self.file_path_name is not None): _return = os.stat(self.file_path_name).st_mtime
-        else: raise IOException("VFS object not opened")
-
-        return _return
-    #
-
-    def get_type(self):
-        """
-Returns the type of this object.
-
-:return: (int) Object type
-:since:  v0.2.00
-        """
-
-        _return = None
-
-        if (self.dir_path_name is not None): _return = Object.TYPE_DIRECTORY
-        elif (self.file_path_name is not None): _return = Object.TYPE_FILE
-        else: raise IOException("VFS object not opened")
-
-        return _return
-    #
-
-    def get_url(self):
-        """
-Returns the URL of this VFS object.
-
-:return: (str) VFS URL
-:since:  v0.2.00
-        """
-
-        object_id = None
-
-        if (self.dir_path_name is not None): object_id = quote(self.dir_path_name)
-        elif (self.file_path_name is not None): object_id = quote(self.file_path_name)
-
-        if (object_id is None): raise IOException("VFS object not opened")
-
-        return "file:///{0}".format(object_id)
-    #
-
-    def is_valid(self):
-        """
-Returns true if the object is available.
-
-:return: (bool) True on success
-:since:  v0.2.00
-        """
-
-        _return = False
-
-        if (self._wrapped_resource is not None): _return = self._wrapped_resource.is_valid()
-        elif (self.dir_path_name is not None): _return = os.access(self.dir_path_name, os.X_OK)
-        elif (self.file_path_name is not None): _return = os.access(self.file_path_name, os.R_OK)
-
-        return _return
     #
 
     def new(self, _type, vfs_url):
@@ -428,7 +439,7 @@ Scan over objects of a collection like a directory.
         _return = [ ]
 
         entry_list = os.listdir(self.dir_path_name)
-        dir_path_url = self.get_url()
+        dir_path_url = self.url
 
         for entry in entry_list:
             if (entry[0] != "."):
@@ -440,6 +451,8 @@ Scan over objects of a collection like a directory.
                 except IOException as handled_exception: LogLine.error(handled_exception, context = "pas_core")
             #
         #
+
+        _return.sort()
 
         return _return
     #

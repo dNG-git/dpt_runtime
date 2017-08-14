@@ -18,8 +18,8 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 """
 
 from dNG.data.binary import Binary
-from dNG.module.named_loader import NamedLoader
 from dNG.runtime.io_exception import IOException
+from dNG.runtime.named_loader import NamedLoader
 from dNG.runtime.value_exception import ValueException
 
 from .abstract_watcher import AbstractWatcher

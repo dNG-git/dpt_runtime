@@ -49,14 +49,39 @@ Constructor __init__(SocketReader)
         """
 Underlying lock instance
         """
-        self.timeout = timeout
+        self._timeout = timeout
         """
 Lock timeout in seconds
         """
 
-        if (self.timeout is None or self.timeout <= 0):
-            self.timeout = int(Settings.get("pas_global_socket_data_timeout", 30))
+        if (self._timeout is None or self._timeout <= 0):
+            self._timeout = int(Settings.get("pas_global_socket_data_timeout", 30))
         #
+    #
+
+    @property
+    def timeout(self):
+        """
+Returns the lock timeout in seconds.
+
+:return: (float) Timeout value
+:since:  v1.0.0
+        """
+
+        return self._timeout
+    #
+
+    @timeout.setter
+    def timeout(self, timeout):
+        """
+Sets a new lock timeout.
+
+:param timeout: New timeout value in seconds
+
+:since: v1.0.0
+        """
+
+        self._timeout = timeout
     #
 
     def recv(self, size):

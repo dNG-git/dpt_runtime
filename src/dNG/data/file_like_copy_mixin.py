@@ -63,10 +63,10 @@ Copy data to the target.
         timeout_time = (0 if (timeout is None) else time() + timeout)
         self.seek(0)
 
-        while ((not self.is_eof())
+        while ((not self.is_eof)
                and (timeout_time < 1 or time() < timeout_time)
               ): target.write(self.read(self.file_like_copy_io_chunk_size))
 
-        if (not self.is_eof()): raise IOException("Timeout occurred before EOF")
+        if (not self.is_eof): raise IOException("Timeout occurred before EOF")
     #
 #

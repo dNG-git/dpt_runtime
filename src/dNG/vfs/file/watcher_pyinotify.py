@@ -22,8 +22,8 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 from logging import StreamHandler
 from os import path
 
-from dNG.module.named_loader import NamedLoader
 from dNG.runtime.instance_lock import InstanceLock
+from dNG.runtime.named_loader import NamedLoader
 from dNG.runtime.thread_lock import ThreadLock
 
 import pyinotify
@@ -88,6 +88,19 @@ pyinotify watch fds
         self._init_notifier()
     #
 
+    @property
+    def is_synchronous(self):
+        """
+Returns true if changes are only detected after "check()" has been
+called.
+
+:return: (bool) True if changes are not detected automatically
+:since:  v1.0.0
+        """
+
+        return False
+    #
+
     def check(self, _path):
         """
 Checks a given path for changes if "is_synchronous()" is true.
@@ -126,18 +139,6 @@ Initializes the pyinotify instance.
 
         self.pyinotify_instance = pyinotify.ThreadedNotifier(self, WatcherPyinotifyCallback(self), timeout = 5000)
         self.pyinotify_instance.start()
-    #
-
-    def is_synchronous(self):
-        """
-Returns true if changes are only detected after "check()" has been
-called.
-
-:return: (bool) True if changes are not detected automatically
-:since:  v0.2.00
-        """
-
-        return False
     #
 
     def is_watched(self, _path, callback = None):

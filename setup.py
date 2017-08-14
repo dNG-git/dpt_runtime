@@ -16,6 +16,14 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 setup.py
 """
 
+from os import path
+
+from distutils.core import setup
+
+from dNG.distutils.command.build_py import BuildPy
+from dNG.distutils.command.install_data import InstallData
+from dNG.distutils.temporary_directory import TemporaryDirectory
+
 def get_version():
     """
 Returns the version currently in development.
@@ -24,15 +32,8 @@ Returns the version currently in development.
 :since:  v0.1.02
     """
 
-    return "v0.2.00"
+    return "v1.0.0"
 #
-
-from dNG.distutils.command.build_py import BuildPy
-from dNG.distutils.command.install_data import InstallData
-from dNG.distutils.temporary_directory import TemporaryDirectory
-
-from distutils.core import setup
-from os import path
 
 with TemporaryDirectory(dir = ".") as build_directory:
     parameters = { "install_data_plain_copy_extensions": "json",
@@ -45,7 +46,7 @@ with TemporaryDirectory(dir = ".") as build_directory:
 
     _build_path = path.join(build_directory, "src")
 
-    setup(name = "pas_core",
+    setup(name = "pas-core",
           version = get_version(),
           description = "Python Application Services",
           long_description = """"pas_core" provides multiple features used in other modules.""",
@@ -55,6 +56,8 @@ with TemporaryDirectory(dir = ".") as build_directory:
           url = "https://www.direct-netware.de/redirect?pas;core",
 
           platforms = [ "any" ],
+
+          setup_requires = "dng-builder-suite",
 
           package_dir = { "": _build_path },
           packages = [ "dNG" ],

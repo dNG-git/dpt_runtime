@@ -52,7 +52,7 @@ Underlying event instance
         """
 Underlying lock instance
         """
-        self.timeout = (Settings.get("pas_global_thread_lock_timeout", 10) if (timeout is None) else timeout)
+        self._timeout = (Settings.get("pas_global_thread_lock_timeout", 10) if (timeout is None) else timeout)
         """
 Lock timeout in seconds
         """
@@ -78,6 +78,31 @@ python.org: Exit the runtime context related to this object.
 
         self.release()
         return False
+    #
+
+    @property
+    def timeout(self):
+        """
+Returns the lock timeout in seconds.
+
+:return: (float) Timeout value
+:since:  v1.0.0
+        """
+
+        return self._timeout
+    #
+
+    @timeout.setter
+    def timeout(self, timeout):
+        """
+Sets a new lock timeout.
+
+:param timeout: New timeout value in seconds
+
+:since: v1.0.0
+        """
+
+        self._timeout = timeout
     #
 
     def acquire(self):
@@ -116,17 +141,6 @@ Acquire a lock.
         #
     #
 
-    def get_timeout(self):
-        """
-Returns the lock timeout in seconds.
-
-:return: (float) Timeout value
-:since:  v0.2.00
-        """
-
-        return self.timeout
-    #
-
     def release(self):
         """
 Release a lock.
@@ -136,17 +150,5 @@ Release a lock.
 
         self.lock.release()
         if (self.event is not None): self.event.set()
-    #
-
-    def set_timeout(self, timeout):
-        """
-Sets a new lock timeout.
-
-:param timeout: New timeout value in seconds
-
-:since: v0.2.00
-        """
-
-        self.timeout = timeout
     #
 #

@@ -164,7 +164,7 @@ Tests pyinotify ThreadedNotifier
         """
 
         self.watcher.set_implementation(Watcher.IMPLEMENTATION_INOTIFY)
-        self.assertFalse(self.watcher.is_synchronous())
+        self.assertFalse(self.watcher.is_synchronous)
 
         with TemporaryDirectory() as base_directory:
             base_url = "file:///{0}".format(quote(base_directory, "/"))
@@ -202,7 +202,7 @@ Tests pyinotify manually triggered Notifier
         """
 
         self.watcher.set_implementation(Watcher.IMPLEMENTATION_INOTIFY_SYNC)
-        self.assertTrue(self.watcher.is_synchronous())
+        self.assertTrue(self.watcher.is_synchronous)
 
         with TemporaryDirectory() as base_directory:
             base_url = "file:///{0}".format(quote(base_directory, "/"))
@@ -239,7 +239,7 @@ Tests filesystem mtime based, manually triggered check
 
         self.watcher = Watcher()
         self.watcher.set_implementation(Watcher.IMPLEMENTATION_MTIME)
-        self.assertTrue(self.watcher.is_synchronous())
+        self.assertTrue(self.watcher.is_synchronous)
 
         with TemporaryDirectory() as base_directory:
             base_url = "file:///{0}".format(quote(base_directory, "/"))

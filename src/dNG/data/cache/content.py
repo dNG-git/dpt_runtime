@@ -88,7 +88,7 @@ Get the content from cache for the given file path and name.
 
         _return = None
 
-        if (self.is_synchronous()): self.check("file:///{0}".format(file_path_name))
+        if (self.is_synchronous): self.check("file:///{0}".format(file_path_name))
 
         if (file_path_name in self.cache):
             with self._lock:

@@ -47,6 +47,31 @@ Deleted event
 Created event
     """
 
+    @property
+    def implementing_scheme(self):
+        """
+Returns the implementing scheme name.
+
+:return: (str) Implementing scheme name
+:since:  v1.0.0
+        """
+
+        raise NotImplementedException()
+    #
+
+    @property
+    def is_synchronous(self):
+        """
+Returns true if changes are only detected after "check()" has been
+called.
+
+:return: (bool) True if changes are not detected automatically
+:since:  v1.0.0
+        """
+
+        return True
+    #
+
     def check(self, url):
         """
 Checks a given URL for changes if "is_synchronous()" is true.
@@ -77,29 +102,6 @@ Frees all watcher callbacks for garbage collection.
         """
 
         raise NotImplementedException()
-    #
-
-    def get_implementing_scheme(self):
-        """
-Returns the implementing scheme name.
-
-:return: (str) Implementing scheme name
-:since:  v0.2.00
-        """
-
-        raise NotImplementedException()
-    #
-
-    def is_synchronous(self):
-        """
-Returns true if changes are only detected after "check()" has been
-called.
-
-:return: (bool) True if changes are not detected automatically
-:since:  v0.2.00
-        """
-
-        return True
     #
 
     def is_watched(self, url, callback = None):

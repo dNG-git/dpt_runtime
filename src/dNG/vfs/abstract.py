@@ -75,6 +75,176 @@ Destructor __del__(Abstract)
         self.close()
     #
 
+    @property
+    def implementing_instance(self):
+        """
+Returns the implementing instance.
+
+:return: (mixed) Implementing instance or "None"
+:since:  v1.0.0
+        """
+
+        if (not self.is_valid): raise IOException("VFS object not opened")
+        return None
+    #
+
+    @property
+    def implementing_scheme(self):
+        """
+Returns the implementing scheme name.
+
+:return: (str) Implementing scheme name
+:since:  v1.0.0
+        """
+
+        raise NotImplementedException()
+    #
+
+    @property
+    def is_directory(self):
+        """
+Returns true if the object is representing a directory (or collection).
+
+:return: (bool) True if directory
+:since:  v1.0.0
+        """
+
+        return (self.type & Abstract.TYPE_DIRECTORY == Abstract.TYPE_DIRECTORY)
+    #
+
+    @property
+    def is_eof(self):
+        """
+Checks if the pointer is at EOF.
+
+:return: (bool) True on success
+:since:  v1.0.0
+        """
+
+        raise OperationNotSupportedException()
+    #
+
+    @property
+    def is_file(self):
+        """
+Returns true if the object is representing a file.
+
+:return: (bool) True if file
+:since:  v1.0.0
+        """
+
+        return (self.type & Abstract.TYPE_FILE == Abstract.TYPE_FILE)
+    #
+
+    @property
+    def is_link(self):
+        """
+Returns true if the object is representing a link to another object.
+
+:return: (bool) True if link
+:since:  v1.0.0
+        """
+
+        return (self.type & Abstract.TYPE_LINK == Abstract.TYPE_LINK)
+    #
+
+    @property
+    def is_valid(self):
+        """
+Returns true if the object is available.
+
+:return: (bool) True on success
+:since:  v1.0.0
+        """
+
+        raise NotImplementedException()
+    #
+
+    @property
+    def mimetype(self):
+        """
+Returns the mime type of this VFS object.
+
+:return: (str) VFS object mime type
+:since:  v1.0.0
+        """
+
+        if (not self.is_valid): raise IOException("VFS object not opened")
+        return ("text/directory" if (self.is_directory) else "application/octet-stream")
+    #
+
+    @property
+    def name(self):
+        """
+Returns the name of this VFS object.
+
+:return: (str) VFS object name
+:since:  v1.0.0
+        """
+
+        raise OperationNotSupportedException()
+    #
+
+    @property
+    def size(self):
+        """
+Returns the size in bytes.
+
+:return: (int) Size in bytes
+:since:  v1.0.0
+        """
+
+        raise NotImplementedException()
+    #
+
+    @property
+    def time_created(self):
+        """
+Returns the UNIX timestamp this object was created.
+
+:return: (int) UNIX timestamp this object was created
+:since:  v1.0.0
+        """
+
+        raise OperationNotSupportedException()
+    #
+
+    @property
+    def time_updated(self):
+        """
+Returns the UNIX timestamp this object was updated.
+
+:return: (int) UNIX timestamp this object was updated
+:since:  v1.0.0
+        """
+
+        raise OperationNotSupportedException()
+    #
+
+    @property
+    def type(self):
+        """
+Returns the type of this object.
+
+:return: (int) Object type
+:since:  v1.0.0
+        """
+
+        raise NotImplementedException()
+    #
+
+    @property
+    def url(self):
+        """
+Returns the URL of this VFS object.
+
+:return: (str) VFS URL
+:since:  v1.0.0
+        """
+
+        raise NotImplementedException()
+    #
+
     def close(self):
         """
 python.org: Flush and close this stream.
@@ -93,162 +263,6 @@ python.org: Flush the write buffers of the stream if applicable.
         """
 
         raise OperationNotSupportedException()
-    #
-
-    def get_implementing_scheme(self):
-        """
-Returns the implementing scheme name.
-
-:return: (str) Implementing scheme name
-:since:  v0.2.00
-        """
-
-        raise NotImplementedException()
-    #
-
-    def get_implementing_instance(self):
-        """
-Returns the implementing instance.
-
-:return: (mixed) Implementing instance or "None"
-:since:  v0.2.00
-        """
-
-        if (not self.is_valid()): raise IOException("VFS object not opened")
-        return None
-    #
-
-    def get_mimetype(self):
-        """
-Returns the mime type of this VFS object.
-
-:return: (str) VFS object mime type
-:since:  v0.2.00
-        """
-
-        if (not self.is_valid()): raise IOException("VFS object not opened")
-        return ("text/directory" if (self.is_directory()) else "application/octet-stream")
-    #
-
-    def get_name(self):
-        """
-Returns the name of this VFS object.
-
-:return: (str) VFS object name
-:since:  v0.2.00
-        """
-
-        raise OperationNotSupportedException()
-    #
-
-    def get_size(self):
-        """
-Returns the size in bytes.
-
-:return: (int) Size in bytes
-:since:  v0.2.00
-        """
-
-        raise NotImplementedException()
-    #
-
-    def get_time_created(self):
-        """
-Returns the UNIX timestamp this object was created.
-
-:return: (int) UNIX timestamp this object was created
-:since:  v0.2.00
-        """
-
-        raise OperationNotSupportedException()
-    #
-
-    def get_time_updated(self):
-        """
-Returns the UNIX timestamp this object was updated.
-
-:return: (int) UNIX timestamp this object was updated
-:since:  v0.2.00
-        """
-
-        raise OperationNotSupportedException()
-    #
-
-    def get_type(self):
-        """
-Returns the type of this object.
-
-:return: (int) Object type
-:since:  v0.2.00
-        """
-
-        raise NotImplementedException()
-    #
-
-    def get_url(self):
-        """
-Returns the URL of this VFS object.
-
-:return: (str) VFS URL
-:since:  v0.2.00
-        """
-
-        raise NotImplementedException()
-    #
-
-    def is_directory(self):
-        """
-Returns true if the object is representing a directory (or collection).
-
-:return: (bool) True if directory
-:since:  v0.2.00
-        """
-
-        return (self.get_type() & Abstract.TYPE_DIRECTORY == Abstract.TYPE_DIRECTORY)
-    #
-
-    def is_eof(self):
-        """
-Checks if the pointer is at EOF.
-
-:return: (bool) True on success
-:since:  v0.2.00
-        """
-
-        raise OperationNotSupportedException()
-    #
-
-    def is_file(self):
-        """
-Returns true if the object is representing a file.
-
-:return: (bool) True if file
-:since:  v0.2.00
-        """
-
-        return (self.get_type() & Abstract.TYPE_FILE == Abstract.TYPE_FILE)
-    #
-
-    def is_link(self):
-        """
-Returns true if the object is representing a link to another object.
-
-:return: (bool) True if link
-:since:  v0.2.00
-        """
-
-        return (self.get_type() & Abstract.TYPE_LINK == Abstract.TYPE_LINK)
-    #
-
-    def is_valid(self):
-        """
-Returns true if the object is available.
-
-:return: (bool) True on success
-:since:  v0.2.00
-        """
-
-        raise NotImplementedException()
     #
 
     def new(self, _type, vfs_url):

@@ -102,6 +102,34 @@ Watcher implementation class
         self.set_implementation()
     #
 
+    @property
+    def implementing_scheme(self):
+        """
+Returns the implementing scheme name.
+
+:return: (str) Implementing scheme name
+:since:  v0.2.00
+        """
+
+        return "file"
+    #
+
+    @property
+    def is_synchronous(self):
+        """
+Returns true if changes are only detected after "check()" has been
+called.
+
+:return: (bool) True if changes are not detected automatically
+:since:  v1.0.0
+        """
+
+        with self._lock:
+            self._init_watcher_class()
+            return (False if (self.watcher_class is None) else self.watcher_class.get_instance().is_synchronous)
+        #
+    #
+
     def check(self, url):
         """
 Checks a given URL for changes if "is_synchronous()" is true.
@@ -146,17 +174,6 @@ Frees all watcher callbacks for garbage collection.
         #
     #
 
-    def get_implementing_scheme(self):
-        """
-Returns the implementing scheme name.
-
-:return: (str) Implementing scheme name
-:since:  v0.2.00
-        """
-
-        return "file"
-    #
-
     def _get_path(self, url):
         """
 Return the local filesystem path for the given "file:///" URL.
@@ -187,22 +204,7 @@ Initializes the watcher instance.
                  ): self.watcher_class = WatcherPyinotifySync
             else: self.watcher_class = WatcherMtime
 
-            LogLine.debug("{0!r} mode is {1}", self, ("synchronous" if (self.is_synchronous()) else "asynchronous"), context = "pas_core")
-        #
-    #
-
-    def is_synchronous(self):
-        """
-Returns true if changes are only detected after "check()" has been
-called.
-
-:return: (bool) True if changes are not detected automatically
-:since:  v0.2.00
-        """
-
-        with self._lock:
-            self._init_watcher_class()
-            return (False if (self.watcher_class is None) else self.watcher_class.get_instance().is_synchronous())
+            LogLine.debug("{0!r} mode is {1}", self, ("synchronous" if (self.is_synchronous) else "asynchronous"), context = "pas_core")
         #
     #
 

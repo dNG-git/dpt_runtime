@@ -67,6 +67,18 @@ python.org: Called to implement evaluation of self[key].
         return Binary.str(dict.__getitem__(self, key))
     #
 
+    @property
+    def lang(self):
+        """
+Returns the language code of this instance.
+
+:return: (str) Language code
+:since:  v1.0.0
+        """
+
+        return self['lang_code']
+    #
+
     def format_number(self, number, fractional_digits = -1):
         """
 Returns a formatted number.
@@ -80,17 +92,6 @@ Returns a formatted number.
         """
 
         return NumberFormatter.format(number, self['lang_number_format'], fractional_digits)
-    #
-
-    def get_lang(self):
-        """
-Returns the language code of this instance.
-
-:return: (str) Language code
-:since:  v0.2.00
-        """
-
-        return self['lang_code']
     #
 
     def read_file(self, file_path_name, required = False):

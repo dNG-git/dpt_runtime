@@ -25,7 +25,7 @@ from weakref import ref
 import os
 
 try: import signal
-except ImportError: signal = None
+except ImportError: signal = { }
 
 from dNG.data.traced_exception import TracedException
 from dNG.runtime.event import Event
@@ -111,12 +111,12 @@ Constructor __init__(Cli)
         """
 ArgumentParser instance
         """
-        self.log_handler = None
+        self._log_handler = None
         """
 The LogHandler is called whenever debug messages should be logged or errors
 happened.
         """
-        self.mainloop = None
+        self._mainloop = None
         """
 Callable main loop without arguments
         """
@@ -126,6 +126,61 @@ Mainloop event
         """
 
         Cli._weakref_instance = ref(self)
+    #
+
+    @property
+    def log_handler(self):
+        """
+Returns the LogHandler.
+
+:return: (object) LogHandler in use
+:since:  v1.0.0
+        """
+
+        return self._log_handler
+    #
+
+    @log_handler.setter
+    def log_handler(self, log_handler):
+        """
+Sets the LogHandler.
+
+:param log_handler: LogHandler to use
+
+:since: v1.0.0
+        """
+
+        self._log_handler = log_handler
+    #
+
+    @property
+    def mainloop(self):
+        """
+Returns the registered callback for the application main loop.
+
+:return: (object) Python callback; None if not set
+:since:  v1.0.0
+        """
+
+        return self._mainloop
+    #
+
+    @mainloop.setter
+    def mainloop(self, callback):
+        """
+Register a callback for the application main loop.
+
+:param callback: Python callback
+
+:since: v1.0.0
+        """
+
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.mainloop()- (#echo(__LINE__)#)", self, context = "pas_core")
+
+        if (self._mainloop is not None): raise ValueException("Main loop already registered")
+        if (not callable(callback)): raise ValueException("Main loop callback given is invalid")
+
+        self._mainloop = callback
     #
 
     def error(self, _exception):
@@ -150,7 +205,7 @@ Executes registered callbacks for the active application.
 
         # pylint: disable=broad-except
 
-        if (self.log_handler is not None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.run()- (#echo(__LINE__)#)", self, context = "pas_core")
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.run()- (#echo(__LINE__)#)", self, context = "pas_core")
 
         if (self.arg_parser is not None and hasattr(self.arg_parser, "parse_args")): args = self.arg_parser.parse_args()
         else: args = { }
@@ -167,44 +222,17 @@ Executes registered callbacks for the active application.
         finally: self.shutdown()
     #
 
-    def set_mainloop(self, callback):
-        """
-Register a callback for the application main loop.
-
-:param callback: Python callback
-
-:since: v0.2.00
-        """
-
-        if (self.log_handler is not None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.set_mainloop()- (#echo(__LINE__)#)", self, context = "pas_core")
-
-        if (self.mainloop is not None): raise ValueException("Main loop already registered")
-        self.mainloop = callback
-    #
-
-    def set_log_handler(self, log_handler):
-        """
-Sets the LogHandler.
-
-:param log_handler: LogHandler to use
-
-:since: v0.2.00
-        """
-
-        self.log_handler = log_handler
-    #
-
-    def _signal(self, os_signal, stack_frame):
+    def _signal(self, signal_name, stack_frame):
         """
 Handles an OS signal.
 
-:param os_signal: OS signal
+:param signal_name: Signal name
 :param stack_frame: Stack frame
 
 :since: v0.2.00
         """
 
-        if (self.log_handler is not None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}._signal()- (#echo(__LINE__)#)", self, context = "pas_core")
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._signal()- (#echo(__LINE__)#)", self, context = "pas_core")
         self.shutdown()
     #
 
@@ -219,7 +247,7 @@ Executes registered callbacks before shutting down this application.
 
         # pylint: disable=raising-bad-type
 
-        if (self.log_handler is not None): self.log_handler.debug("#echo(__FILEPATH__)# -{0!r}.shutdown()- (#echo(__LINE__)#)", self, context = "pas_core")
+        if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}.shutdown()- (#echo(__LINE__)#)", self, context = "pas_core")
 
         Thread.set_inactive()
 
@@ -294,7 +322,7 @@ Register a callback for the application main loop.
         """
 
         instance = Cli.get_instance()
-        if (instance is not None): instance.set_mainloop(callback)
+        if (instance is not None): instance.mainloop = callback
     #
 
     @staticmethod
@@ -336,11 +364,20 @@ Callback function for OS signals.
 
     # pylint: disable=protected-access
 
+    signal_name = "unknown"
+
+    if (hasattr(signal, "SIGABRT") and os_signal == signal.SIGABRT): signal_name = "SIGABRT"
+    elif (hasattr(signal, "SIGINT") and os_signal == signal.SIGINT): signal_name = "SIGINT"
+    elif (hasattr(signal, "SIGHUP") and os_signal == signal.SIGHUP): signal_name = "SIGHUP"
+    elif (hasattr(signal, "SIGTERM") and os_signal == signal.SIGTERM): signal_name = "SIGTERM"
+    elif (hasattr(signal, "SIGQUIT") and os_signal == signal.SIGQUIT): signal_name = "SIGQUIT"
+
     instance = Cli.get_instance()
-    if (instance is not None): instance._signal(os_signal, stack_frame)
+    if (instance is not None): instance._signal(signal_name, stack_frame)
 #
 
 if (hasattr(signal, "SIGABRT")): signal.signal(signal.SIGABRT, _on_signal)
 if (hasattr(signal, "SIGINT")): signal.signal(signal.SIGINT, _on_signal)
+if (hasattr(signal, "SIGHUP")): signal.signal(signal.SIGHUP, _on_signal)
 if (hasattr(signal, "SIGTERM")): signal.signal(signal.SIGTERM, _on_signal)
 if (hasattr(signal, "SIGQUIT")): signal.signal(signal.SIGQUIT, _on_signal)

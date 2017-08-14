@@ -23,8 +23,8 @@ from os import path
 
 from dNG.data.file import File
 from dNG.data.logging.log_line import LogLine
-from dNG.module.named_loader import NamedLoader
 from dNG.runtime.io_exception import IOException
+from dNG.runtime.named_loader import NamedLoader
 
 class FileContent(object):
     """
