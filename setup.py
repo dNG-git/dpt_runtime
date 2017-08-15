@@ -29,7 +29,7 @@ def get_version():
 Returns the version currently in development.
 
 :return: (str) Version string
-:since:  v0.1.02
+:since:  v0.1.2
     """
 
     return "v1.0.0"

@@ -29,7 +29,7 @@ class InstanceLock(ThreadLock):
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -38,7 +38,7 @@ class InstanceLock(ThreadLock):
         """
 Constructor __init__(InstanceLock)
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         ThreadLock.__init__(self)

@@ -34,7 +34,7 @@ class FileContent(object):
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -47,7 +47,7 @@ Returns false if the file is cached and not modified.
 :param file_path_name: File path and name
 
 :return: (bool) True if not cached or modified
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = False
@@ -73,7 +73,7 @@ Read data from the given file or from cache.
 :param required: True if missing files should throw an exception
 
 :return: (mixed) File data; None on error
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = FileContent._read_cache(file_path_name, required)
@@ -99,7 +99,7 @@ Read data from cache.
 :param required: True if missing files should throw an exception
 
 :return: (mixed) File data; None on error
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         cache_instance = NamedLoader.get_singleton("dNG.data.cache.Content", False)
@@ -115,7 +115,7 @@ Read data from the given file or from cache.
 :param required: True if missing files should throw an exception
 
 :return: (mixed) File data; None on error
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = None
@@ -142,7 +142,7 @@ Fill the cache for the given file path and name with the given cache entry.
 :param cache_entry: Cached entry data
 :param cache_entry_size: Size of the cached entry data
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         cache_instance = NamedLoader.get_singleton("dNG.data.cache.Content", False)

@@ -30,7 +30,7 @@ L10n (localization) methods on top of an dict.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -41,7 +41,7 @@ Constructor __init__(L10n)
 
 :param lang: Language code
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         dict.__init__(self)
@@ -61,7 +61,7 @@ python.org: Called to implement evaluation of self[key].
 :param key: L10n key
 
 :return: (str) L10n value
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         return Binary.str(dict.__getitem__(self, key))
@@ -88,7 +88,7 @@ Returns a formatted number.
 :param lang: Language code
 
 :return: (str) Formatted value
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         return NumberFormatter.format(number, self['lang_number_format'], fractional_digits)
@@ -101,7 +101,7 @@ Read all translations from the given file.
 :param file_path_name: File path and name
 :param required: True if missing files should throw an exception
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (file_path_name not in self.files or JsonFileContent.is_changed(file_path_name)):
@@ -119,7 +119,7 @@ Write all translations to the given file using the given template.
        file
 
 :return: (bool) True on success
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         return False

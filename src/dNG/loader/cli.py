@@ -67,7 +67,7 @@ class Cli(object):
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -104,7 +104,7 @@ Callbacks for "shutdown()"
         """
 Constructor __init__(Cli)
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         self.arg_parser = None
@@ -189,7 +189,7 @@ Prints the stack trace on this error event.
 
 :param _exception: Inner exception
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (isinstance(_exception, TracedException)): _exception.print_stack_trace()
@@ -200,7 +200,7 @@ Prints the stack trace on this error event.
         """
 Executes registered callbacks for the active application.
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         # pylint: disable=broad-except
@@ -229,7 +229,7 @@ Handles an OS signal.
 :param signal_name: Signal name
 :param stack_frame: Stack frame
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (self._log_handler is not None): self._log_handler.debug("#echo(__FILEPATH__)# -{0!r}._signal()- (#echo(__LINE__)#)", self, context = "pas_core")
@@ -242,7 +242,7 @@ Executes registered callbacks before shutting down this application.
 
 :param _exception: Inner exception
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         # pylint: disable=raising-bad-type
@@ -269,7 +269,7 @@ Waits for the given OS process ID to exit.
 
 :param pid: OS process ID
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (pid is not None and pid > 0 and hasattr(os, "kill")):
@@ -291,7 +291,7 @@ Waits for the given OS process ID to exit.
 Get the Cli singleton.
 
 :return: (Cli) Object on success
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         return Cli._weakref_instance()
@@ -303,7 +303,7 @@ Get the Cli singleton.
 Returns the current Python engine (one of "java", "mono" and "py").
 
 :return: (str) Active mode
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         # global: _mode
@@ -318,7 +318,7 @@ Register a callback for the application main loop.
 
 :param callback: Python callback
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         instance = Cli.get_instance()
@@ -332,7 +332,7 @@ Register a callback for the application activation event.
 
 :param callback: Python callback
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (callback not in Cli._callbacks_run): Cli._callbacks_run.append(callback)
@@ -345,7 +345,7 @@ Register a callback for the application shutdown event.
 
 :param callback: Python callback
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (callback not in Cli._callbacks_shutdown): Cli._callbacks_shutdown.append(callback)
@@ -359,7 +359,7 @@ Callback function for OS signals.
 :param os_signal: OS signal
 :param stack_frame: Stack frame
 
-:since: v0.2.00
+:since: v0.2.0
     """
 
     # pylint: disable=protected-access

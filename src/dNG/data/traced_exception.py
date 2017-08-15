@@ -31,7 +31,7 @@ streams.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -43,7 +43,7 @@ Constructor __init__(TracedException)
 :param value: Exception message value
 :param _exception: Inner exception
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         super(TracedException, self).__init__(value)
@@ -74,7 +74,7 @@ and print() to compute the "informal" or nicely printable string
 representation of an object.
 
 :return: (str) The "informal" or nicely printable string representation
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = RuntimeError.__str__(self)
@@ -86,7 +86,7 @@ representation of an object.
 Return the cause.
 
 :return: (mixed) Inner exception
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         return self.exc_cause
@@ -97,7 +97,7 @@ Return the cause.
 Returns the stack trace.
 
 :return: (str) Exception stack trace
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = "{0!r}: {1!s}\n".format(self.__class__, self)
@@ -114,7 +114,7 @@ Prints the stack trace to the given output stream or stderr.
 
 :param out_stream: Output stream
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (out_stream is None): out_stream = sys.stderr
@@ -129,7 +129,7 @@ returns the exception object.
 :param tb: New traceback for the exception
 
 :return: (object) Manipulated exception instance
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         # pylint: disable=no-member
@@ -147,7 +147,7 @@ Prints the stack trace to the given output stream or stderr.
 
 :param out_stream: Output stream
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         # pylint: disable=too-few-format-args

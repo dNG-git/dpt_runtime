@@ -61,7 +61,7 @@ class Watcher(AbstractWatcher):
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -83,7 +83,7 @@ Filesystem mtime implementation
         """
 Constructor __init__(Watcher)
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         self.implementation = None
@@ -108,7 +108,7 @@ Watcher implementation class
 Returns the implementing scheme name.
 
 :return: (str) Implementing scheme name
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         return "file"
@@ -136,7 +136,7 @@ Checks a given URL for changes if "is_synchronous()" is true.
 
 :param url: Resource URL
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         _path = self._get_path(url)
@@ -153,7 +153,7 @@ Checks a given URL for changes if "is_synchronous()" is true.
         """
 Disables this watcher and frees all callbacks for garbage collection.
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         with self._lock:
@@ -166,7 +166,7 @@ Disables this watcher and frees all callbacks for garbage collection.
         """
 Frees all watcher callbacks for garbage collection.
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         with self._lock:
@@ -181,7 +181,7 @@ Return the local filesystem path for the given "file:///" URL.
 :param url: Filesystem URL
 
 :return: (str) Filesystem path; None if not a "file:///" URL
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         url_elements = urlsplit(url)
@@ -192,7 +192,7 @@ Return the local filesystem path for the given "file:///" URL.
         """
 Initializes the watcher instance.
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (self.implementation is not None and self.watcher_class is None):
@@ -218,7 +218,7 @@ if a callback is given but not defined for the watched URL.
 
 :return: (bool) True if watched with the defined callback or any if not
          defined.
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _path = self._get_path(url)
@@ -236,7 +236,7 @@ Handles registration of resource URL watches and its callbacks.
 :param url: Resource URL to be watched
 
 :return: (bool) True on success
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _path = self._get_path(url)
@@ -255,7 +255,7 @@ Set the filesystem watcher implementation to use.
 
 :param implementation: Implementation identifier
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         # global: _IMPLEMENTATION_INOTIFY, _IMPLEMENTATION_INOTIFY_SYNC, _IMPLEMENTATION_MTIME, _mode
@@ -277,7 +277,7 @@ Set the filesystem watcher implementation to use.
         """
 Stops all watchers.
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         with self._lock:
@@ -295,7 +295,7 @@ Handles deregistration of resource URL watches.
 :param url: Resource URL watched
 
 :return: (bool) True on success
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _path = self._get_path(url)

@@ -26,7 +26,7 @@ instance.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -35,7 +35,7 @@ instance.
         """
 Constructor __init__(SupportsMixin)
 
-:since: v0.1.00
+:since: v0.2.0
         """
 
         self.supported_features = { }
@@ -52,7 +52,7 @@ Returns true if the feature requested is supported by this instance.
 :param feature: Feature name string
 
 :return: (bool) True if supported
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = False

@@ -32,7 +32,7 @@ objects.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -56,7 +56,7 @@ Link type
 Returns an VFS object class for the given scheme.
 
 :return: (object) VFS object class
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = NamedLoader.get_class("dNG.vfs.{0}.Object".format(scheme.replace("-", "_")))
@@ -74,7 +74,7 @@ Returns an VFS object class for the given scheme.
 Returns an VFS object instance for the given scheme.
 
 :return: (object) VFS object instance
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         vfs_object_class = Implementation.get_class(scheme)
@@ -90,7 +90,7 @@ Returns the initialized object instance for the given VFS URL.
 :param readonly: Open object in readonly mode
 
 :return: (object) VFS object instance
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         # pylint: disable=protected-access
@@ -113,7 +113,7 @@ Returns a new object instance for the given VFS URL.
 :param vfs_url: VFS URL
 
 :return: (object) VFS object instance
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         # pylint: disable=protected-access

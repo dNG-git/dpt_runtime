@@ -43,7 +43,7 @@ charset.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -57,7 +57,7 @@ Convert data from the input charset to their UTF-8 string representation.
 :param charset: Original data charset
 
 :return: (bytes) Byte representation
-:since:  v0.2.00
+:since:  v0.2.0
     """
 
         return Binary.str(Charset.convert_to_utf8(data, charset))
@@ -72,7 +72,7 @@ Returns the unicode data representing the (maybe encoded) input data.
 :param charset: Original data charset
 
 :return: (bytes) Unicode representation
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         # global: _PY_BYTES, _PY_BYTES_TYPE, _PY_UNICODE, _PY_UNICODE_TYPE

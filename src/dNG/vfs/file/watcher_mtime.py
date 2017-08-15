@@ -37,7 +37,7 @@ class WatcherMtime(AbstractWatcher):
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -55,7 +55,7 @@ Thread safety instance lock
         """
 Constructor __init__(Watcher)
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         self._lock = ThreadLock()
@@ -79,7 +79,7 @@ Returns true if changes are only detected after "check()" has been
 called.
 
 :return: (bool) True if changes are not detected automatically
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         return True
@@ -93,7 +93,7 @@ Checks a given path for changes if "is_synchronous()" is true.
 
 :return: (bool) True if the given path URL has been changed since last check
          and "is_synchronous()" is true.
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = False
@@ -116,7 +116,7 @@ Checks a given path for changes if "is_synchronous()" is true.
         """
 Frees all watcher callbacks for garbage collection.
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         with self._lock:
@@ -137,7 +137,7 @@ if a callback is given but not defined for the watched path.
 
 :return: (bool) True if watched with the defined callback or any if not
          defined.
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         with self._lock:
@@ -156,7 +156,7 @@ Handles registration of filesystem watches and its callbacks.
 :param callback: Callback for the path
 
 :return: (bool) True on success
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = True
@@ -179,7 +179,7 @@ Handles registration of filesystem watches and its callbacks.
         """
 Stops all watchers.
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (WatcherMtime._instance is not None):
@@ -200,7 +200,7 @@ Handles deregistration of filesystem watches.
 :param callback: Callback for the path
 
 :return: (bool) True on success
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = True
@@ -225,8 +225,8 @@ Handles deregistration of filesystem watches.
         """
 Get the WatcherMtime singleton.
 
-:return: (WatcherMtime) Object on success
-:since:  v0.2.00
+:return: (object) Object on success
+:since:  v0.2.0
         """
 
         if (WatcherMtime._instance is None):

@@ -36,7 +36,7 @@ The abstract log handler provides common variables and methods.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -45,7 +45,7 @@ The abstract log handler provides common variables and methods.
         """
 Constructor __init__(AbstractLogHandler)
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         self.ident = "pas"
@@ -79,7 +79,7 @@ Version identifier
 Add the logger name given to the active log handler.
 
 :return: (object) Log handler
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         logging.getLogger(name).addHandler(self.log_handler)
@@ -92,7 +92,7 @@ Debug message method
 :param data: Debug data
 :param context: Logging context
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         raise NotImplementedException()
@@ -105,7 +105,7 @@ Error message method
 :param data: Error data
 :param context: Logging context
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         raise NotImplementedException()
@@ -118,7 +118,7 @@ Returns the log implementation specific level value.
 :param context: Logging context
 
 :return: (mixed) Log implementation specific level value
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         if (context not in self.level): self._load_context_level(context)
@@ -132,7 +132,7 @@ Get the log level.
 :param context: Logging context
 
 :return: (mixed) Log level
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         if (context not in self.level): self._load_context_level(context)
@@ -153,7 +153,7 @@ Get the formatted log message.
 :param data: Log data
 
 :return: (str) Formatted log line
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         # pylint: disable=broad-except
@@ -189,7 +189,7 @@ Info message method
 :param data: Info data
 :param context: Logging context
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         raise NotImplementedException()
@@ -201,7 +201,7 @@ Determines the context specific log level.
 
 :param context: Logging context
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (context != "global"): self.level[context] = self.level['global']
@@ -214,7 +214,7 @@ Sets the log level.
 :param level: Log level identifier
 :param context: Logging context
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (level in self.level_map): self.level[context] = self.level_map[level]
@@ -227,7 +227,7 @@ Warning message method
 :param data: Warning data
 :param context: Logging context
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         raise NotImplementedException()
@@ -239,7 +239,7 @@ Warning message method
 Get the LogHandler singleton.
 
 :return: (LogHandler) Object on success
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         raise NotImplementedException()

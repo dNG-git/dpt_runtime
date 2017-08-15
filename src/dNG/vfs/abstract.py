@@ -34,7 +34,7 @@ Provides the abstract VFS implementation for an object.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -58,7 +58,7 @@ Link type
         """
 Constructor __init__(Abstract)
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         FileLikeCopyMixin.__init__(self)
@@ -69,7 +69,7 @@ Constructor __init__(Abstract)
         """
 Destructor __del__(Abstract)
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         self.close()
@@ -249,7 +249,7 @@ Returns the URL of this VFS object.
         """
 python.org: Flush and close this stream.
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         raise NotImplementedException()
@@ -259,7 +259,7 @@ python.org: Flush and close this stream.
         """
 python.org: Flush the write buffers of the stream if applicable.
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         raise OperationNotSupportedException()
@@ -272,7 +272,7 @@ Creates a new VFS object.
 :param _type: VFS object type
 :param vfs_url: VFS URL
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         raise OperationNotSupportedException()
@@ -285,7 +285,7 @@ Opens a VFS object. The handle is set at the beginning of the object.
 :param vfs_url: VFS URL
 :param readonly: Open object in readonly mode
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         raise NotImplementedException()
@@ -300,7 +300,7 @@ python.org: Read up to n bytes from the object and return them.
 :param timeout: Timeout to use (if supported by implementation)
 
 :return: (bytes) Data; None if EOF
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         raise OperationNotSupportedException()
@@ -311,7 +311,7 @@ python.org: Read up to n bytes from the object and return them.
 Scan over objects of a collection like a directory.
 
 :return: (list) Child VFS objects
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         raise OperationNotSupportedException()
@@ -324,7 +324,7 @@ python.org: Change the stream position to the given byte offset.
 :param offset: Seek to the given offset
 
 :return: (int) Return the new absolute position.
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         raise OperationNotSupportedException()
@@ -335,7 +335,7 @@ python.org: Change the stream position to the given byte offset.
 python.org: Return the current stream position as an opaque number.
 
 :return: (int) Stream position
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         raise OperationNotSupportedException()
@@ -348,7 +348,7 @@ python.org: Resize the stream to the given size in bytes.
 :param new_size: Cut file at the given byte position
 
 :return: (int) New file size
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         raise OperationNotSupportedException()
@@ -363,7 +363,7 @@ raw stream and return the number of bytes written.
 :param timeout: Timeout to use (defaults to construction time value)
 
 :return: (int) Number of bytes written
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         raise OperationNotSupportedException()
@@ -375,7 +375,7 @@ raw stream and return the number of bytes written.
 Returns the ID part of the VFS URL given.
 
 :return: (str) VFS URL ID
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         if (type(vfs_url) is not str): raise ValueException("VFS URL given is invalid")
@@ -397,7 +397,7 @@ Returns the ID part of the VFS URL given.
 Returns the scheme of the VFS URL given.
 
 :return: (str) VFS URL scheme
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         if (type(vfs_url) is not str): raise ValueException("VFS URL given is invalid")

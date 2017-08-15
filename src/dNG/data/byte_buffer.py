@@ -35,7 +35,7 @@ safe.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -46,7 +46,7 @@ safe.
         """
 Constructor __init__(ByteBuffer)
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         self.buffer = BytesIO()
@@ -99,7 +99,7 @@ Returns the current size of the buffer.
         """
 Resets the buffer ones before first read.
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (not self.buffer_reset): self.seek(0)
@@ -113,7 +113,7 @@ python.org: Read up to n bytes from the object and return them.
           EOF)
 
 :return: (bytes) Data; None if EOF
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         self._ensure_buffer_reset()
@@ -126,9 +126,9 @@ python.org: Read up to n bytes from the object and return them.
         """
 python.org: Read and return one line from the stream.
 
-:param n: If limit is specified, at most limit bytes will be read.
+:param limit: If limit is specified, at most limit bytes will be read.
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         self._ensure_buffer_reset()
@@ -144,7 +144,7 @@ python.org: Change the stream position to the given byte offset.
 :param offset: Seek to the given offset
 
 :return: (int) Return the new absolute position.
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (not self.buffer_reset): self.buffer_reset = True
@@ -156,7 +156,7 @@ python.org: Change the stream position to the given byte offset.
 python.org: Return the current stream position as an opaque number.
 
 :return: (int) Stream position
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         return self.handle.tell()
@@ -170,7 +170,7 @@ raw stream and return the number of bytes written.
 :param b: Bytes data
 
 :return: (int) Number of bytes written
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         if (self.buffer_reset): raise IOException("Can't write to a buffer that has been already read from")

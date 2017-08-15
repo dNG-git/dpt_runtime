@@ -33,7 +33,7 @@ called without specifing one.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -42,7 +42,7 @@ called without specifing one.
         """
 Constructor __init__(ResultEvent)
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         self._event = _Event(*args, **kwargs)
@@ -59,7 +59,7 @@ Event waiting timeout in seconds
         """
 python.org: Reset the internal flag to false.
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         self._event.clear()
@@ -70,7 +70,7 @@ python.org: Reset the internal flag to false.
 python.org: Return true if and only if the internal flag is true.
 
 :return: (bool) True if set
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         return self._event.is_set()
@@ -80,7 +80,7 @@ python.org: Return true if and only if the internal flag is true.
         """
 python.org: Set the internal flag to true.
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         self._event.set()
@@ -97,7 +97,7 @@ python.org: Block until the internal flag is true.
          has been set to true, either before the wait call or after the wait
          starts, so it will always return True except if a timeout is given
          and the operation times out
-:since: v0.2.00
+:since:  v0.2.0
         """
 
         if (timeout is None): timeout = self.timeout

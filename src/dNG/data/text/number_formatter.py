@@ -25,7 +25,7 @@ class NumberFormatter(object):
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -40,7 +40,7 @@ Returns a formatted number.
 :param fractional_digits: Fractional digits to return
 
 :return: (str) Formatted value
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = ""

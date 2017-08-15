@@ -66,7 +66,7 @@ class LogHandler(AbstractLogHandler):
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -88,7 +88,7 @@ Thread safety weakref lock
         """
 Constructor __init__(LogHandler)
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         # global: _api_type, _API_JAVA
@@ -184,7 +184,7 @@ Preserve the amount of files
 Add the logger name given to the active log handler.
 
 :return: (object) Log handler
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         # global: _api_type, _API_JAVA
@@ -201,7 +201,7 @@ Debug message method
 :param data: Debug data
 :param context: Logging context
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         # pylint: disable=protected-access
@@ -217,7 +217,7 @@ Error message method
 :param data: Error data
 :param context: Logging context
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         # pylint: disable=protected-access
@@ -233,7 +233,7 @@ Info message method
 :param data: Info data
 :param context: Logging context
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         # pylint: disable=protected-access
@@ -248,7 +248,7 @@ Determines the context specific log level.
 
 :param context: Logging context
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         context_level_setting = "{0}_log_level".format(context)
@@ -270,7 +270,7 @@ Warning message method
 :param data: Warning data
 :param context: Logging context
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         # pylint: disable=protected-access
@@ -286,7 +286,7 @@ Warning message method
 :param level: Logging level
 :param data: Logging data
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         exception = isinstance(data, BaseException)
@@ -315,7 +315,7 @@ Warning message method
 Get the LogHandler singleton.
 
 :return: (LogHandler) Object on success
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = None

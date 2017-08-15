@@ -30,7 +30,7 @@ and suppressed.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -41,7 +41,7 @@ Constructor __init__(ExceptionLogTrap)
 
 :param context: Logging context
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         self.context = context
@@ -54,7 +54,7 @@ Logging context
         """
 python.org: Enter the runtime context related to this object.
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         pass
@@ -65,7 +65,7 @@ python.org: Enter the runtime context related to this object.
 python.org: Exit the runtime context related to this object.
 
 :return: (bool) True to suppress exceptions
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         if (exc_type is not None

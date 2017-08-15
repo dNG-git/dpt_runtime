@@ -35,7 +35,7 @@ class InputFilter(object):
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -50,7 +50,7 @@ characters.
 :param data: Input string
 
 :return: (str) Filtered string
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         data = Binary.utf8(data)
@@ -85,7 +85,7 @@ ASCII address if it is. Does not recognize comments.
 
 :return: (str) Filtered eMail address or empty string if the address is not
          valid
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         # pylint: disable=broad-except
@@ -177,7 +177,7 @@ traversals. We will filter them using "filterFilePath()".
                        base directory
 
 :return: (str) Filtered output path
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         data = InputFilter.filter_control_chars(data)
@@ -206,7 +206,7 @@ Check and convert to float.
 :param data: Input string
 
 :return: (float) Filtered output float; None on error
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         try:
@@ -224,7 +224,7 @@ Check and convert to int.
 :param data: Input string
 
 :return: (int) Filtered output integer; None on error
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         try:
@@ -240,7 +240,7 @@ Check and convert to int.
 Returns a list where each entry is unique.
 
 :return: (list) Unique list of entries given
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = [ ]

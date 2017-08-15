@@ -26,7 +26,7 @@ additional ones used for key lookups.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -35,7 +35,7 @@ additional ones used for key lookups.
         """
 Constructor __init__(StackedDict)
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         _super = super(StackedDict, self)
@@ -58,7 +58,7 @@ python.org: Called to implement membership test operators.
 :param item: Item to be looked up
 
 :return: (bool) True if item is in self or a stacked dict.
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = (item in self.keys())
@@ -80,7 +80,7 @@ python.org: Called to implement membership test operators.
 python.org: Return an iterator object.
 
 :return: (object) Iterator object
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         for key in self.keys(): yield key
@@ -97,7 +97,7 @@ python.org: Called to implement evaluation of self[key].
 :param key: Key
 
 :return: (mixed) Value
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = None
@@ -131,7 +131,7 @@ python.org: Called by the repr() built-in function and by string conversions
 object.
 
 :return: (str) String representation
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         return object.__repr__(self)
@@ -143,7 +143,7 @@ Adds the given Python dictionary to the stack.
 
 :param _dict: Dictionary
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (_dict is not self
@@ -160,7 +160,7 @@ default.
 :param default: Default return value
 
 :return: (mixed) Value
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = default
@@ -177,7 +177,7 @@ Removes the given Python dictionary from the stack.
 
 :param _dict: Dictionary
 
-:since: v0.2.00
+:since: v0.2.0
         """
 
         if (_dict in self.stacked_dicts): self.stacked_dicts.remove(_dict)

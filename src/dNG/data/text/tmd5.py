@@ -37,7 +37,7 @@ are used for hashing.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.00
+:since:      v0.2.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -52,7 +52,7 @@ repeated and returned.
 :param target: Target string
 
 :return: (str) Triple MD5 string
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = ""
@@ -79,7 +79,7 @@ Generate the triple MD5 hash for the data given.
 :param salt: Salt used during hashing
 
 :return: (str) Triple MD5 string
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         _return = ""
@@ -135,7 +135,7 @@ given.
 :param pepper: Pepper used for unique hashing for this password
 
 :return: (str) Triple MD5 string
-:since:  v0.2.00
+:since:  v0.2.0
         """
 
         salt = Binary.str(salt)
