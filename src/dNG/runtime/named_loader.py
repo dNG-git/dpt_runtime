@@ -64,6 +64,10 @@ common name.
     """
 CamelCase RegExp
     """
+    RE_NON_WORD_CAMEL_CASE_SPLITTER = re.compile("[^a-zA-Z0-9]+")
+    """
+CamelCase RegExp
+    """
 
     _instance = None
     """
@@ -146,6 +150,20 @@ Checks if a given common name is known.
         """
 
         return (common_name in self.config)
+    #
+
+    @staticmethod
+    def get_camel_case_class_name(name):
+        """
+Returns the class name in camel case for the given name.
+
+:param name: Class name like "example_class_name"
+
+:return: (str) Class name in camel case
+:since:  v1.0.0
+        """
+
+        return "".join([ word.capitalize() for word in NamedLoader.RE_NON_WORD_CAMEL_CASE_SPLITTER.split(name) ])
     #
 
     @staticmethod
