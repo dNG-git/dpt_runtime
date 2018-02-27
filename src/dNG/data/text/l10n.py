@@ -36,7 +36,7 @@ Provides static l10n (localization) methods.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -73,7 +73,7 @@ Returns a formatted number.
 :param lang: Language code
 
 :return: (str) Formatted value
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return L10n.get_instance(lang).format_number(number, fractional_digits)
@@ -86,7 +86,7 @@ Load the given language section.
 
 :param file_id: L10n file ID
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         instance = L10n.get_instance(lang)
@@ -112,7 +112,7 @@ Checks if a given key is a defined language string.
 :param lang: Language code
 
 :return: (bool) True if defined
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         try: _dict = L10n.get_dict(lang)
@@ -131,7 +131,7 @@ Returns the value with the specified key or the default one if undefined.
 :param lang: Language code
 
 :return: (str) Value
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return L10n.get_dict(lang).get(key, (key if (default is None) else default))
@@ -143,7 +143,7 @@ Returns the value with the specified key or the default one if undefined.
 Returns the defined default language of the current task.
 
 :return: (str) Language code
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = None
@@ -164,7 +164,7 @@ defined as a dict.
 :param lang: Language code
 
 :return: (dict) L10nInstance dict
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         if (lang is None): lang = L10n.get_default_lang()
@@ -190,7 +190,7 @@ Get the L10n dict instance of the given or default language.
 :param lang: Language code
 
 :return: (object) L10nInstance
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return L10n.get_dict(lang)
@@ -204,7 +204,7 @@ Returns the relative file path and name for the file ID given.
 :param file_id: L10n file ID
 
 :return: (str) File path and name
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         file_id = Binary.str(file_id)
@@ -229,7 +229,7 @@ Defines the default language of the application.
 
 :param lang: Language code
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         L10n.default_lang = lang
@@ -242,7 +242,7 @@ Defines a default language for the calling thread.
 
 :param lang: Language code
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         L10n._local.lang = lang

@@ -28,7 +28,7 @@ handler.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -41,7 +41,7 @@ Debug message method
 :param data: Debug data
 :param context: Logging context
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         log_handler = NamedLoader.get_singleton("dNG.data.logging.LogHandler", False)
@@ -56,7 +56,7 @@ Error message method
 :param data: Error data
 :param context: Logging context
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         log_handler = NamedLoader.get_singleton("dNG.data.logging.LogHandler", False)
@@ -71,7 +71,7 @@ Info message method
 :param data: Info data
 :param context: Logging context
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         log_handler = NamedLoader.get_singleton("dNG.data.logging.LogHandler", False)
@@ -86,7 +86,7 @@ Warning message method
 :param data: Warning data
 :param context: Logging context
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         log_handler = NamedLoader.get_singleton("dNG.data.logging.LogHandler", False)

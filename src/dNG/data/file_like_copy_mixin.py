@@ -32,7 +32,7 @@ implemented for the source.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -41,7 +41,7 @@ implemented for the source.
         """
 Constructor __init__(FileLikeCopyMixin)
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self.file_like_copy_io_chunk_size = int(Settings.get("pas_global_io_chunk_size_local", 524288))
@@ -57,7 +57,7 @@ Copy data to the target.
 :param target: Any object providing a "write()" method
 :param timeout: Timeout for copying data
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         timeout_time = (0 if (timeout is None) else time() + timeout)

@@ -27,7 +27,7 @@ The abstract file cache defines methods to access cached data.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -41,7 +41,7 @@ Get the content from cache for the given file path and name.
 :param file_path_name: Cached file path and name
 
 :return: (mixed) Cached entry; None if no hit or changed
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         raise NotImplementedException()
@@ -54,7 +54,7 @@ Return true if the given file path and name is cached.
 :param file_path_name: Cached file path and name
 
 :return: (bool) True if currently cached
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         raise NotImplementedException()
@@ -67,7 +67,7 @@ Fill the cache for the given file path and name with the given cache entry.
 :param file_path_name: File path and name
 :param cache_entry: Cached entry data
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         raise NotImplementedException()

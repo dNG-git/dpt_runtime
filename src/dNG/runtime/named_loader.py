@@ -87,7 +87,7 @@ happened.
         """
 Constructor __init__(NamedLoader)
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self._base_dir = Settings.get("pas_global_modules_base_dir")
@@ -133,7 +133,7 @@ Returns the registered class name for the specified common name.
 :param common_name: Common name
 
 :return: (str) Class name
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return (self.config[common_name] if (common_name in self.config) else None)
@@ -146,7 +146,7 @@ Checks if a given common name is known.
 :param common_name: Common name
 
 :return: (bool) True if defined
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return (common_name in self.config)
@@ -176,7 +176,7 @@ Get the class name for the given common name.
                  already.
 
 :return: (object) Loaded class; None on error
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         loader = NamedLoader._get_loader()
@@ -203,7 +203,7 @@ Returns a new instance based on its common name.
 :param autoload: True to load the class automatically if not done already
 
 :return: (object) Requested object on success
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = None
@@ -226,7 +226,7 @@ Returns a new instance based on its common name.
 Get the loader instance.
 
 :return: (object) Loader instance
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         if (NamedLoader._instance is None):
@@ -249,7 +249,7 @@ Returns a singleton based on its common name.
                  defined.
 
 :return: (object) Requested object on success
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = None
@@ -274,7 +274,7 @@ Checks if a common name is defined or can be resolved to a class name.
                  already.
 
 :return: (bool) True if defined or resolvable
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return (NamedLoader.get_class(common_name, autoload) is not None)
@@ -290,7 +290,7 @@ Returns the inititalized Python module defined by the given name.
                   is initialized.
 
 :return: (object) Python module; None if unknown
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = sys.modules.get(name)
@@ -312,7 +312,7 @@ Load the Python module defined by the given name.
                   is initialized.
 
 :return: (object) Python module; None if unknown
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = NamedLoader._get_module(name, classname)
@@ -335,7 +335,7 @@ Load the Python package defined by the given name.
 :param name: Python module name
 
 :return: (object) Python package; None if unknown
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return NamedLoader._load_py_file(name)
@@ -351,7 +351,7 @@ Load the Python file defined by the given name.
                   is initialized.
 
 :return: (object) Python file; None if unknown
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         # global: _mode, _MODE_IMPORT_MODULE
@@ -386,7 +386,7 @@ Load the Python file with "imp" defined by the given name.
 :param name: Python file name
 
 :return: (object) Python file; None if unknown
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = None
@@ -415,7 +415,7 @@ Load the Python package with "importlib" defined by the given name.
 :param name: Python module name
 
 :return: (object) Python package; None if unknown
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = None
@@ -435,7 +435,7 @@ Sets the LogHandler.
 
 :param log_handler: LogHandler to use
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         NamedLoader._log_handler = proxy(log_handler)
@@ -447,7 +447,7 @@ def _load_py_file_imp_lock():
     """
 Helper method to lock and unlock the importer safely.
 
-:since: v0.2.0
+:since: v1.0.0
     """
 
     imp.acquire_lock()

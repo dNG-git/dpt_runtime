@@ -28,7 +28,7 @@ not supported in a given implementation.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -40,7 +40,7 @@ Constructor __init__(OperationNotSupportedException)
 :param value: Exception message value
 :param _exception: Inner exception
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         TracedException.__init__(self, value, _exception)

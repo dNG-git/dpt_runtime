@@ -30,7 +30,7 @@ message to the selected language.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -43,7 +43,7 @@ Constructor __init__(TranslatableException)
 :param value: Exception message value
 :param _exception: Inner exception
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self.l10n_message = L10n.get("errors_{0}".format(l10n_id), l10n_id)
@@ -63,7 +63,7 @@ format_spec.
 
 :param format_spec: String format specification
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         if (format_spec == "l10n_message"): return Binary.str(self.l10n_message)

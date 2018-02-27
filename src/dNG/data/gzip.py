@@ -33,7 +33,7 @@ object.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -42,7 +42,7 @@ object.
         """
 Constructor __init__(Gzip)
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self.compressor = None
@@ -84,7 +84,7 @@ for at least part of the data in string.
 :param string: Original string
 
 :return: (bytes) Compressed string
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         if (self.compressor is None): raise IOException("Gzip compressor already flushed and closed")
@@ -114,7 +114,7 @@ remaining compressed output is returned.
 
 :param mode: Flush mode
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         if (mode != Z_FINISH): raise IOException("Gzip flush only supports Z_FINISH")

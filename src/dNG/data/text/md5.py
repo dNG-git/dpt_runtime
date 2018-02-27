@@ -31,7 +31,7 @@ Abstraction layer for the one-line MD5 hasing method.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -44,7 +44,7 @@ Generate the MD5 hash for the data given.
 :param data: Input string
 
 :return: (str) MD5 string
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return hashlib.md5(Binary.bytes(data)).hexdigest()

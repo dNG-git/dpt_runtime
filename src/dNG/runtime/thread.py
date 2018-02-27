@@ -31,7 +31,7 @@ class Thread(_Thread):
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -45,7 +45,7 @@ True if new non-daemon threads are allowed to be started.
         """
 python.org: Method representing the thread’s activity.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         with ExceptionLogTrap("pas_core"): _Thread.run(self)
@@ -55,7 +55,7 @@ python.org: Method representing the thread’s activity.
         """
 python.org: Start the thread's activity.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         if (self.daemon or Thread._active): _Thread.start(self)
@@ -67,7 +67,7 @@ python.org: Start the thread's activity.
         """
 Prevents new non-daemon threads to be started.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         Thread._active = False

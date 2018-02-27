@@ -28,7 +28,7 @@ instance.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -48,7 +48,7 @@ File IO methods implemented by an wrapped resource.
         """
 Constructor __init__(FileLikeWrapperMixin)
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self._wrapped_resource = None
@@ -65,7 +65,7 @@ instances of the class.
 :param name: Attribute name
 
 :return: (mixed) Instance attribute
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         # pylint: disable=protected-access
@@ -99,7 +99,7 @@ Returns true if a wrapped resource has been opened for this object.
         """
 python.org: Flush and close this stream.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         if (self._wrapped_resource is not None):
@@ -112,7 +112,7 @@ python.org: Flush and close this stream.
         """
 Opens the wrapped resource once needed.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         pass
@@ -124,7 +124,7 @@ Sets the wrapped resource for this object.
 
 :param resource: Resource providing the file-like API
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self._wrapped_resource = resource

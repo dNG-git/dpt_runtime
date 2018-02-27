@@ -29,7 +29,7 @@ class ResultEvent(Event):
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -40,7 +40,7 @@ Constructor __init__(ResultEvent)
 
 :param timeout: Default timeout in seconds to wait for results
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         Event.__init__(self)
@@ -63,7 +63,7 @@ Flag indicating that a result was set.
 Returns true after a result has been set.
 
 :return: (bool) True if a result is set
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return self.result_set
@@ -75,7 +75,7 @@ Returns true after a result has been set.
 Returns the result being set previously.
 
 :return: (mixed) Result set
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         if (not self.result_set): raise IOException("No result has been set for this ResultEvent.")
@@ -86,7 +86,7 @@ Returns the result being set previously.
         """
 python.org: Reset the internal flag to false.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         if (self.result_set): raise IOException("A ResultEvent can not be cleared after a result was set.")
@@ -97,7 +97,7 @@ python.org: Reset the internal flag to false.
         """
 python.org: Set the internal flag to true.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self.set_result(None)
@@ -109,7 +109,7 @@ Sets a result for this event and notifies all waiting threads afterwards.
 
 :param result: Result
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self._result = result

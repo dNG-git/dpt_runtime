@@ -29,7 +29,7 @@ Abstract watcher for change events.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -78,7 +78,7 @@ Checks a given URL for changes if "is_synchronous()" is true.
 
 :param url: Resource URL
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         raise NotImplementedException()
@@ -88,7 +88,7 @@ Checks a given URL for changes if "is_synchronous()" is true.
         """
 Disables this watcher and frees all callbacks for garbage collection.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         raise NotImplementedException()
@@ -98,7 +98,7 @@ Disables this watcher and frees all callbacks for garbage collection.
         """
 Frees all watcher callbacks for garbage collection.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         raise NotImplementedException()
@@ -114,7 +114,7 @@ if a callback is given but not defined for the watched URL.
 
 :return: (bool) True if watched with the defined callback or any if not
          defined.
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         raise NotImplementedException()
@@ -128,7 +128,7 @@ Handles registration of resource URL watches and its callbacks.
 :param callback: Callback for the path
 
 :return: (bool) True on success
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         raise NotImplementedException()
@@ -138,7 +138,7 @@ Handles registration of resource URL watches and its callbacks.
         """
 Stops all watchers.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         pass
@@ -152,7 +152,7 @@ Handles deregistration of resource URL watches.
 :param callback: Callback for the path
 
 :return: (bool) True on success
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         raise NotImplementedException()

@@ -46,7 +46,7 @@ The settings singleton provides a central configuration facility.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -78,7 +78,7 @@ happened.
         """
 Constructor __init__(Settings)
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self.file_dict = { }
@@ -100,7 +100,7 @@ Returns the file-backed settings dictionary. This dictionary does not
 contain values changed at runtime.
 
 :return: (dict) Underlying file-backed settings dict
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return self.file_dict
@@ -111,7 +111,7 @@ contain values changed at runtime.
 Returns the runtime settings dictionary.
 
 :return: (dict) Runtime settings dict
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return self.runtime_dict
@@ -122,7 +122,7 @@ Returns the runtime settings dictionary.
 Sets path values in the runtime settings dictionary based on the OS
 environment.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         system_path = path.abspath(__file__)
@@ -160,7 +160,7 @@ overwriting existing keys.
 
 :param other: Other dictionary
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self.runtime_dict.update(other)
@@ -172,7 +172,7 @@ Updates the file-backed settings dict with values from the given one.
 
 :param _dict: Updated dictionary
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self.file_dict.update(_dict)
@@ -187,7 +187,7 @@ Returns the value with the specified key.
 :param default: Default value if not set
 
 :return: (mixed) Value
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return Settings.get_dict().get(key, default)
@@ -199,7 +199,7 @@ Returns the value with the specified key.
 Returns all settings currently defined as a dict.
 
 :return: (dict) Settings dict
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         # pylint: disable=protected-access
@@ -219,7 +219,7 @@ not defined.
 :param default: Default value if not set
 
 :return: (mixed) Value
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _dict = Settings.get_dict()
@@ -238,7 +238,7 @@ not defined.
 Get the settings singleton.
 
 :return: (Settings) Object on success
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         if (Settings._instance is None):
@@ -259,7 +259,7 @@ Get the settings singleton.
         """
 Initializes a new settings singleton instance.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         # pylint: disable=protected-access
@@ -276,7 +276,7 @@ Import a given JSON encoded string as an dict of file-backed settings.
 :param json: JSON encoded dict of settings
 
 :return: (bool) True on success
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         # pylint: disable=protected-access
@@ -299,7 +299,7 @@ Checks if a given key is a defined setting.
 :param key: Settings key
 
 :return: (bool) True if defined
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return (key in Settings.get_dict())
@@ -313,7 +313,7 @@ Return true if the given file path and name is cached.
 :param file_path_name: File path and name of the settings file
 
 :return: (bool) True if currently cached
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         file_path_name = path.normpath(file_path_name)
@@ -329,7 +329,7 @@ Read all settings from the given file.
 :param required: True if missing files should throw exceptions
 
 :return: (bool) True on success
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         # pylint: disable=protected-access
@@ -372,7 +372,7 @@ Read all settings from the given file.
 This method should only be called after changing the OS environment to
 process it.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         # pylint: disable=protected-access
@@ -388,7 +388,7 @@ Sets the value for the specified key.
 :param key: Settings key
 :param value: Value
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         Settings.get_dict()[key] = value
@@ -401,7 +401,7 @@ Sets the cache instance.
 
 :param cache_instance: Cache instance to use
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         if (Settings._log_handler is not None): Settings._log_handler.debug("#echo(__FILEPATH__)# -Settings.set_cache_instance()- (#echo(__LINE__)#)", context = "pas_core")
@@ -415,7 +415,7 @@ Sets the LogHandler.
 
 :param log_handler: LogHandler to use
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         # pylint: disable=protected-access
@@ -433,7 +433,7 @@ Write all settings to the given file using the given template.
        file
 
 :return: (bool) True on success
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return False

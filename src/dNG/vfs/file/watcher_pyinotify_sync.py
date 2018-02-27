@@ -32,7 +32,7 @@ class WatcherPyinotifySync(WatcherPyinotify):
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -58,7 +58,7 @@ Checks a given path for changes if "is_synchronous()" is true.
 
 :return: (bool) True if the given path URL has been changed since last check
          and "is_synchronous()" is true.
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         if (self.pyinotify_instance.check_events()):
@@ -73,7 +73,7 @@ Checks a given path for changes if "is_synchronous()" is true.
         """
 Initializes the pyinotify instance.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self.pyinotify_instance = Notifier(self, WatcherPyinotifyCallback(self), timeout = 5)
@@ -83,7 +83,7 @@ Initializes the pyinotify instance.
         """
 Stops all watchers.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         if (WatcherPyinotifySync._instance is not None):
@@ -102,7 +102,7 @@ Stops all watchers.
 Get the WatcherPyinotifySync singleton.
 
 :return: (object) Object on success
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         if (WatcherPyinotify._instance is None):

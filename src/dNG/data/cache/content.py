@@ -35,7 +35,7 @@ files as well as timestamp based content.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -51,7 +51,7 @@ Cache weakref instance
         """
 Constructor __init__(Content)
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         Watcher.__init__(self)
@@ -83,7 +83,7 @@ Get the content from cache for the given file path and name.
 :param file_path_name: Cached file path and name
 
 :return: (mixed) Cached entry; None if no hit or changed
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = None
@@ -113,7 +113,7 @@ Return true if the given file path and name is cached.
 :param file_path_name: Cached file path and name
 
 :return: (bool) True if currently cached
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return (file_path_name in self.cache)
@@ -127,7 +127,7 @@ Fill the cache for the given file path and name with the given cache entry.
 :param cache_entry: Cached entry data
 :param cache_entry_size: Size of the cached entry data
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         if (cache_entry_size is None): cache_entry_size = len(cache_entry)
@@ -167,7 +167,7 @@ Remove changed files from the cache.
 :param url: Filesystem URL watched
 :param changed_value: Changed filesystem value
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         file_path_name = url[8:]
@@ -192,7 +192,7 @@ Remove changed files from the cache.
 Get the Content singleton.
 
 :return: (Content) Object on success
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = (None if (Content._weakref_instance is None) else Content._weakref_instance())

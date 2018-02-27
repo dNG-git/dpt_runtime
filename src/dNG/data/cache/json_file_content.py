@@ -33,7 +33,7 @@ class JsonFileContent(FileContent):
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -47,7 +47,7 @@ Read data from the given file or from cache.
 :param required: True if missing files should throw an exception
 
 :return: (mixed) File data; None on error
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = FileContent._read_cache(file_path_name, required)

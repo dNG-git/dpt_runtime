@@ -34,7 +34,7 @@ Provides mime type related methods on top of Python basic ones.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -52,7 +52,7 @@ Thread safety weakref lock
         """
 Constructor __init__(MimeType)
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self.definitions = None
@@ -74,7 +74,7 @@ looked up.
 :param mimetype: Mime type to look up
 
 :return: (dict) Mime type definition
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = None
@@ -110,7 +110,7 @@ Returns the list of extensions known for the given mime type.
 :param mimetype: Mime type to return the extensions for.
 
 :return: (list) Extensions
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = [ ]
@@ -127,7 +127,7 @@ Returns the list of extensions known for the given mime type.
         """
 Refresh all mime type definitions from the file.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         json_data = JsonFileContent.read("{0}/settings/core_mimetypes.json".format(Settings.get("path_data")))
@@ -175,7 +175,7 @@ Refresh all mime type definitions from the file.
 Get the MimeType singleton.
 
 :return: (MimeType) Object on success
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = None

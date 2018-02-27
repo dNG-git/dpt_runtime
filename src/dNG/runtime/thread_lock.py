@@ -32,7 +32,7 @@ class ThreadLock(object):
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -41,7 +41,7 @@ class ThreadLock(object):
         """
 Constructor __init__(ThreadLock)
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self.event = None
@@ -62,7 +62,7 @@ Lock timeout in seconds
         """
 python.org: Enter the runtime context related to this object.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self.acquire()
@@ -73,7 +73,7 @@ python.org: Enter the runtime context related to this object.
 python.org: Exit the runtime context related to this object.
 
 :return: (bool) True to suppress exceptions
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         self.release()
@@ -109,7 +109,7 @@ Sets a new lock timeout.
         """
 Acquire a lock.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         # pylint: disable=unexpected-keyword-arg
@@ -145,7 +145,7 @@ Acquire a lock.
         """
 Release a lock.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self.lock.release()

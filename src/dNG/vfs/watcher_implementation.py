@@ -33,7 +33,7 @@ access VFS watchers.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -57,7 +57,7 @@ Created event
 Returns an VFS watcher class for the given scheme.
 
 :return: (object) VFS watcher class
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = NamedLoader.get_class("dNG.vfs.{0}.Watcher".format(scheme.replace("-", "_")))
@@ -75,7 +75,7 @@ Returns an VFS watcher class for the given scheme.
 Returns an VFS watcher instance for the given scheme.
 
 :return: (object) VFS watcher instance
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         vfs_watcher_class = WatcherImplementation.get_class(scheme)
@@ -90,7 +90,7 @@ Returns the scheme of the VFS URL given.
 :param vfs_url: VFS URL to extract the scheme from.
 
 :return: (str) VFS URL scheme
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         vfs_url = Binary.str(vfs_url)
@@ -110,7 +110,7 @@ Returns the scheme of the VFS URL given if it is supported.
 :param vfs_url: VFS URL to extract the scheme from.
 
 :return: (str) VFS URL scheme if supported; None otherwise
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         _return = None

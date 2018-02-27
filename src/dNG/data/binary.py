@@ -42,7 +42,7 @@ abstracts this behaviour.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -64,7 +64,7 @@ Returns the bytes representing the (maybe encoded) input data.
 :param data: Input string
 
 :return: (bytes) Byte representation
-:since:  v0.2.0
+:since:  v1.0.0
     """
 
         # global: _PY_BYTES, _PY_BYTES_TYPE
@@ -81,7 +81,7 @@ Returns the string representing the (maybe encoded) input data.
 :param data: Input string
 
 :return: (str) String representation
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_BYTES_TYPE, _PY_UNICODE_TYPE
@@ -101,7 +101,7 @@ Returns the string representing the (maybe UTF-8 encoded) input data.
 :param data: Input string
 
 :return: (str) String representation
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         # global: _PY_STR, _PY_BYTES_TYPE, _PY_UNICODE_TYPE
@@ -121,7 +121,7 @@ Returns the unicode data representing the (maybe encoded) input data.
 :param data: Input string
 
 :return: (bytes) Unicode representation
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         # global: _PY_BYTES_TYPE, _PY_UNICODE, _PY_UNICODE_TYPE
@@ -140,7 +140,7 @@ Returns the bytes representing the (maybe UTF-8 encoded) input data.
 :param data: Input string
 
 :return: (bytes) Byte representation
-:since:  v0.2.0
+:since:  v1.0.0
     """
 
         # global: _PY_BYTES, _PY_BYTES_TYPE
