@@ -75,8 +75,8 @@ python.org: The directory can be explicitly cleaned up by calling the cleanup() 
     #
 #
 
-try: from urllib.parse import quote
-except ImportError: from urllib import quote
+try: from urllib.parse import quote_plus
+except ImportError: from urllib import quote_plus
 
 from dNG.data.file import File
 from dNG.vfs.file.watcher import Watcher
@@ -167,7 +167,7 @@ Tests pyinotify ThreadedNotifier
         self.assertFalse(self.watcher.is_synchronous)
 
         with TemporaryDirectory() as base_directory:
-            base_url = "file:///{0}".format(quote(base_directory, "/"))
+            base_url = "file:///{0}".format(quote_plus(base_directory, "/"))
             self.process_scenario(base_directory, base_url)
 
             # Let the thread process the changes
@@ -205,7 +205,7 @@ Tests pyinotify manually triggered Notifier
         self.assertTrue(self.watcher.is_synchronous)
 
         with TemporaryDirectory() as base_directory:
-            base_url = "file:///{0}".format(quote(base_directory, "/"))
+            base_url = "file:///{0}".format(quote_plus(base_directory, "/"))
             self.process_scenario(base_directory, base_url)
             self.watcher.check(base_url + "/unittest.txt")
 
@@ -242,7 +242,7 @@ Tests filesystem mtime based, manually triggered check
         self.assertTrue(self.watcher.is_synchronous)
 
         with TemporaryDirectory() as base_directory:
-            base_url = "file:///{0}".format(quote(base_directory, "/"))
+            base_url = "file:///{0}".format(quote_plus(base_directory, "/"))
             self.process_scenario(base_directory, base_url)
             self.watcher.check(base_url + "/unittest.txt")
 

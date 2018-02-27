@@ -21,8 +21,8 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 from weakref import ref
 
-try: from urllib.parse import quote
-except ImportError: from urllib import quote
+try: from urllib.parse import quote_plus
+except ImportError: from urllib import quote_plus
 
 from dNG.runtime.exception_log_trap import ExceptionLogTrap
 from dNG.vfs.abstract_watcher import AbstractWatcher
@@ -37,7 +37,7 @@ Processes pyinotify events and calls defined callbacks.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -48,7 +48,7 @@ Processes pyinotify events and calls defined callbacks.
         """
 Constructor __init__(WatcherPyinotifyCallback)
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         ProcessEvent.__init__(self)
@@ -67,14 +67,14 @@ Handles all inotify events.
 :param _path: Filesystem path
 :param changed_value: Changed value (e.g. name of deleted or created file)
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         manager = self.manager_weakref()
 
         if (manager and manager.is_watched(_path)):
             callbacks = manager.get_callbacks(_path)
-            url = "file:///{0}".format(quote(_path, "/"))
+            url = "file:///{0}".format(quote_plus(_path, "/"))
 
             for callback in callbacks:
                 with ExceptionLogTrap("pas_core"): callback(event_type, url, changed_value)
@@ -88,7 +88,7 @@ Handles "IN_ATTRIB" inotify events.
 
 :param event: pyinotify event
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self._process_callbacks(AbstractWatcher.EVENT_TYPE_MODIFIED, event.pathname)
@@ -100,7 +100,7 @@ Handles "IN_CLOSE_WRITE" inotify events.
 
 :param event: pyinotify event
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self._process_callbacks(AbstractWatcher.EVENT_TYPE_MODIFIED, event.pathname)
@@ -112,7 +112,7 @@ Handles "IN_CREATE" inotify events.
 
 :param event: pyinotify event
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self._process_callbacks(AbstractWatcher.EVENT_TYPE_CREATED, event.path, event.name)
@@ -124,7 +124,7 @@ Handles "IN_DELETE" inotify events.
 
 :param event: pyinotify event
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self._process_callbacks(AbstractWatcher.EVENT_TYPE_DELETED, event.path, event.name)
@@ -136,7 +136,7 @@ Handles "IN_DELETE_SELF" inotify events.
 
 :param event: pyinotify event
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         manager = self.manager_weakref()
@@ -151,7 +151,7 @@ Handles "IN_MOVE_SELF" inotify events.
 
 :param event: pyinotify event
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         manager = self.manager_weakref()
@@ -166,7 +166,7 @@ Handles "IN_MOVED_TO" inotify events.
 
 :param event: pyinotify event
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self._process_callbacks(AbstractWatcher.EVENT_TYPE_DELETED, event.path, event.name)
@@ -178,7 +178,7 @@ Handles "IN_MOVED_TO" inotify events.
 
 :param event: pyinotify event
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self._process_callbacks(AbstractWatcher.EVENT_TYPE_CREATED, event.path, event.name)

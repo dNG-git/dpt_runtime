@@ -22,8 +22,8 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 from os import path
 import os
 
-try: from urllib.parse import quote, unquote
-except ImportError: from urllib import quote, unquote
+try: from urllib.parse import quote_plus, unquote_plus
+except ImportError: from urllib import quote_plus, unquote_plus
 
 from dNG.data.file import File
 from dNG.data.logging.log_line import LogLine
@@ -41,7 +41,7 @@ Provides the VFS implementation for 'file' objects.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: core
-:since:      v0.2.0
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -62,7 +62,7 @@ File IO methods implemented by an wrapped resource.
         """
 Constructor __init__(Object)
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         Abstract.__init__(self)
@@ -281,8 +281,8 @@ Returns the URL of this VFS object.
 
         object_id = None
 
-        if (self.dir_path_name is not None): object_id = quote(self.dir_path_name)
-        elif (self.file_path_name is not None): object_id = quote(self.file_path_name)
+        if (self.dir_path_name is not None): object_id = quote_plus(self.dir_path_name)
+        elif (self.file_path_name is not None): object_id = quote_plus(self.file_path_name)
 
         if (object_id is None): raise IOException("VFS object not opened")
 
@@ -293,7 +293,7 @@ Returns the URL of this VFS object.
         """
 python.org: Flush and close this stream.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         if (self.dir_path_name is not None): self.dir_path_name = None
@@ -310,7 +310,7 @@ Ensures that the given directory path readable.
 :param vfs_url: VFS URL
 :param dir_path_name: Directory path and name
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         if (not os.access(dir_path_name, os.X_OK)): raise IOException("VFS URL '{0}' is invalid".format(vfs_url))
@@ -323,7 +323,7 @@ Ensures that the given directory path writable.
 :param vfs_url: VFS URL
 :param dir_path_name: Directory path and name
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         if (not os.access(dir_path_name, os.X_OK)): raise IOException("VFS URL '{0}' is invalid".format(vfs_url))
@@ -336,7 +336,7 @@ Creates a new VFS object.
 :param _type: VFS object type
 :param vfs_url: VFS URL
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         if (_type == Object.TYPE_DIRECTORY): self._new_directory(vfs_url)
@@ -350,10 +350,10 @@ Creates a new VFS file object.
 
 :param vfs_url: VFS URL
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
-        file_path_name = unquote(Abstract._get_id_from_vfs_url(vfs_url))
+        file_path_name = unquote_plus(Abstract._get_id_from_vfs_url(vfs_url))
         self._ensure_directory_writable(vfs_url, path.dirname(file_path_name))
 
         self._open_file(vfs_url, file_path_name)
@@ -366,14 +366,14 @@ Opens a VFS object. The handle is set at the beginning of the object.
 :param vfs_url: VFS URL
 :param readonly: Open object in readonly mode
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         if (self.dir_path_name is not None
             or self.file_path_name is not None
            ): raise IOException("Can't create new VFS object on already opened instance")
 
-        object_path_name = unquote(Abstract._get_id_from_vfs_url(vfs_url))
+        object_path_name = unquote_plus(Abstract._get_id_from_vfs_url(vfs_url))
 
         if (path.isdir(object_path_name)): self._open_directory(vfs_url, object_path_name, readonly)
         else: self._open_file(vfs_url, object_path_name, readonly)
@@ -386,7 +386,7 @@ Opens a VFS directory object.
 :param vfs_url: VFS URL
 :param dir_path_name: Directory path and name
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self._ensure_directory_readable(vfs_url, dir_path_name)
@@ -403,7 +403,7 @@ Opens (and creates) a VFS file object.
 :param file_path_name: File path and name
 :param readonly: Open file in readonly mode
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         self.file_path_name = path.abspath(file_path_name)
@@ -414,7 +414,7 @@ Opens (and creates) a VFS file object.
         """
 Opens the wrapped resource once needed for an file IO request.
 
-:since: v0.2.0
+:since: v1.0.0
         """
 
         if (self.file_path_name is None): raise IOException("VFS object not opened")
@@ -430,7 +430,7 @@ Opens the wrapped resource once needed for an file IO request.
 Scan over objects of a collection like a directory.
 
 :return: (list) Child VFS objects
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         if (self.file_path_name is not None): raise OperationNotSupportedException("VFS object can not be scanned")
@@ -462,7 +462,7 @@ Scan over objects of a collection like a directory.
 Returns false if flushing buffers is not supported.
 
 :return: (bool) True if flushing buffers is supported
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return (self.file_path_name is not None and (not self.object_readonly))
@@ -473,7 +473,7 @@ Returns false if flushing buffers is not supported.
 Returns false if no underlying, implementing instance can be returned.
 
 :return: (bool) True if an implementing instance can be returned.
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return (self._wrapped_resource is not None)
@@ -484,7 +484,7 @@ Returns false if no underlying, implementing instance can be returned.
 Returns false if seek is not supported.
 
 :return: (bool) True if seek is supported
-:since:  v0.2.0
+:since:  v1.0.0
         """
 
         return (self.file_path_name is not None)
