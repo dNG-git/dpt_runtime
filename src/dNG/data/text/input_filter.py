@@ -187,11 +187,11 @@ traversals. We will filter them using "filterFilePath()".
 
             data = data.replace("/./", "/")
             data = data.replace("\\", "")
-            data = re.sub("\\w/[\\./]", "", data)
+            data = re.sub("\\w/[./]", "", data)
 
             if ((not uprefs_allowed) and data != "."):
-                data = re.sub("^[\\./]+", "", data)
-                data = re.sub("[\\./]+$", "", data)
+                data = re.sub("^[./]+", "", data)
+                data = re.sub("[./]+$", "", data)
             #
         #
 
