@@ -281,8 +281,8 @@ Returns the URL of this VFS object.
 
         object_id = None
 
-        if (self.dir_path_name is not None): object_id = quote_plus(self.dir_path_name)
-        elif (self.file_path_name is not None): object_id = quote_plus(self.file_path_name)
+        if (self.dir_path_name is not None): object_id = quote_plus(self.dir_path_name, "/")
+        elif (self.file_path_name is not None): object_id = quote_plus(self.file_path_name, "/")
 
         if (object_id is None): raise IOException("VFS object not opened")
 
@@ -439,6 +439,8 @@ Scan over objects of a collection like a directory.
         _return = [ ]
 
         entry_list = os.listdir(self.dir_path_name)
+        entry_list.sort()
+
         dir_path_url = self.url
 
         for entry in entry_list:
@@ -451,8 +453,6 @@ Scan over objects of a collection like a directory.
                 except IOException as handled_exception: LogLine.error(handled_exception, context = "pas_core")
             #
         #
-
-        _return.sort()
 
         return _return
     #
