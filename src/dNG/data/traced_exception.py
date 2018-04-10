@@ -67,6 +67,38 @@ Exception traceback list
         elif (exc_traceback is not None): self.exc_trace_list = [ repr(exc_traceback) ]
     #
 
+    @property
+    def cause(self):
+        """
+Return the cause.
+
+:return: (mixed) Inner exception
+:since:  v1.0.0
+        """
+
+        return self.exc_cause
+    #
+
+    @property
+    def printable_trace(self):
+        """
+Returns the stack trace.
+
+:return: (str) Exception stack trace
+:since:  v1.0.0
+        """
+
+        _return = "{0!r}: {1!s}\n".format(self.__class__, self)
+
+        if (self.exc_trace_list is not None): _return += "".join(self.exc_trace_list)
+
+        if (self.exc_cause is not None
+            and hasattr(self.exc_cause, "__traceback__") is not None
+           ): _return += "".join(traceback.format_tb(self.exc_cause.__traceback__))
+
+        return _return
+    #
+
     def __str__(self):
         """
 python.org: Called by the str(object) and the built-in functions format()
@@ -78,32 +110,7 @@ representation of an object.
         """
 
         _return = RuntimeError.__str__(self)
-        return (_return if (self.exc_cause is None) else "{0} ({1!r})".format(_return, self.exc_cause))
-    #
-
-    def get_cause(self):
-        """
-Return the cause.
-
-:return: (mixed) Inner exception
-:since:  v1.0.0
-        """
-
-        return self.exc_cause
-    #
-
-    def get_printable_trace(self):
-        """
-Returns the stack trace.
-
-:return: (str) Exception stack trace
-:since:  v1.0.0
-        """
-
-        _return = "{0!r}: {1!s}\n".format(self.__class__, self)
-
-        if (self.exc_trace_list is not None): _return = "{0}{1}".format(_return, "".join(self.exc_trace_list))
-        if (self.exc_cause is not None): _return = "{0}{1}".format(_return, repr(self.exc_cause))
+        if (self.exc_cause is not None): _return += " ({0!r}: {1!s})".format(self.exc_cause.__class__, self.exc_cause)
 
         return _return
     #
@@ -118,7 +125,7 @@ Prints the stack trace to the given output stream or stderr.
         """
 
         if (out_stream is None): out_stream = sys.stderr
-        out_stream.write(self.get_printable_trace())
+        out_stream.write(self.printable_trace)
     #
 
     def with_traceback(self, tb):

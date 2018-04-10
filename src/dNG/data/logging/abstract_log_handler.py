@@ -158,7 +158,7 @@ Get the formatted log message.
 
         # pylint: disable=broad-except
 
-        if (isinstance(data, TracedException)): data = data.get_printable_trace()
+        if (isinstance(data, TracedException)): data = data.printable_trace
         elif (isinstance(data, BaseException)):
             try:
                 # Try to extract exception - might result in the wrong one
