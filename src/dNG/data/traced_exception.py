@@ -93,7 +93,7 @@ Returns the stack trace.
         if (self.exc_trace_list is not None): _return += "".join(self.exc_trace_list)
 
         if (self.exc_cause is not None
-            and hasattr(self.exc_cause, "__traceback__") is not None
+            and hasattr(self.exc_cause, "__traceback__")
            ): _return += "".join(traceback.format_tb(self.exc_cause.__traceback__))
 
         return _return
