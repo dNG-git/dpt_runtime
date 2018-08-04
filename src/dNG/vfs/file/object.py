@@ -33,7 +33,9 @@ from dNG.runtime.operation_not_supported_exception import OperationNotSupportedE
 from dNG.vfs.abstract import Abstract
 from dNG.vfs.file_like_wrapper_mixin import FileLikeWrapperMixin
 
-class Object(FileLikeWrapperMixin, Abstract):
+_PathLike = (os.PathLike if (hasattr(os, "PathLike")) else object)
+
+class Object(FileLikeWrapperMixin, _PathLike, Abstract):
     """
 Provides the VFS implementation for 'file' objects.
 
@@ -87,6 +89,17 @@ True to open the object and nested ones read-only
         self.supported_features['seek'] = self._supports_seek
         self.supported_features['time_created'] = True
         self.supported_features['time_updated'] = True
+    #
+
+    def __fspath__(self):
+        """
+python.org: Return the file system path representation of the object.
+
+:return: (str) File system path representation
+:since:  v1.0.0
+        """
+
+        return self.filesystem_path_name
     #
 
     @property
