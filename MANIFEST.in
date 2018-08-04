@@ -1,0 +1,5 @@
+include README requirements.txt
+
+recursive-include data *.json
+recursive-include lang *.json
+recursive-include unittest *.py
