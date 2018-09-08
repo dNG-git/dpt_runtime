@@ -60,7 +60,7 @@ with TemporaryDirectory(dir = ".") as build_directory:
     makedirs(path.join(build_directory, "src", "dNG"))
 
     _setup = { "name": "pas-core",
-               "version": get_version(),
+               "version": get_version()[1:],
                "description": "Python Application Services",
                "long_description": """"pas_core" provides multiple features used in other modules.""",
                "author": "direct Netware Group et al.",
