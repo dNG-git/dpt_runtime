@@ -17,7 +17,8 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
-from collections import Iterator as _Iterator
+try: from collections.abc import Iterator as _Iterator
+except ImportError: from collections import Iterator as _Iterator
 
 class Iterator(_Iterator):
     """
