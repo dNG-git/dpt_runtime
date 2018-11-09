@@ -108,7 +108,7 @@ Returns the string representing the (maybe UTF-8 encoded) input data.
 
         if ((not isinstance(data, str))
             and (isinstance(data, _PY_BYTES_TYPE) or isinstance(data, _PY_UNICODE_TYPE))
-           ): data = _PY_STR(data, "utf-8")
+           ): data = _PY_STR(data, "utf-8", "backslashreplace")
 
         return data
     #
@@ -126,8 +126,8 @@ Returns the unicode data representing the (maybe encoded) input data.
 
         # global: _PY_BYTES_TYPE, _PY_UNICODE, _PY_UNICODE_TYPE
 
-        if (str != _PY_UNICODE_TYPE and isinstance(data, str)): data = _PY_UNICODE(data, "utf-8")
-        elif (str == _PY_UNICODE_TYPE and isinstance(data, _PY_BYTES_TYPE)): data = _PY_STR(data, "utf-8")
+        if (str != _PY_UNICODE_TYPE and isinstance(data, str)): data = _PY_UNICODE(data, "utf-8", "replace")
+        elif (str == _PY_UNICODE_TYPE and isinstance(data, _PY_BYTES_TYPE)): data = _PY_STR(data, "utf-8", "backslashreplace")
 
         return data
     #
@@ -145,7 +145,7 @@ Returns the bytes representing the (maybe UTF-8 encoded) input data.
 
         # global: _PY_BYTES, _PY_BYTES_TYPE
 
-        if (str != _PY_BYTES_TYPE and isinstance(data, str)): data = _PY_BYTES(data, "utf-8")
+        if (str != _PY_BYTES_TYPE and isinstance(data, str)): data = _PY_BYTES(data, "utf-8", "replace")
         return data
     #
 #
