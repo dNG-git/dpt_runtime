@@ -136,7 +136,7 @@ Returns the registered class name for the specified common name.
 :since:  v1.0.0
         """
 
-        return (self.config[common_name] if (common_name in self.config) else None)
+        return self.config.get(common_name)
     #
 
     def is_registered(self, common_name):
@@ -150,6 +150,36 @@ Checks if a given common name is known.
         """
 
         return (common_name in self.config)
+    #
+
+    def register(self, common_name, name):
+        """
+Registers a class name for the specified common name.
+
+:param common_name: Common name
+:param name: Class name
+
+:since: v1.0.0
+        """
+
+        self.config[common_name] = name
+    #
+
+    def unregister(self, common_name):
+        """
+Unregisters custom class names for the specified common name.
+
+:param common_name: Common name
+
+:since: v1.0.0
+        """
+
+        if (common_name in self.config):
+            with NamedLoader._lock:
+                # Thread safety
+                if (common_name in self.config): del(self.config[common_name])
+            #
+        #
     #
 
     @staticmethod
