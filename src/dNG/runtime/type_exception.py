@@ -35,7 +35,7 @@ trace.
 
     def __init__(self, value, _exception = None):
         """
-Constructor __init__(IOException)
+Constructor __init__(TypeException)
 
 :param value: Exception message value
 :param _exception: Inner exception
