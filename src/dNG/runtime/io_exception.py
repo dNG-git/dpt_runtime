@@ -17,9 +17,9 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
-from dNG.data.traced_exception import TracedException
+from dNG.data.traced_exception_mixin import TracedExceptionMixin
 
-class IOException(TracedException):
+class IOException(IOError, TracedExceptionMixin):
     """
 This exception is replacing "IOError" and provides the current stack trace.
 
@@ -32,5 +32,38 @@ This exception is replacing "IOError" and provides the current stack trace.
              Mozilla Public License, v. 2.0
     """
 
-    pass
+    def __init__(self, value, _exception = None):
+        """
+Constructor __init__(IOException)
+
+:param value: Exception message value
+:param _exception: Inner exception
+
+:since: v1.0.0
+        """
+
+        super(IOException, self).__init__(value)
+        TracedExceptionMixin.__init__(self, _exception)
+    #
+
+    __str__ = TracedExceptionMixin.__str__
+    """
+python.org: Called by the str(object) and the built-in functions format()
+and print() to compute the "informal" or nicely printable string
+representation of an object.
+
+:return: (str) The "informal" or nicely printable string representation
+:since:  v1.0.0
+    """
+
+    with_traceback = TracedExceptionMixin.with_traceback
+    """
+python.org: This method sets tb as the new traceback for the exception and
+returns the exception object.
+
+:param tb: New traceback for the exception
+
+:return: (object) Manipulated exception instance
+:since:  v1.0.0
+    """
 #
