@@ -57,7 +57,7 @@ Internal byte buffer
         """
 External file handle
         """
-        self.buffer_reset = False
+        self._buffer_reset = False
         """
 True if the buffer has been reset
         """
@@ -84,6 +84,18 @@ Returns the buffer object to use.
     #
 
     @property
+    def is_writable(self):
+        """
+Returns true if the buffer has not been reset for reading yet.
+
+:return: (bool) True if writable
+:since:  v1.0.0
+        """
+
+        return (not self._buffer_reset)
+    #
+
+    @property
     def size(self):
         """
 Returns the current size of the buffer.
@@ -102,7 +114,7 @@ Resets the buffer ones before first read.
 :since: v1.0.0
         """
 
-        if (not self.buffer_reset): self.seek(0)
+        if (not self._buffer_reset): self.seek(0)
     #
 
     def read(self, n = 0):
@@ -147,7 +159,7 @@ python.org: Change the stream position to the given byte offset.
 :since: v1.0.0
         """
 
-        if (not self.buffer_reset): self.buffer_reset = True
+        if (not self._buffer_reset): self._buffer_reset = True
         return self.handle.seek(offset)
     #
 
@@ -173,7 +185,7 @@ raw stream and return the number of bytes written.
 :since:  v1.0.0
         """
 
-        if (self.buffer_reset): raise IOException("Can't write to a buffer that has been already read from")
+        if (self._buffer_reset): raise IOException("Can't write to a buffer that has been already read from")
 
         b = Binary.bytes(b)
 
