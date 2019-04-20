@@ -1,7 +1,0 @@
-{
-    "pas_core_login": "Log in",
-    "pas_core_save": "Save",
-    "pas_core_username": "User name",
-
-    "errors_pas_core_tasks_daemon_not_available": "The background service application is currently not available."
-}

@@ -1,13 +1,10 @@
 ----------------------------------------------------------------------------
-direct PAS
-Python Application Services
+direct Python Toolbox
+All-in-one toolbox to encapsulate Python runtime variants
 ----------------------------------------------------------------------------
 
-The Python Application Services of the direct Netware Group contain
-different modules. Each represents one aspect, feature or provides the base
-functionality for other modules.
-
-"pas_core" provides multiple features used in other modules.
+"dpt-runtime" provide various utility classes compatible with multiple
+Python runtime variants.
 
 ----------------------------------------------------------------------------
 Licensing
