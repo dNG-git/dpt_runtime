@@ -25,7 +25,7 @@ class TestInputFilter(unittest.TestCase):
     """
 UnitTest for InputFilter
 
-:since: v0.1.01
+:since: v1.0.0
     """
 
     email_addresses = [

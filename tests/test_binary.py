@@ -38,7 +38,7 @@ class TestBinary(unittest.TestCase):
     """
 UnitTest for Binary
 
-:since: v0.1.01
+:since: v1.0.0
     """
 
     def test_formats(self):
