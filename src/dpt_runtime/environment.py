@@ -43,6 +43,10 @@ Base path for runtime specific files.
     """
 Short application name
     """
+    _vendor = None
+    """
+Application vendor name
+    """
 
     @staticmethod
     def get_application_short_name():
@@ -54,7 +58,28 @@ Returns the short application name.
         """
 
         _return = Environment._short_name
-        if (_return is None): _return = (Binary.str(os.environ['dNGapp']) if ("dNGapp" in os.environ) else "dNGpy")
+
+        if (_return is None):
+            _return = (Binary.str(os.environ['DPT_APP_NAME']) if ("DPT_APP_NAME" in os.environ) else "dNGpy")
+        #
+
+        return _return
+    #
+
+    @staticmethod
+    def get_application_vendor():
+        """
+Returns the application vendor name.
+
+:return: (str) Application vendor name
+:since:  v1.0.0
+        """
+
+        _return = Environment._vendor
+
+        if (_return is None):
+            _return = (Binary.str(os.environ['DPT_APP_VENDOR']) if ("DPT_APP_VENDOR" in os.environ) else "dNG")
+        #
 
         return _return
     #
@@ -68,7 +93,19 @@ Returns true if an short application name is defined.
 :since:  v1.0.0
         """
 
-        return (Environment._short_name is not None or "dNGapp" in os.environ)
+        return (Environment._short_name is not None or "DPT_APP_NAME" in os.environ)
+    #
+
+    @staticmethod
+    def is_application_vendor_defined():
+        """
+Returns true if an application vendor name is defined.
+
+:return: (bool) True if application vendor name is defined
+:since:  v1.0.0
+        """
+
+        return (Environment._vendor is not None or "DPT_APP_VENDOR" in os.environ)
     #
 
     @staticmethod
@@ -85,6 +122,19 @@ Sets the short application name.
     #
 
     @staticmethod
+    def set_application_vendor(name):
+        """
+Sets the application vendor name.
+
+:param name: Application vendor name
+
+:since: v1.0.0
+        """
+
+        Environment._vendor = Binary.str(name)
+    #
+
+    @staticmethod
     def get_base_path():
         """
 Returns the base path for runtime specific files.
@@ -96,8 +146,8 @@ Returns the base path for runtime specific files.
         _return = Environment._base_path
 
         if (_return is None):
-            _return = (Binary.str(os.environ['dNGpath'])
-                       if ("dNGpath" in os.environ) else
+            _return = (Binary.str(os.environ['DPT_PATH'])
+                       if ("DPT_PATH" in os.environ) else
                        os.getcwd()
                       )
         #
