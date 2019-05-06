@@ -19,7 +19,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 import traceback
 
-from dpt_logging import LogLine
+from dpt_logging.log_line import LogLine
 
 class ExceptionLogTrap(object):
     """
