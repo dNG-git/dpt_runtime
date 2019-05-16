@@ -19,9 +19,12 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 __all__ = [ "binary",
             "byte_buffer",
+            "charset",
             "descriptor_selector",
+            "environment",
             "exception_log_trap",
             "file_like_copy_mixin",
+            "input_filter",
             "io_exception",
             "iterator",
             "not_implemented_class",
