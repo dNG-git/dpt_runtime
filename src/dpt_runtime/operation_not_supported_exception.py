@@ -17,9 +17,9 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
-from .traced_exception import TracedException
+from .traced_exception import _TracedException
 
-class OperationNotSupportedException(TracedException):
+class OperationNotSupportedException(_TracedException):
     """
 This exception should be used if specific API calls or parameter values are
 not supported in a given implementation.
@@ -43,6 +43,6 @@ Constructor __init__(OperationNotSupportedException)
 :since: v1.0.0
         """
 
-        TracedException.__init__(self, value, _exception)
+        _TracedException.__init__(self, value, _exception)
     #
 #
