@@ -102,11 +102,7 @@ representation of an object.
         """
 
         _super = super(self.__class__, self)
-
-        _return = (_super.__str__()
-                   if (hasattr(_super, "__str__") and _super.__str__ != self.__str__) else
-                   "<{0}>".format(self.__class__.__name__)
-                  )
+        _return = (repr(self) if (getattr(_super, "__str__") == self.__str__) else _super.__str__())
 
         if (self.__cause__ is not None):
             _return += " ({0!r}: {1!s})".format(self.__cause__.__class__, self.__cause__)
