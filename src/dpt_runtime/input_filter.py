@@ -34,7 +34,7 @@ class InputFilter(object):
 :author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
 :package:    dpt
-:subpackage: core
+:subpackage: runtime
 :since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0

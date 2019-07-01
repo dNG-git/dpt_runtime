@@ -26,7 +26,7 @@ class _TracedExceptionMetaClass(type):
     """
 The "_TracedExceptionMetaClass" is used as a Python 2 and Python 3 compatible
 metaclass to return true for all inherited classes implementing
-"dNG.data.TracedExceptionMixin".
+"dpt_runtime.TracedExceptionMixin".
 
 :author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
@@ -56,12 +56,12 @@ class _TracedException(RuntimeError, TracedExceptionMixin):
     """
 The "_TracedException" class is used in connection with the
 "_TracedExceptionMetaClass" to return true for all inherited ones
-implementing "dNG.data.TracedExceptionMixin".
+implementing "dpt_runtime.TracedExceptionMixin".
 
 :author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
-:subpackage: core
+:subpackage: runtime
 :since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
@@ -114,7 +114,7 @@ streams.
 :author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
-:subpackage: core
+:subpackage: runtime
 :since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
             Mozilla Public License, v. 2.0

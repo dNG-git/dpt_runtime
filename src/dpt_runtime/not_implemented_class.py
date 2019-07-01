@@ -63,7 +63,7 @@ for all class and instance method calls.
 :author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
-:subpackage: core
+:subpackage: runtime
 :since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
@@ -99,7 +99,7 @@ on a specific installation.
 :author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
-:subpackage: core
+:subpackage: runtime
 :since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
