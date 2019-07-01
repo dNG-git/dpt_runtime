@@ -17,7 +17,10 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
-class StackedDict(dict):
+try: from collections.abc import MutableMapping
+except ImportError: from collections import MutableMapping
+
+class StackedDict(MutableMapping):
     """
 A stacked dictionary consists of a regular Python dict and stacked
 additional ones used for key lookups.
@@ -26,7 +29,7 @@ additional ones used for key lookups.
 :copyright:  direct Netware Group - All rights reserved
 :package:    dpt
 :subpackage: runtime
-:since:      v1.0.0
+:since:      v1.0.1
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -35,19 +38,18 @@ additional ones used for key lookups.
         """
 Constructor __init__(StackedDict)
 
-:since: v1.0.0
+:since: v1.0.1
         """
 
-        _super = super(StackedDict, self)
-        _super.__init__(*args, **kwargs)
+        MutableMapping.__init__(self)
 
+        self._dict = dict(*args, **kwargs)
+        """
+Base of the stacked dict instance.
+        """
         self.stacked_dicts = [ ]
         """
 Stacked additional dicts to be looked in.
-        """
-        self._super = _super
-        """
-Parent of the implemented dict instance.
         """
     #
 
@@ -58,10 +60,10 @@ python.org: Called to implement membership test operators.
 :param item: Item to be looked up
 
 :return: (bool) True if item is in self or a stacked dict.
-:since:  v1.0.0
+:since:  v1.0.1
         """
 
-        _return = (item in self.keys())
+        _return = (item in self._dict.keys())
 
         if (not _return):
             for _dict in self.stacked_dicts:
@@ -75,15 +77,27 @@ python.org: Called to implement membership test operators.
         return _return
     #
 
+    def __delitem__(self, key):
+        """
+python.org: Called to implement deletion of self[key].
+
+:param key: Key
+
+:since: v1.0.1
+        """
+
+        del(self._dict[key])
+    #
+
     def __iter__(self):
         """
 python.org: Return an iterator object.
 
 :return: (object) Iterator object
-:since:  v1.0.0
+:since:  v1.0.1
         """
 
-        for key in self.keys(): yield key
+        for key in self._dict.keys(): yield key
 
         for _dict in self.stacked_dicts:
             for key in _dict: yield key
@@ -97,15 +111,15 @@ python.org: Called to implement evaluation of self[key].
 :param key: Key
 
 :return: (mixed) Value
-:since:  v1.0.0
+:since:  v1.0.1
         """
 
         _return = None
 
         is_found = False
 
-        if (key in self.keys()):
-            _return = self._super.__getitem__(key)
+        if (key in self._dict.keys()):
+            _return = self._dict[key]
             is_found = True
         #
 
@@ -124,31 +138,47 @@ python.org: Called to implement evaluation of self[key].
         return _return
     #
 
-    def __repr__(self):
+    def __len__(self):
         """
-python.org: Called by the repr() built-in function and by string conversions
-(reverse quotes) to compute the "official" string representation of an
-object.
+python.org: Called to implement the built-in function len().
 
-:return: (str) String representation
-:since:  v1.0.0
+:return: (int) Number of dict items
+:since:  v1.0.1
         """
 
-        return object.__repr__(self)
+        _return = len(self._dict)
+        for _dict in self.stacked_dicts: _return += len(_dict)
+
+        return _return
     #
 
-    def add_dict(self, _dict):
+    def __setitem__(self, key, value):
+        """
+python.org: Called to implement assignment to self[key].
+
+:param key: Key
+:param value: Value
+
+:since: v1.0.1
+        """
+
+        self._dict[key] = value
+    #
+
+    def add_dict(self, _dict, prepend = False):
         """
 Adds the given Python dictionary to the stack.
 
 :param _dict: Dictionary
+:param prepend: Prepend dictionary
 
-:since: v1.0.0
+:since: v1.0.1
         """
 
-        if (_dict is not self
-            and _dict not in self.stacked_dicts
-           ): self.stacked_dicts.append(_dict)
+        if (_dict is not self._dict and _dict not in self.stacked_dicts):
+            if (prepend): self.stacked_dicts.insert(0, _dict)
+            else: self.stacked_dicts.append(_dict)
+        #
     #
 
     def get(self, key, default = None):
@@ -160,7 +190,7 @@ default.
 :param default: Default return value
 
 :return: (mixed) Value
-:since:  v1.0.0
+:since:  v1.0.1
         """
 
         _return = default
@@ -177,7 +207,7 @@ Removes the given Python dictionary from the stack.
 
 :param _dict: Dictionary
 
-:since: v1.0.0
+:since: v1.0.1
         """
 
         if (_dict in self.stacked_dicts): self.stacked_dicts.remove(_dict)
