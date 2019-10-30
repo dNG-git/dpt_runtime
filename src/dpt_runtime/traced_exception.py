@@ -37,6 +37,12 @@ metaclass to return true for all inherited classes implementing
              Mozilla Public License, v. 2.0
     """
 
+    __slots__ = [ ]
+    """
+python.org: __slots__ reserves space for the declared variables and prevents
+the automatic creation of __dict__ and __weakref__ for each instance.
+    """
+
     def __instancecheck__(self, instance):
         """
 python.org: Return "true" if instance should be considered a (direct or
@@ -65,6 +71,12 @@ implementing "dpt_runtime.TracedExceptionMixin".
 :since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
+    """
+
+    __slots__ = TracedExceptionMixin._mixin_slots_
+    """
+python.org: __slots__ reserves space for the declared variables and prevents
+the automatic creation of __dict__ and __weakref__ for each instance.
     """
 
     def __init__(self, value, _exception = None):

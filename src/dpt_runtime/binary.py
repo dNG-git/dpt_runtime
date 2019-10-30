@@ -56,6 +56,12 @@ Bytes data type
 Unicode string data type
     """
 
+    __slots__ = [ ]
+    """
+python.org: __slots__ reserves space for the declared variables and prevents
+the automatic creation of __dict__ and __weakref__ for each instance.
+    """
+
     @staticmethod
     def bytes(data):
         """

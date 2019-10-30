@@ -48,6 +48,12 @@ charset.
              Mozilla Public License, v. 2.0
     """
 
+    __slots__ = [ ]
+    """
+python.org: __slots__ reserves space for the declared variables and prevents
+the automatic creation of __dict__ and __weakref__ for each instance.
+    """
+
     @staticmethod
     def convert_to_str(data, charset):
         """
