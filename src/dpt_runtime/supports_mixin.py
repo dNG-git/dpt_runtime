@@ -31,6 +31,8 @@ instance.
              Mozilla Public License, v. 2.0
     """
 
+    # pylint: disable=assigning-non-slot
+
     _mixin_slots_ = [ "supported_features" ]
     """
 Additional __slots__ used for inherited classes.

@@ -93,7 +93,7 @@ Returns the string representing the (maybe encoded) input data.
         # global: _PY_STR, _PY_BYTES_TYPE, _PY_UNICODE_TYPE
 
         if ((not isinstance(data, str))
-            and (isinstance(data, _PY_BYTES_TYPE) or isinstance(data, _PY_UNICODE_TYPE))
+            and isinstance(data, ( _PY_BYTES_TYPE, _PY_UNICODE_TYPE ))
            ): data = _PY_STR(data, "raw_unicode_escape")
 
         return data

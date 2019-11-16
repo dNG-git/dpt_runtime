@@ -38,12 +38,13 @@ metaclass to raise "dpt_runtime.NotImplementedException" for class methods.
              Mozilla Public License, v. 2.0
     """
 
-    def __getattr__(self, name):
+    def __getattr__(cls, name):
         """
 python.org: Called when an attribute lookup has not found the attribute in
 the usual places (i.e. it is not an instance attribute nor is it found in the
 class tree for self).
 
+:param cls: Python class
 :param name: Attribute name
 
 :return: (mixed) Instance attribute

@@ -17,6 +17,8 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
+# pylint: disable=invalid-name
+
 try: from types import new_class
 except ImportError: new_class = None
 
@@ -43,11 +45,12 @@ python.org: __slots__ reserves space for the declared variables and prevents
 the automatic creation of __dict__ and __weakref__ for each instance.
     """
 
-    def __instancecheck__(self, instance):
+    def __instancecheck__(cls, instance):
         """
 python.org: Return "true" if instance should be considered a (direct or
 indirect) instance of class.
 
+:param cls: Python class
 :param instance: Instance to check
 
 :return: (bool) True of instance of "TracedExceptionMixin"

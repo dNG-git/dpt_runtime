@@ -38,6 +38,8 @@ implemented for the source.
              Mozilla Public License, v. 2.0
     """
 
+    # pylint: disable=assigning-non-slot
+
     _mixin_slots_ = [ "file_like_copy_io_chunk_size" ]
     """
 Additional __slots__ used for inherited classes.

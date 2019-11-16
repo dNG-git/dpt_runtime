@@ -45,7 +45,7 @@ python.org: __slots__ reserves space for the declared variables and prevents
 the automatic creation of __dict__ and __weakref__ for each instance.
     """
 
-    def __init__(self, rlist = [ ], wlist = [ ], xlist = [ ]):
+    def __init__(self, rlist = None, wlist = None, xlist = None):
         """
 Constructor __init__(DescriptorSelector)
 
@@ -55,6 +55,10 @@ Constructor __init__(DescriptorSelector)
 
 :since: v1.0.0
         """
+
+        if (rlist is None): rlist = [ ]
+        if (wlist is None): wlist = [ ]
+        if (xlist is None): xlist = [ ]
 
         self._poller = (select.poll() if (hasattr(select, "poll")) else None)
         """

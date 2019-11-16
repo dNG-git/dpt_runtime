@@ -49,7 +49,7 @@ Constructor __init__(NotImplementedException)
 :since: v1.0.0
         """
 
-        super(NotImplementedError, self).__init__(value)
+        NotImplementedError.__init__(self, value)
         TracedExceptionMixin.__init__(self, _exception)
     #
 

@@ -36,6 +36,8 @@ streams.
              Mozilla Public License, v. 2.0
     """
 
+    # pylint: disable=assigning-non-slot
+
     _mixin_slots_ = [ "_trace_list" ]
     """
 Additional __slots__ used for inherited classes.
@@ -145,7 +147,7 @@ returns the exception object.
 :since:  v1.0.0
         """
 
-        # pylint: disable=no-member
+        # pylint: disable=bad-option-value,comparison-with-callable,no-member
 
         self._trace_list = ([ repr(tb) ] if (traceback is None) else traceback.format_tb(tb))
 
