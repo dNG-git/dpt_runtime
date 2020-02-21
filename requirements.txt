@@ -1,2 +1,2 @@
-git+git://git.direct-netware.de/dpt/logging/@v1.0.1#egg=dpt-logging
+git+git://git.direct-netware.de/dpt/logging/@v1.0.2#egg=dpt-logging
 git+git://git.direct-netware.de/dpt/settings/@v1.1.2#egg=dpt-settings
