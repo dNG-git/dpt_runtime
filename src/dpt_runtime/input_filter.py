@@ -22,6 +22,9 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 from unicodedata import category as unicode_category
 import re
 
+try: from collections.abc import Sequence
+except ImportError: from collections import Sequence
+
 try: from urllib.parse import quote
 except ImportError: from urllib import quote
 
@@ -251,9 +254,12 @@ Returns a list where each entry is unique.
 
         _return = [ ]
 
-        if (isinstance(_list, list)):
-            for value in _list:
-                if (value not in _return): _return.append(value)
+        if (isinstance(_list, Sequence)):
+            try: _return = list(set(_list))
+            except TypeError:
+                for entry in _list:
+                    if entry not in _return: _return.append(entry)
+                #
             #
         #
 
