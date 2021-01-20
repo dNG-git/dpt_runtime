@@ -20,6 +20,8 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 try: from collections.abc import MutableMapping
 except ImportError: from collections import MutableMapping
 
+from .input_filter import InputFilter
+
 class StackedDict(MutableMapping):
     """
 A stacked dictionary consists of a regular Python dict and stacked
@@ -103,11 +105,7 @@ python.org: Return an iterator object.
 :since:  v1.0.1
         """
 
-        for key in self._dict.keys(): yield key
-
-        for _dict in self.stacked_dicts:
-            for key in _dict: yield key
-        #
+        for key in self._get_unique_keys(): yield key
     #
 
     def __getitem__(self, key):
@@ -152,10 +150,7 @@ python.org: Called to implement the built-in function len().
 :since:  v1.0.1
         """
 
-        _return = len(self._dict)
-        for _dict in self.stacked_dicts: _return += len(_dict)
-
-        return _return
+        return len(self._get_unique_keys())
     #
 
     def __setitem__(self, key, value):
@@ -205,6 +200,20 @@ default.
         except KeyError: pass
 
         return _return
+    #
+
+    def _get_unique_keys(self):
+        """
+Returns a list of unique keys for this stacked dictionary.
+
+:return: (list) Keys
+:since:  v1.0.4
+        """
+
+        keys = list(self._dict.keys())
+        for _dict in self.stacked_dicts: keys += list(_dict.keys())
+
+        return InputFilter.filter_unique_list(keys)
     #
 
     def remove_dict(self, _dict):
