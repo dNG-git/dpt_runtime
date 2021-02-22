@@ -19,15 +19,16 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 from .traced_exception_mixin import TracedExceptionMixin
 
-class IOException(IOError, TracedExceptionMixin):
+class NotImplementedException(NotImplementedError, TracedExceptionMixin):
     """
-This exception is replacing "IOError" and provides the current stack trace.
+This exception is replacing "NotImplementedError" and provides the current
+stack trace.
 
 :author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
 :package:    dpt
 :subpackage: runtime
-:since:      v1.0.0
+:since:      v2.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -38,17 +39,17 @@ python.org: __slots__ reserves space for the declared variables and prevents
 the automatic creation of __dict__ and __weakref__ for each instance.
     """
 
-    def __init__(self, value, _exception = None):
+    def __init__(self, value = "Not implemented", _exception = None):
         """
-Constructor __init__(IOException)
+Constructor __init__(NotImplementedException)
 
 :param value: Exception message value
 :param _exception: Inner exception
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
-        super(IOException, self).__init__(value)
+        NotImplementedError.__init__(self, value)
         TracedExceptionMixin.__init__(self, _exception)
     #
 
@@ -59,7 +60,7 @@ and print() to compute the "informal" or nicely printable string
 representation of an object.
 
 :return: (str) The "informal" or nicely printable string representation
-:since:  v1.0.0
+:since:  v2.0.0
     """
 
     with_traceback = TracedExceptionMixin.with_traceback
@@ -70,6 +71,6 @@ returns the exception object.
 :param tb: New traceback for the exception
 
 :return: (object) Manipulated exception instance
-:since:  v1.0.0
+:since:  v2.0.0
     """
 #

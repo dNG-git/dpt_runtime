@@ -29,7 +29,7 @@ the same time.
 :copyright:  direct Netware Group - All rights reserved
 :package:    dpt
 :subpackage: runtime
-:since:      v1.0.0
+:since:      v2.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -53,7 +53,7 @@ Constructor __init__(DescriptorSelector)
 :param wlist: List of selectors to write to
 :param xlist: List of selectors to listen for exceptional conditions
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
         if (rlist is None): rlist = [ ]
@@ -78,7 +78,7 @@ Number of descriptors polled
         """
 Destructor __del__(DescriptorSelector)
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
         self._unregister_from_polling()
@@ -89,7 +89,7 @@ Destructor __del__(DescriptorSelector)
 Selects descriptors matching expected events.
 
 :return: (tuple) Tuple of descriptors matching expected events
-:since:  v1.0.0
+:since:  v2.0.0
         """
 
         rlist = (self._selectors[0] if (is_readable) else [ ])
@@ -119,7 +119,7 @@ Selects descriptors matching expected events.
         """
 Destructor __del__(Abstract)
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
         if (self._selectors_polled[0] != len(rlist)):
@@ -142,7 +142,7 @@ Destructor __del__(Abstract)
         """
 Destructor __del__(Abstract)
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
         if (dlist is None):

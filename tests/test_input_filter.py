@@ -18,8 +18,7 @@ unittest
 
 import unittest
 
-from dpt_runtime.binary import Binary
-from dpt_runtime.input_filter import InputFilter
+from dpt_runtime import Binary, InputFilter
 
 class TestInputFilter(unittest.TestCase):
     """

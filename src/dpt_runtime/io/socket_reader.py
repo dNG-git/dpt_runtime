@@ -22,7 +22,7 @@ from time import time
 from dpt_settings import Settings
 
 from .descriptor_selector import DescriptorSelector
-from .io_exception import IOException
+from ..exceptions import IOException
 
 class SocketReader(object):
     """
@@ -33,7 +33,7 @@ operations from blocking and non-blocking sockets.
 :copyright:  direct Netware Group - All rights reserved
 :package:    dpt
 :subpackage: runtime
-:since:      v1.0.0
+:since:      v2.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -48,7 +48,7 @@ the automatic creation of __dict__ and __weakref__ for each instance.
         """
 Constructor __init__(SocketReader)
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
         self.socket = socket
@@ -71,7 +71,7 @@ Lock timeout in seconds
 Returns the lock timeout in seconds.
 
 :return: (float) Timeout value
-:since:  v1.0.0
+:since:  v2.0.0
         """
 
         return self._timeout
@@ -84,7 +84,7 @@ Sets a new lock timeout.
 
 :param timeout: New timeout value in seconds
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
         self._timeout = timeout
@@ -98,7 +98,7 @@ Read data from socket.
 
 :return: (bytes) Socket data received; Socket reached EOF (closed) if
          len(returned) < size
-:since: v1.0.0
+:since:  v2.0.0
         """
 
         _return = None

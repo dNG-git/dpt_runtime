@@ -22,7 +22,7 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 try: from types import new_class
 except ImportError: new_class = None
 
-from .not_implemented_exception import NotImplementedException
+from .exceptions import NotImplementedException
 
 class _NotImplementedMetaClass(type):
     """

@@ -17,9 +17,9 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
-from .traced_exception import _TracedException
+from .traced_exception import TracedException
 
-class OperationNotSupportedException(_TracedException):
+class OperationNotSupportedException(TracedException):
     """
 This exception should be used if specific API calls or parameter values are
 not supported in a given implementation.
@@ -28,7 +28,7 @@ not supported in a given implementation.
 :copyright:  direct Netware Group - All rights reserved
 :package:    dpt
 :subpackage: runtime
-:since:      v1.0.0
+:since:      v2.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -46,9 +46,9 @@ Constructor __init__(OperationNotSupportedException)
 :param value: Exception message value
 :param _exception: Inner exception
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
-        _TracedException.__init__(self, value, _exception)
+        TracedException.__init__(self, value, _exception)
     #
 #

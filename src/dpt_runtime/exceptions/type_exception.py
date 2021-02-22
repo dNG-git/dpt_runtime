@@ -28,7 +28,7 @@ trace.
 :copyright:  direct Netware Group - All rights reserved
 :package:    dpt
 :subpackage: runtime
-:since:      v1.0.0
+:since:      v2.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -46,7 +46,7 @@ Constructor __init__(TypeException)
 :param value: Exception message value
 :param _exception: Inner exception
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
         super(TypeException, self).__init__(value)
@@ -60,7 +60,7 @@ and print() to compute the "informal" or nicely printable string
 representation of an object.
 
 :return: (str) The "informal" or nicely printable string representation
-:since:  v1.0.0
+:since:  v2.0.0
     """
 
     with_traceback = TracedExceptionMixin.with_traceback
@@ -71,6 +71,6 @@ returns the exception object.
 :param tb: New traceback for the exception
 
 :return: (object) Manipulated exception instance
-:since:  v1.0.0
+:since:  v2.0.0
     """
 #

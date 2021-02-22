@@ -32,7 +32,7 @@ except NameError:
     _PY_UNICODE_TYPE = str
 #
 
-from dpt_runtime.binary import Binary
+from dpt_runtime import Binary
 
 class TestBinary(unittest.TestCase):
     """

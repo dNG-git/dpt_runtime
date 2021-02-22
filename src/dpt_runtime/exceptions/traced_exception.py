@@ -24,9 +24,9 @@ except ImportError: new_class = None
 
 from .traced_exception_mixin import TracedExceptionMixin
 
-class _TracedExceptionMetaClass(type):
+class TracedExceptionMetaClass(type):
     """
-The "_TracedExceptionMetaClass" is used as a Python 2 and Python 3 compatible
+The "TracedExceptionMetaClass" is used as a Python 2 and Python 3 compatible
 metaclass to return true for all inherited classes implementing
 "dpt_runtime.TracedExceptionMixin".
 
@@ -34,7 +34,7 @@ metaclass to return true for all inherited classes implementing
 :copyright:  direct Netware Group - All rights reserved
 :package:    dpt
 :subpackage: runtime
-:since:      v1.0.0
+:since:      v2.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -47,31 +47,51 @@ the automatic creation of __dict__ and __weakref__ for each instance.
 
     def __instancecheck__(cls, instance):
         """
-python.org: Return "true" if instance should be considered a (direct or
+python.org: Return true if instance should be considered a (direct or
 indirect) instance of class.
 
 :param cls: Python class
 :param instance: Instance to check
 
-:return: (bool) True of instance of "TracedExceptionMixin"
-:since:  v1.0.0
+:return: (bool) True if instance of "TracedExceptionMixin" for
+         "TracedException"
+:since:  v2.0.0
         """
 
-        return isinstance(instance, TracedExceptionMixin)
+        return ((cls is TracedException and issubclass(instance.__class__, cls))
+                or isinstance(instance, _TracedException)
+               )
+    #
+
+    def __subclasscheck__(cls, subclass):
+        """
+python.org: Return true if subclass should be considered a (direct or
+indirect) subclass of class.
+
+:param cls: Python class
+:param subclass: Class to check
+
+:return: (bool) True if subclass of "TracedExceptionMixin" for
+         "TracedException"
+:since:  v2.0.0
+        """
+
+        return ((cls is TracedException and issubclass(subclass, TracedExceptionMixin))
+                or issubclass(subclass, _TracedException)
+               )
     #
 #
 
 class _TracedException(RuntimeError, TracedExceptionMixin):
     """
-The "_TracedException" class is used in connection with the
-"_TracedExceptionMetaClass" to return true for all inherited ones
-implementing "dpt_runtime.TracedExceptionMixin".
+"_TracedException" class extends "RuntimeError" to implement
+"TracedExceptionMixin".
 
 :author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: runtime
-:since:      v1.0.0
+:since:      v2.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -89,7 +109,7 @@ Constructor __init__(TracedException)
 :param value: Exception message value
 :param _exception: Inner exception
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
         super(_TracedException, self).__init__(value)
@@ -103,7 +123,7 @@ and print() to compute the "informal" or nicely printable string
 representation of an object.
 
 :return: (str) The "informal" or nicely printable string representation
-:since:  v1.0.0
+:since:  v2.0.0
     """
 
     with_traceback = TracedExceptionMixin.with_traceback
@@ -114,23 +134,26 @@ returns the exception object.
 :param tb: New traceback for the exception
 
 :return: (object) Manipulated exception instance
-:since:  v1.0.0
+:since:  v2.0.0
     """
 #
 
-TracedException = (_TracedExceptionMetaClass("TracedException", ( _TracedException, ), { })
+TracedException = (TracedExceptionMetaClass("TracedException", ( _TracedException, ), { })
                    if (new_class is None) else
-                   new_class("TracedException", ( _TracedException, ), { "metaclass": _TracedExceptionMetaClass })
+                   new_class("TracedException", ( _TracedException, ), { "metaclass": TracedExceptionMetaClass })
                   )
 """
-The extended "RuntimeError" is used to redirect exceptions to output
-streams.
+The "TracedException" class is used in connection with the
+"TracedExceptionMetaClass" to return true for all inherited ones
+implementing "TracedExceptionMixin".
+
+To derive from "TracedException" use "_TracedException".
 
 :author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: runtime
-:since:      v1.0.0
+:since:      v2.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
             Mozilla Public License, v. 2.0
 """

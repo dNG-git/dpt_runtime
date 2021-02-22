@@ -21,7 +21,7 @@ from time import time
 
 from dpt_settings import Settings
 
-from .io_exception import IOException
+from ..exceptions import IOException
 
 class FileLikeCopyMixin(object):
     """
@@ -33,7 +33,7 @@ implemented for the source.
 :copyright:  direct Netware Group - All rights reserved
 :package:    dpt
 :subpackage: runtime
-:since:      v1.0.0
+:since:      v2.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -54,7 +54,7 @@ the automatic creation of __dict__ and __weakref__ for each instance.
         """
 Constructor __init__(FileLikeCopyMixin)
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
         self.file_like_copy_io_chunk_size = int(Settings.get("global_io_chunk_size_local", 524288))
@@ -70,7 +70,7 @@ Copy data to the target.
 :param target: Any object providing a "write()" method
 :param timeout: Timeout for copying data
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
         timeout_time = (0 if (timeout is None) else time() + timeout)

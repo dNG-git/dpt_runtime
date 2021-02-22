@@ -18,7 +18,7 @@ unittest
 
 import unittest
 
-from dpt_runtime.stacked_dict import StackedDict
+from dpt_runtime import StackedDict
 
 class TestStackedDict(unittest.TestCase):
     """

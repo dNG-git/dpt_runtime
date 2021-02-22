@@ -22,8 +22,8 @@ from tempfile import TemporaryFile
 
 from dpt_settings import Settings
 
-from .binary import Binary
-from .io_exception import IOException
+from ..binary import Binary
+from ..exceptions import IOException
 
 class ByteBuffer(object):
     """
@@ -35,7 +35,7 @@ safe.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    dpt
 :subpackage: runtime
-:since:      v1.0.0
+:since:      v2.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -52,7 +52,7 @@ the automatic creation of __dict__ and __weakref__ for each instance.
         """
 Constructor __init__(ByteBuffer)
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
         self.buffer = BytesIO()
@@ -83,7 +83,7 @@ Threshold to write the internal buffer to an external file
 Returns the buffer object to use.
 
 :return: (object) Buffer instance in use
-:since:  v1.0.0
+:since:  v2.0.0
         """
 
         return (self.buffer if (self.buffer_file is None) else self.buffer_file)
@@ -95,7 +95,7 @@ Returns the buffer object to use.
 Returns true if the buffer has not been reset for reading yet.
 
 :return: (bool) True if writable
-:since:  v1.0.0
+:since:  v2.0.0
         """
 
         return (not self._buffer_reset)
@@ -107,7 +107,7 @@ Returns true if the buffer has not been reset for reading yet.
 Returns the current size of the buffer.
 
 :return: (int) Size written in bytes
-:since:  v1.0.0
+:since:  v2.0.0
         """
 
         return self.buffer_size
@@ -117,7 +117,7 @@ Returns the current size of the buffer.
         """
 Resets the buffer ones before first read.
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
         if (not self._buffer_reset): self.seek(0)
@@ -131,7 +131,7 @@ python.org: Read up to n bytes from the object and return them.
           EOF)
 
 :return: (bytes) Data; None if EOF
-:since:  v1.0.0
+:since:  v2.0.0
         """
 
         self._ensure_buffer_reset()
@@ -146,7 +146,7 @@ python.org: Read and return one line from the stream.
 
 :param limit: If limit is specified, at most limit bytes will be read.
 
-:since: v1.0.0
+:since: v2.0.0
         """
 
         self._ensure_buffer_reset()
@@ -162,7 +162,7 @@ python.org: Change the stream position to the given byte offset.
 :param offset: Seek to the given offset
 
 :return: (int) Return the new absolute position.
-:since: v1.0.0
+:since: v2.0.0
         """
 
         if (not self._buffer_reset): self._buffer_reset = True
@@ -174,7 +174,7 @@ python.org: Change the stream position to the given byte offset.
 python.org: Return the current stream position as an opaque number.
 
 :return: (int) Stream position
-:since:  v1.0.0
+:since:  v2.0.0
         """
 
         return self.handle.tell()
@@ -188,7 +188,7 @@ raw stream and return the number of bytes written.
 :param b: Bytes data
 
 :return: (int) Number of bytes written
-:since:  v1.0.0
+:since:  v2.0.0
         """
 
         if (self._buffer_reset): raise IOException("Can't write to a buffer that has been already read from")
