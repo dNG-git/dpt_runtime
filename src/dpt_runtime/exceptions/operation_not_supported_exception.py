@@ -17,6 +17,8 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
+# pylint: disable=bad-option-value, slots-on-old-class
+
 from .traced_exception import TracedException
 
 class OperationNotSupportedException(TracedException):
