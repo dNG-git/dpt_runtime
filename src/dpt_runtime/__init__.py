@@ -20,8 +20,10 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 from .binary import Binary
 from .charset import Charset
 from .environment import Environment
+from .environment_dict import EnvironmentDict
 from .input_filter import InputFilter
 from .iterator import Iterator
 from .not_implemented_class import NotImplementedClass
+from .settings import Settings
 from .stacked_dict import StackedDict
 from .supports_mixin import SupportsMixin

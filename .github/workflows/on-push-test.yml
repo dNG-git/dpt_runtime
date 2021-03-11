@@ -1,8 +1,10 @@
 name: py:test
 
 on:
+  pull_request:
+    paths-ignore: '_developer/**'
   push:
-    branches-ignore: '*/*'
+    paths-ignore: '_developer/**'
 
 jobs:
   codeql-analysis:
@@ -48,12 +50,15 @@ jobs:
     - name: Install dependencies
       run: |-
         pip install -r ./build_requirements.txt
+        pip install --upgrade -r ./optional_requirements.txt
         pip install --upgrade -r ./requirements.txt
         pip install pylint --upgrade
     - name: Execute linter for static code analysis
       run: |-
         pylint -E --rcfile _developer/pylint_strict.ini ./src/dpt_runtime/
     - name: Execute tests
+      env:
+        DPT_PATH_DATA: /tmp
       run: python setup.py test
     - name: Execute permissive linter
       continue-on-error: true

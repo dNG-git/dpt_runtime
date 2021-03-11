@@ -20,10 +20,9 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 from io import BytesIO
 from tempfile import TemporaryFile
 
-from dpt_settings import Settings
-
 from ..binary import Binary
 from ..exceptions import IOException
+from ..settings import Settings
 
 class ByteBuffer(object):
     """

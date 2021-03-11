@@ -42,7 +42,7 @@ Returns the version currently in development.
 :since:  v1.0.0
     """
 
-    return "v2.0.0"
+    return "v2.1.0"
 #
 
 with open("requirements.txt", "r") as fp:

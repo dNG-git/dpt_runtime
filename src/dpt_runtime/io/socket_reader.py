@@ -19,10 +19,9 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 
 from time import time
 
-from dpt_settings import Settings
-
 from .descriptor_selector import DescriptorSelector
 from ..exceptions import IOException
+from ..settings import Settings
 
 class SocketReader(object):
     """
