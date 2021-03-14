@@ -56,7 +56,7 @@ The settings singleton provides a central configuration facility.
 Comments in (invalid) JSON setting files are replaced before getting parsed.
     """
 
-    __slots__ = [ "__weakref__", "_file_dict", "_runtime_dict" ]
+    __slots__ = ( "__weakref__", "_file_dict", "_runtime_dict" )
     """
 python.org: __slots__ reserves space for the declared variables and prevents
 the automatic creation of __dict__ and __weakref__ for each instance.

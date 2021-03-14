@@ -17,8 +17,6 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
-# pylint: disable=bad-option-value, slots-on-old-class
-
 from .traced_exception import TracedException
 
 class OperationNotSupportedException(TracedException):
@@ -35,7 +33,8 @@ not supported in a given implementation.
              Mozilla Public License, v. 2.0
     """
 
-    __slots__ = [ ]
+    # pylint: disable=bad-option-value,slots-on-old-class
+    __slots__ = ( )
     """
 python.org: __slots__ reserves space for the declared variables and prevents
 the automatic creation of __dict__ and __weakref__ for each instance.
