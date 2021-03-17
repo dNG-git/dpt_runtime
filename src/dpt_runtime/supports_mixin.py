@@ -33,7 +33,7 @@ instance.
 
     # pylint: disable=assigning-non-slot
 
-    _mixin_slots_ = [ "supported_features" ]
+    _mixin_slots_ = ( "supported_features", )
     """
 Additional __slots__ used for inherited classes.
     """

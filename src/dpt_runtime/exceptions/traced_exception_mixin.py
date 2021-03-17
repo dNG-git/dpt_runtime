@@ -38,7 +38,7 @@ streams.
 
     # pylint: disable=assigning-non-slot
 
-    _mixin_slots_ = [ "_trace_list" ]
+    _mixin_slots_ = ( "_trace_list", )
     """
 Additional __slots__ used for inherited classes.
     """

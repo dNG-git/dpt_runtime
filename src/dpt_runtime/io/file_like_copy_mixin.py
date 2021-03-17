@@ -39,7 +39,7 @@ implemented for the source.
 
     # pylint: disable=assigning-non-slot
 
-    _mixin_slots_ = [ "file_like_copy_io_chunk_size" ]
+    _mixin_slots_ = ( "file_like_copy_io_chunk_size", )
     """
 Additional __slots__ used for inherited classes.
     """
