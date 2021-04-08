@@ -85,13 +85,13 @@ as follows: x==y calls x.__eq__(y)
         """
 python.org: Called to implement evaluation of self[key].
 
-:param key: Database instance to access
+:param key: Environment variable name
 
-:return: (mixed) Database attribute value
+:return: (mixed) Environment variable value
 :since:  v2.1.0
         """
 
-        return environ[self._get_variable_name_for_key(key)]
+        return environ.get(self._get_variable_name_for_key(key))
     #
 
     def __iter__(self):
@@ -144,7 +144,7 @@ Returns the environment variable name for the given key.
 :since:  v2.1.0
         """
 
-        name = EnvironmentDict.RE_SPECIAL_CHARACTERS.sub("_", key.upper())
+        name = EnvironmentDict.RE_SPECIAL_CHARACTERS.sub("_", key)
         return (name if (self._prefix is None) else self._prefix + name)
     #
 #
